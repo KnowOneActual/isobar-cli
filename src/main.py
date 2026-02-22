@@ -1,16 +1,23 @@
 import typer
-from src.ui import display_weather
 from src.api import get_weather_data
+from src.ui import display_weather
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer(help="Terminal weather focused on what it FEELS LIKE outside right now.")
 
 @app.command()
-def now(city: str = typer.Argument(..., help="The city to fetch weather for")):
+def main(
+    city: str = typer.Argument(..., help="City name (e.g. 'Chicago', 'New York')"),
+):
     """
-    Get the current weather and Real Feel for a specific city.
+    Get the weather and what it FEELS LIKE outside.
+    
+    Isobar answers: "Should I grab a jacket?" not "What's the full forecast?"
+    
+    Examples:
+        isobar Chicago
+        isobar "New York"  
+        isobar "Los Angeles"
     """
-    # In a real app, you'd convert 'city' to lat/long here.
-    # For now, we default to Chicago if they type 'Chicago'
     weather = get_weather_data(city)
     display_weather(weather)
 

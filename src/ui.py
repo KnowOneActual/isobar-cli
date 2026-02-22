@@ -37,6 +37,8 @@ def display_weather(weather_data: dict):
     wind_speed = weather_data.get("wind_speed", "--")
     humidity = weather_data.get("humidity", "--")
     precip = weather_data.get("precipitation", "0.0")
+    precip_prob = weather_data.get("precip_prob", 0)
+    snowfall_cm = weather_data.get("snowfall_cm", 0)
 
     temp_color = get_temp_color(temp)
     feels_color = get_temp_color(feels_like)
@@ -44,8 +46,8 @@ def display_weather(weather_data: dict):
     # Cache timestamp (only if cached)
     cache_timestamp = None
     if city != "Unknown Location":
-        cache_file = CACHE_DIR / f"{city.split(',')[0].strip().lower().replace(' ',             '_')}.json"
-
+        input_city = city.split(",")[0].strip().lower().replace(" ", "_")
+        cache_file = CACHE_DIR / f"{input_city}.json"
         if cache_file.exists():
             try:
                 cache_data = json.loads(cache_file.read_text())
@@ -70,7 +72,11 @@ def display_weather(weather_data: dict):
     table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
     table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")
     table.add_row("💧", "Humidity:", f"{humidity}%")
-    table.add_row("🌧️", "Precipitation:", f"{precip} in")
-
+    table.add_row("🌧️", "Precip Chance:", f"{precip_prob}% (6h)")
+    
+    # Snow only if meaningful accumulation expected
+    if snowfall_cm > 0.1:
+        table.add_row("❄️", "Snow Expected:", f"~{snowfall_cm*10:.0f}mm")
+    
     console.print(table)
     print() # Adds a blank line at the end for clean spacing
