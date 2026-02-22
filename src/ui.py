@@ -76,7 +76,7 @@ def display_weather(weather_data: dict):
     
     # Snow only if meaningful accumulation expected
     if snowfall_cm > 0.1:
-        table.add_row("❄️", "Snow Expected:", f"~{snowfall_cm*10:.0f}mm")
+        table.add_row("❄️", "Snow Expected:", f"~{snowfall_cm*0.3937:.2f}\"")
     
     console.print(table)
     print() # Adds a blank line at the end for clean spacing
