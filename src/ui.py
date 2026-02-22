@@ -1,7 +1,11 @@
 from rich.console import Console
 from rich.table import Table
+import json
+import time
+from pathlib import Path
 
 console = Console()
+CACHE_DIR = Path.home() / ".cache" / "isobar"
 
 def get_temp_color(temp_val) -> str:
     """Returns a Rich color tag based on the temperature."""
@@ -37,7 +41,20 @@ def display_weather(weather_data: dict):
     temp_color = get_temp_color(temp)
     feels_color = get_temp_color(feels_like)
 
-    # Added the title directly to the table and kept box=None
+    # Cache timestamp (only if cached)
+    cache_timestamp = None
+    if city != "Unknown Location":
+        cache_file = CACHE_DIR / f"{city.split(',')[0].strip().lower().replace(' ',             '_')}.json"
+
+        if cache_file.exists():
+            try:
+                cache_data = json.loads(cache_file.read_text())
+                if "timestamp" in cache_data and time.time() - cache_data["timestamp"] < 900:
+                    minutes_ago = int((time.time() - cache_data["timestamp"]) / 60)
+                    console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
+            except:
+                pass  # Silently ignore cache issues
+
     table = Table(
         title=f"\n[bold white]{city} Weather[/bold white]", 
         show_header=False, 
