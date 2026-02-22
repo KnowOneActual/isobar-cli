@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-02-22
+
+### Added
+
+- **Precipitation Probability** - Next 6h rain chance (%) [Phase 2]
+- **Snow Detection** - Expected snowfall warning (>1mm)
+- **Underscore Support** - `isobar New_York` → "New York" [no quotes!]
+- **Smart Defaults** - `isobar` → Chicago weather
+
+### Fixed
+
+- Graceful "city not found" messaging with examples
+
 ## [0.2.0] - 2026-02-22
 
 ### Added
