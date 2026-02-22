@@ -1,34 +1,104 @@
 # Isobar CLI Roadmap
 
-This document outlines planned features and improvements. The focus is on keeping the tool fast, accurate, and visually clean while expanding its usefulness.
+This roadmap describes **intentional, phased changes** to Isobar CLI.
 
-## Phase 1: Performance and Flow
+The mission stays the same:
 
-- [ ] **Local Caching:** Save weather data locally for 15 minutes to make repeat requests instant and reduce API calls.
-- [ ] **Auto-Location:** Allow users to run `isobar` without specifying a city to automatically fetch weather for their current IP address.
+> Help you quickly understand what it feels like outside, from your terminal.
 
-## Phase 2: Expanded Metrics
+Everything here is optional until it proves it actually improves that mission.
 
-- [ ] **Air Quality Index (AQI):** Display local air quality alongside the standard weather data.
-- [ ] **Sun Tracking:** Add sunrise and sunset times to the daily readout.
+---
 
-## Phase 3: Visuals and Forecasting
+## Phase 1: Speed & Flow (Near-Term)
 
-- [ ] **ASCII Weather Icons:** Dynamically show small text-based icons (sun, rain clouds, snow) matching the current conditions.
-- [ ] **Mini Forecast:** Add an optional command flag to show a brief weather outlook for the next few hours or days.
+**Goal:** Make the existing experience faster and more convenient, without changing what Isobar is.
 
-## Nice to have
+- [ ] **Local Caching (≈ 15 minutes)**  
+       Cache the last successful response per location to: - Avoid hammering the API on repeated checks. - Make repeated calls feel instant when conditions haven’t changed much.  
+       This will only ship if it delivers noticeable UX gains over the current Open-Meteo latency.
 
-- [ ] **Animated Weather Icons:** Use ASCII art to animate the weather icons in the terminal.
-- [ ] **Colorful Weather Icons:** Add color to the weather icons to make them more visually appealing.
+- [ ] **Auto-Location (optional flag or default)**  
+       Allow running `isobar` with no city to use current IP-based location.  
+       Must: - Fail gracefully with a clear message. - Never require config files or accounts.
 
-## Future Roadmap
+---
 
-- [ ] **Customizable Units:** Allow users to choose their preferred temperature units.
-- [ ] **Multi-Language Support:** Support multiple languages for the user interface.
-- [ ] **Multiple Cities:** Allow users to fetch weather for multiple cities at once.
-- [ ] **Customizable Colors:** Allow users to customize the color scheme of the terminal output.
-- [ ] **Customizable Layout:** Allow users to customize the layout of the weather data in the terminal.
-- [ ] **Customizable Font:** Allow users to customize the font used in the terminal output.
-- [ ] **Customizable Background:** Allow users to customize the background color of the terminal output.
-- [ ] **Customizable Icons:** Allow users to customize the weather icons used in the terminal output.
+## Phase 2: Deeper Comfort Context
+
+**Goal:** Add _a bit more_ information that directly informs comfort, without turning into a dashboard.
+
+- [ ] **Air Quality Index (AQI)**  
+       Show a simple AQI metric and qualitative label (e.g., “Good”, “Moderate”) for the current location.
+
+- [ ] **Sunrise / Sunset Times**  
+       Add sunrise and sunset to the readout so users can quickly gauge remaining daylight.
+
+Any new metric added here must answer:  
+**“Would I make a different decision about going outside because of this?”**
+
+---
+
+## Phase 3: Visual Communication & Forecasting
+
+**Goal:** Improve how information is communicated, not how much information there is.
+
+- [ ] **ASCII / Text Weather Icons**  
+       Small text-based icons that reinforce current conditions (sun, rain, snow, clouds).  
+       Must: - Be legible in typical terminal setups. - Add clarity, not visual noise.
+
+- [ ] **Mini Forecast (opt-in flag)**  
+       A short, optional forecast (next few hours or days) exposed via a flag like:
+      `bash
+    isobar "Chicago" --mini-forecast
+    `
+      The default command should remain focused on “right now”.
+
+- [ ] **Subtle Visual Enhancements**  
+       Small tweaks (spacing, emphasis, color choices) that make the card clearer without adding busy-ness.
+
+---
+
+## Nice to Have (Carefully Considered)
+
+Ideas that could be fun but are not core to the mission. These will only be implemented if they **don’t compromise simplicity** and there is real demand.
+
+- [ ] **Animated Weather Icons**  
+       Lightweight ASCII animations that run only when explicitly requested.
+
+- [ ] **Colorful Weather Icons**  
+       Tasteful use of color that remains readable on common background themes.
+
+---
+
+## Future Roadmap (Highly Skeptical)
+
+These are **not planned** features. They’re noted here primarily to say:  
+“Not unless there’s a very strong reason.”
+
+- [ ] **Customizable Units**  
+       Might ship if enough non-Fahrenheit users adopt Isobar.
+
+- [ ] **Multi-Language Support**
+
+- [ ] **Multiple Cities in One Run**
+
+- [ ] **Customization Surface (colors, layout, icons, fonts, backgrounds, themes, etc.)**
+
+If any of these are ever considered, they must:
+
+1. Not require config files for basic use.
+2. Keep `isobar <city>` simple and uncluttered.
+3. Justify themselves in terms of comfort-understanding, not aesthetics alone.
+
+---
+
+## How to Use This Roadmap
+
+If you’re proposing a change:
+
+- Point to where it fits (Phase 1/2/3, Nice to Have, or Future).
+- Explain why it deserves to move from “Future” to a real phase.
+- Be explicit about what you’d remove, not just what you’d add.
+
+The roadmap is a **guardrail against scope creep**, not a promise that everything listed here will ship.

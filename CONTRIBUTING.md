@@ -1,44 +1,92 @@
-# Contributing
+# Contributing to Isobar CLI
 
-First off, thanks for taking the time to contribute! 🚀
+Thanks for your interest in contributing to Isobar CLI!
 
-We welcome contributions from the community to help improve this project.
+This project is intentionally small and opinionated. The goal is not to become a full-featured weather dashboard, but to answer one question well:
 
-## How to Contribute
+> “What does it feel like outside right now?”
 
-### Reporting Bugs
-If you find a bug or unexpected behavior, please open an issue on GitHub.
-* Check if the issue already exists.
-* Provide as much detail as possible (OS, version, steps to reproduce).
+Contributions are welcome as long as they respect that constraint.
 
-### Requesting Features
-Have an idea for a new feature or improvement?
-* Open a Feature Request ticket.
-* Describe *why* this feature would be useful.
+## Core Principles
 
-### Submitting Changes (Pull Requests)
+Before opening an issue or PR, align with these principles:
 
-1.  **Fork the Repo**: Click the "Fork" button in the top right corner.
-2.  **Clone your Fork**:
-    ```bash
-    git clone [https://github.com/YOUR-USERNAME/YOUR-PROJECT.git](https://github.com/YOUR-USERNAME/YOUR-PROJECT.git)
-    ```
-3.  **Create a Branch**:
-    ```bash
-    git checkout -b my-new-feature
-    ```
-4.  **Make your Changes**: Edit the code and save.
-5.  **Test Your Changes**: Ensure everything runs as expected.
-6.  **Push and PR**: Push your branch to your fork and open a Pull Request against the `main` branch.
+- **Single purpose** – Everything should serve the “what does it feel like outside?” question.
+- **Essential over comprehensive** – Fewer, more meaningful data points beat large tables of stats.
+- **Terminal-native** – Fast, readable, no GUI thinking sneaking in.
+- **Zero friction** – Avoid config, setup steps, or requirements unless absolutely necessary.
+- **Intentional features** – No feature “just because it’d be cool.”
 
-### Bash Scripting
+If a change doesn’t clearly improve comfort-understanding or developer ergonomics, it probably doesn’t belong.
 
-We aim for clean, safe, and portable Bash code.
+## What’s in scope
 
-  * **Linting**: This project uses a CI workflow to strictly enforce [ShellCheck](https://www.shellcheck.net/).
-  * **Requirement**: All Pull Requests must pass the linting workflow before they can be merged. We recommend running `shellcheck` locally before pushing.
-  * **Indentation**: Use 4 spaces for indentation.
+Good candidates for contributions:
 
-## License
+- Improving clarity of the existing output (layout, wording, accessibility).
+- Enhancing comfort-related metrics (e.g., AQI, sunrise/sunset, short forecast) in ways consistent with the roadmap.
+- Performance improvements (faster responses, sensible caching) without complicating usage.
+- Robustness (better error handling, edge cases, tests).
+- Developer experience improvements that don’t leak complexity onto the user.
 
-By contributing, you agree that your contributions will be licensed under the project's license.
+## What’s out of scope (for now)
+
+Changes that are usually not a fit:
+
+- Heavy customization systems (themes, arbitrary layouts, fonts).
+- Turning Isobar into a general-purpose weather dashboard.
+- Features unrelated to the “feels like outside right now” mission.
+- Large dependency trees or complex configuration for marginal benefit.
+
+If you’re unsure, open a small issue first and describe the problem and why it matters.
+
+## How to contribute
+
+1. **Open an Issue (recommended)**
+   - Describe the problem you’re solving, not just the solution you want.
+   - Explain how it helps answer “what does it feel like outside?”
+
+2. **Fork & Branch**
+   - Fork the repo.
+   - Create a branch from `main`:
+     ```bash
+     git checkout -b feature/short-description
+     ```
+   - If you use `start-work.sh`, you can let it handle the branch naming for you.
+
+3. **Make focused changes**
+   - Keep PRs small and single-purpose.
+   - If you find unrelated cleanups, either keep them minimal or send them as a separate PR.
+
+4. **Run basic checks**
+   - Ensure the CLI still runs:
+     ```bash
+     pip install -e .
+     isobar "Chicago"
+     ```
+   - Add or update tests if they exist for the area you touched.
+
+5. **Open a Pull Request**
+   - Clearly state:
+     - The problem.
+     - The proposed change.
+     - How it supports the project philosophy and roadmap.
+   - If your change touches user-facing behavior, include before/after screenshots or terminal output.
+
+## Design discussion
+
+For bigger ideas or direction shifts, please:
+
+- Reference the sections in `README.md` (“Philosophy”, “Project Direction”, “What This Project Is Not”).
+- Reference specific roadmap items in `ROADMAP.md` where your idea fits or propose a new item.
+
+The maintainer may ask “How does this help someone understand what it feels like outside?” more than once. That’s by design.
+
+## Code style
+
+- Favor readability and simplicity over cleverness.
+- Keep modules focused (`api`, `ui`, CLI entrypoint).
+- Avoid introducing heavy dependencies without a strong, user-facing reason.
+
+Thanks for helping keep Isobar CLI small, sharp, and intentional.
