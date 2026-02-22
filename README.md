@@ -1,6 +1,6 @@
 # Isobar CLI
 
-A visually pleasing terminal weather tool focusing on Real Feel and Windchill. Built with Python and the Rich library.
+A terminal weather tool designed to give you a simple and efficient sense of what the weather feels like outside. Built with Python and the Rich library.
 
 ## Philosophy
 
