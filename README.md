@@ -46,6 +46,6 @@ _(If your city name has spaces, wrap it in quotes like `isobar "New York"`)_
 - [Rich](https://github.com/Textualize/rich) (Terminal UI)
 - [Open-Meteo](https://open-meteo.com/) (Weather Data)
 
-License
+## License
 
-Distributed under the MIT License. See LICENSE for more information.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
