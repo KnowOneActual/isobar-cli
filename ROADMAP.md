@@ -14,7 +14,7 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Make the existing experience faster and more convenient, without changing what Isobar is.
 
-- [ ] **Local Caching (≈ 15 minutes)**  
+- [X] **Local Caching (≈ 15 minutes)**  
        Cache the last successful response per location to: - Avoid hammering the API on repeated checks. - Make repeated calls feel instant when conditions haven’t changed much.  
        This will only ship if it delivers noticeable UX gains over the current Open-Meteo latency.
 
@@ -27,6 +27,9 @@ Everything here is optional until it proves it actually improves that mission.
 ## Phase 2: Deeper Comfort Context
 
 **Goal:** Add _a bit more_ information that directly informs comfort, without turning into a dashboard.
+
+- [ ] **Rain / Snow / Cloud Coverage**  
+       Show a simple percentage of rain, snow (expanded currently), and cloud coverage for the current location.
 
 - [ ] **Air Quality Index (AQI)**  
        Show a simple AQI metric and qualitative label (e.g., “Good”, “Moderate”) for the current location.
@@ -79,9 +82,11 @@ These are **not planned** features. They’re noted here primarily to say:
 - [ ] **Customizable Units**  
        Might ship if enough non-Fahrenheit users adopt Isobar.
 
-- [ ] **Multi-Language Support**
+- [ ] **Multi-Language Support**  
+       Might ship if enough non-English speakers adopt Isobar. It’s not a priority.
 
-- [ ] **Multiple Cities in One Run**
+- [ ] **Multiple Cities in One Run**  
+       	It might be shipped if enough users are interested in checking multiple locations at once. However, I'm unsure whether this feature would be useful enough for many people to spend time on.
 
 - [ ] **Customization Surface (colors, layout, icons, fonts, backgrounds, themes, etc.)**
 
