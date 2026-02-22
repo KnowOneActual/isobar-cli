@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "isobar-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "A visually pleasing terminal weather tool focusing on Real Feel and Windchill."
 authors = [
   { name="Beau Bremer /KnowOneActual" },
