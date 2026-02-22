@@ -106,4 +106,4 @@ If you’re proposing a change:
 - Explain why it deserves to move from “Future” to a real phase.
 - Be explicit about what you’d remove, not just what you’d add.
 
-The roadmap is a **guardrail against scope creep**, not a promise that everything listed here will ship.
+> The roadmap is a **guardrail against scope creep**, not a promise that everything listed here will ship.
