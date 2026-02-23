@@ -38,7 +38,8 @@ def display_weather(weather_data: dict):
     wind_speed = weather_data.get("wind_speed", "--")
     humidity = weather_data.get("humidity", "--")
     precip_prob = weather_data.get("precip_prob", 0)
-    snowfall_cm = weather_data.get("snowfall_cm", 0)
+    rainfall_inch = weather_data.get("rainfall_inch", 0)
+    snowfall_inch = weather_data.get("snowfall_inch", 0)
 
     temp_color = get_temp_color(temp)
     feels_color = get_temp_color(feels_like)
@@ -72,11 +73,15 @@ def display_weather(weather_data: dict):
     table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
     table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")
     table.add_row("💧", "Humidity:", f"{humidity}%")
-    table.add_row("🌧️", "Precip Chance:", f"{precip_prob}% (6h)")
+    table.add_row("☔", "Precip Chance:", f"{precip_prob}% (6h)")
+
+    # Rain only if meaningful accumulation expected
+    if rainfall_inch > 0.01:
+        table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
 
     # Snow only if meaningful accumulation expected
-    if snowfall_cm > 0.1:
-        table.add_row("❄️", "Snow Expected:", f"~{snowfall_cm*0.3937:.2f}\"")
+    if snowfall_inch > 0.01:
+        table.add_row("❄️", "Snow Expected:", f"~{snowfall_inch:.2f}\"")
 
     console.print(table)
     print()  # Adds a blank line at the end for clean spacing
