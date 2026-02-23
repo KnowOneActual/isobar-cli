@@ -10,7 +10,7 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 def get_weather_data(city: str) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
-    forecast.
+    forecast including rain and snow.
     """
     cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}.json"
 
@@ -40,8 +40,8 @@ def get_weather_data(city: str) -> dict:
         region = location.get("admin1", location.get("country", ""))
         clean_city_name = f"{location['name']}, {region}".strip(", ")
 
-        # Updated URL: adds hourly precip prob + snow, 2-day forecast
-        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,relative_humidity_2m,precipitation&hourly=precipitation_probability,snowfall&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&forecast_days=2"
+        # Updated URL: adds hourly precip prob + rain + snow, 2-day forecast
+        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,relative_humidity_2m,precipitation&hourly=precipitation_probability,rain,snowfall&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&forecast_days=2"
 
         weather_response = requests.get(weather_url)
         weather_response.raise_for_status()
@@ -55,7 +55,10 @@ def get_weather_data(city: str) -> dict:
             sum(next_6h_probs) / len(next_6h_probs) if next_6h_probs else 0
         )
 
-        # Next 6 hours snowfall (total cm)
+        # Next 6 hours rainfall (total inches)
+        next_6h_rain = sum(hourly["rain"][:6])
+
+        # Next 6 hours snowfall (total inches)
         next_6h_snow = sum(hourly["snowfall"][:6])
 
         result = {
@@ -66,7 +69,8 @@ def get_weather_data(city: str) -> dict:
             "humidity": current["relative_humidity_2m"],
             "precipitation": current["precipitation"],
             "precip_prob": round(avg_precip_prob),  # % chance next 6h
-            "snowfall_cm": next_6h_snow  # Total snow cm next 6h
+            "rainfall_inch": next_6h_rain,  # Total rain inches next 6h
+            "snowfall_inch": next_6h_snow  # Total snow inches next 6h
         }
 
         # Cache successful result

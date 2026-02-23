@@ -24,6 +24,33 @@ def get_temp_color(temp_val) -> str:
     except (ValueError, TypeError):
         return "white"
 
+def get_precip_headline(weather_data: dict) -> str:
+    """Generate a single-line comfort summary for precip decisions."""
+    precip_prob = weather_data.get("precip_prob", 0)
+    rainfall = weather_data.get("rainfall_inch", 0)
+    snowfall = weather_data.get("snowfall_inch", 0)
+    
+    total_precip = rainfall + snowfall
+    
+    if precip_prob < 30:
+        return "Dry conditions expected"
+    elif precip_prob < 60:
+        if total_precip < 0.1:
+            return "Very low precip risk"
+        return "Possible light precip"
+    else:
+        # High chance (>60%)
+        if snowfall > rainfall and snowfall > 0.25:
+            return "Snowy conditions likely"
+        elif rainfall > 0.75:
+            return "Heavy rain likely"
+        elif rainfall > 0.25:
+            return "Moderate rain likely"
+        else:
+            return "Light rain likely"
+    
+    return ""
+
 def display_weather(weather_data: dict):
     """
     Renders the weather data in a visually pleasing terminal panel.
@@ -38,7 +65,8 @@ def display_weather(weather_data: dict):
     wind_speed = weather_data.get("wind_speed", "--")
     humidity = weather_data.get("humidity", "--")
     precip_prob = weather_data.get("precip_prob", 0)
-    snowfall_cm = weather_data.get("snowfall_cm", 0)
+    rainfall_inch = weather_data.get("rainfall_inch", 0)
+    snowfall_inch = weather_data.get("snowfall_inch", 0)
 
     temp_color = get_temp_color(temp)
     feels_color = get_temp_color(feels_like)
@@ -72,11 +100,22 @@ def display_weather(weather_data: dict):
     table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
     table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")
     table.add_row("💧", "Humidity:", f"{humidity}%")
-    table.add_row("🌧️", "Precip Chance:", f"{precip_prob}% (6h)")
+    
+    # Precip Chance + Headline (together!)
+    headline = get_precip_headline(weather_data)
+    precip_value = f"{precip_prob}% (6h)"
+    if headline:
+        precip_value += f" | [dim italic yellow]{headline}[/dim italic yellow]"
+    
+    table.add_row("☔", "Precip Chance:", precip_value)
 
+    # Rain only if meaningful accumulation expected
+    if rainfall_inch > 0.01:
+        table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
+    
     # Snow only if meaningful accumulation expected
-    if snowfall_cm > 0.1:
-        table.add_row("❄️", "Snow Expected:", f"~{snowfall_cm*0.3937:.2f}\"")
+    if snowfall_inch > 0.01:
+        table.add_row("❄️", "Snow Expected:", f"~{snowfall_inch:.2f}\"")
 
     console.print(table)
     print()  # Adds a blank line at the end for clean spacing
