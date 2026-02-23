@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-02-22
+
+### Added
+- **Rain forecast**: 6-hour rainfall totals in inches (`rainfall_inch`) [PR #1]
+- **Snow forecast**: 6-hour snowfall totals in inches (converted from cm) [PR #1]
+- **Precipitation headline**: Instant comfort summary under Precip Chance row 
+  - "Dry conditions expected", "Light rain likely", "Snowy conditions likely", etc.
+  - Helps answer "what should I wear?" at a glance [PR #1]
+
+### Changed
+- Snow display now uses inches consistently with rain (was cm) [PR #1]
+- Precip headline moved under "Precip Chance" row for better flow [PR #1]
 ## [0.3.0] - 2026-02-22
 
 ### Added
