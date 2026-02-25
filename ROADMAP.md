@@ -28,8 +28,9 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Add _a bit more_ information that directly informs comfort, without turning into a dashboard.
 
-- [X] **Rain / Snow / Cloud Coverage**  
-       Show a simple percentage of rain, snow (expanded currently), and cloud coverage for the current location.
+- [ ] **Rain / Snow / Cloud Coverage**
+> **In Progress**
+       : Show a simple percentage of rain, snow (expanded currently), and cloud coverage for the current location.
 
 - [ ] **Air Quality Index (AQI)**  
        Show a simple AQI metric and qualitative label (e.g., "Good", "Moderate") for the current location.
