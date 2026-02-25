@@ -29,9 +29,9 @@ def get_precip_headline(weather_data: dict) -> str:
     precip_prob = weather_data.get("precip_prob", 0)
     rainfall = weather_data.get("rainfall_inch", 0)
     snowfall = weather_data.get("snowfall_inch", 0)
-    
+
     total_precip = rainfall + snowfall
-    
+
     if precip_prob < 30:
         return "Dry conditions expected"
     elif precip_prob < 60:
@@ -48,7 +48,7 @@ def get_precip_headline(weather_data: dict) -> str:
             return "Moderate rain likely"
         else:
             return "Light rain likely"
-    
+
     return ""
 
 def display_weather(weather_data: dict):
@@ -100,7 +100,7 @@ def display_weather(weather_data: dict):
     table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
     table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")
     table.add_row("💧", "Humidity:", f"{humidity}%")
-    
+
     # Precip Chance + Headline (together!)
     headline = get_precip_headline(weather_data)
     precip_value = f"{precip_prob}% (6h)"
@@ -116,7 +116,7 @@ def display_weather(weather_data: dict):
     # Rain only if meaningful accumulation expected
     if rainfall_inch > 0.01:
         table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
-    
+
     # Snow only if meaningful accumulation expected
     if snowfall_inch > 0.01:
         table.add_row("❄️", "Snow Expected:", f"~{snowfall_inch:.2f}\"")
