@@ -1,6 +1,7 @@
 """Location detection module for automatic city detection via IP."""
-import requests
 from typing import Optional
+
+import requests
 
 
 def get_auto_location() -> Optional[str]:
@@ -23,14 +24,14 @@ def get_auto_location() -> Optional[str]:
         )
         response.raise_for_status()
         data = response.json()
-        
+
         # Extract city name from response
         city = data.get("city")
         if city:
             return city
-        
+
         return None
-        
+
     except requests.exceptions.Timeout:
         # Timeout - network too slow
         return None

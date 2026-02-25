@@ -33,7 +33,7 @@ def main(
     if city is None:
         console.print("[dim]🌍 Detecting location...[/dim]")
         city = get_auto_location()
-        
+
         if city is None:
             # Auto-location failed, fall back to Chicago
             console.print(
