@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-24
+
+### Added
+- **Auto-Location Detection** - Run `isobar` without a city name to auto-detect location via IP geolocation
+  - Uses ipapi.co free API (no API keys required)
+  - Falls back to Chicago if detection fails
+  - Graceful error handling with clear user messaging
+  - Completes Phase 1 of ROADMAP.md ✅
+
+### Changed
+- City argument is now optional in CLI
+- Updated help text to reflect auto-location capability
+- Enhanced examples to show `isobar` (no args) usage
+
 ## [0.3.1] - 2026-02-22
 
 ### Added
@@ -17,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Snow display now uses inches consistently with rain (was cm) [PR #1]
 - Precip headline moved under "Precip Chance" row for better flow [PR #1]
+
 ## [0.3.0] - 2026-02-22
 
 ### Added
