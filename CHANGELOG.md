@@ -8,16 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.0] - 2026-02-24
 
 ### Added
-- **Auto-Location Detection** - Run `isobar` without a city name to auto-detect location via IP geolocation
-  - Uses ipapi.co free API (no API keys required)
-  - Falls back to Chicago if detection fails
-  - Graceful error handling with clear user messaging
-  - Completes Phase 1 of ROADMAP.md ✅
+- **Auto-Location Detection** - Run `isobar` without arguments to auto-detect location via IP
+  - Uses ip-api.com (1,000 req/day free tier)
+  - Browser-like User-Agent to avoid blocking
+  - Graceful fallback to Chicago if detection fails
+  - **Phase 1 of ROADMAP complete** ✅
+
+### Fixed
+- **requests DNS resolution** - Robust handling of DNS/SSL edge cases
+- **Ruff linting** - Fixed W293, E501 line length violations
 
 ### Changed
-- City argument is now optional in CLI
-- Updated help text to reflect auto-location capability
-- Enhanced examples to show `isobar` (no args) usage
+- City argument now optional in CLI
+- Updated help text/examples to show `isobar` (no args) usage
 
 ## [0.3.1] - 2026-02-22
 
