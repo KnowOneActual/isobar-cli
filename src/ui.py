@@ -106,8 +106,12 @@ def display_weather(weather_data: dict):
     precip_value = f"{precip_prob}% (6h)"
     if headline:
         precip_value += f" | [dim italic yellow]{headline}[/dim italic yellow]"
-    
+
     table.add_row("☔", "Precip Chance:", precip_value)
+
+    # Rain only if meaningful accumulation expected
+    if rainfall_inch > 0.01:
+        table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
 
     # Rain only if meaningful accumulation expected
     if rainfall_inch > 0.01:

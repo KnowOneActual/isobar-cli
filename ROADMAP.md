@@ -10,15 +10,15 @@ Everything here is optional until it proves it actually improves that mission.
 
 ---
 
-## Phase 1: Speed & Flow (Near-Term)
+## Phase 1: Speed & Flow (COMPLETE ✅)
 
 **Goal:** Make the existing experience faster and more convenient, without changing what Isobar is.
 
 - [X] **Local Caching (≈ 15 minutes)**  
-       Cache the last successful response per location to: - Avoid hammering the API on repeated checks. - Make repeated calls feel instant when conditions haven’t changed much.  
+       Cache the last successful response per location to: - Avoid hammering the API on repeated checks. - Make repeated calls feel instant when conditions haven't changed much.  
        This will only ship if it delivers noticeable UX gains over the current Open-Meteo latency.
 
-- [ ] **Auto-Location (optional flag or default)**  
+- [X] **Auto-Location (optional flag or default)**  
        Allow running `isobar` with no city to use current IP-based location.  
        Must: - Fail gracefully with a clear message. - Never require config files or accounts.
 
@@ -28,17 +28,17 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Add _a bit more_ information that directly informs comfort, without turning into a dashboard.
 
-- [ ] **Rain / Snow / Cloud Coverage**  
+- [X] **Rain / Snow / Cloud Coverage**  
        Show a simple percentage of rain, snow (expanded currently), and cloud coverage for the current location.
 
 - [ ] **Air Quality Index (AQI)**  
-       Show a simple AQI metric and qualitative label (e.g., “Good”, “Moderate”) for the current location.
+       Show a simple AQI metric and qualitative label (e.g., "Good", "Moderate") for the current location.
 
 - [ ] **Sunrise / Sunset Times**  
        Add sunrise and sunset to the readout so users can quickly gauge remaining daylight.
 
 Any new metric added here must answer:  
-**“Would I make a different decision about going outside because of this?”**
+**"Would I make a different decision about going outside because of this?"**
 
 ---
 
@@ -55,7 +55,7 @@ Any new metric added here must answer:
       `bash
     isobar "Chicago" --mini-forecast
     `
-      The default command should remain focused on “right now”.
+      The default command should remain focused on "right now".
 
 - [ ] **Subtle Visual Enhancements**  
        Small tweaks (spacing, emphasis, color choices) that make the card clearer without adding busy-ness.
@@ -64,7 +64,7 @@ Any new metric added here must answer:
 
 ## Nice to Have (Carefully Considered)
 
-Ideas that could be fun but are not core to the mission. These will only be implemented if they **don’t compromise simplicity** and there is real demand.
+Ideas that could be fun but are not core to the mission. These will only be implemented if they **don't compromise simplicity** and there is real demand.
 
 - [ ] **Animated Weather Icons**  
        Lightweight ASCII animations that run only when explicitly requested.
@@ -76,14 +76,14 @@ Ideas that could be fun but are not core to the mission. These will only be impl
 
 ## Future Roadmap (Highly Skeptical)
 
-These are **not planned** features. They’re noted here primarily to say:  
-“Not unless there’s a very strong reason.”
+These are **not planned** features. They're noted here primarily to say:  
+"Not unless there's a very strong reason."
 
 - [ ] **Customizable Units**  
        Might ship if enough non-Fahrenheit users adopt Isobar.
 
 - [ ] **Multi-Language Support**  
-       Might ship if enough non-English speakers adopt Isobar. It’s not a priority.
+       Might ship if enough non-English speakers adopt Isobar. It's not a priority.
 
 - [ ] **Multiple Cities in One Run**  
        	It might be shipped if enough users are interested in checking multiple locations at once. However, I'm unsure whether this feature would be useful enough for many people to spend time on.
@@ -100,10 +100,10 @@ If any of these are ever considered, they must:
 
 ## How to Use This Roadmap 
 
-If you’re proposing a change:
+If you're proposing a change:
 
 - Point to where it fits (Phase 1/2/3, Nice to Have, or Future).
-- Explain why it deserves to move from “Future” to a real phase.
-- Be explicit about what you’d remove, not just what you’d add.
+- Explain why it deserves to move from "Future" to a real phase.
+- Be explicit about what you'd remove, not just what you'd add.
 
 > The roadmap is a **guardrail against scope creep**, not a promise that everything listed here will ship.
