@@ -12,11 +12,12 @@ app = typer.Typer(
 )
 console = Console()
 
+
 @app.command()
 def main(
     city: str = typer.Argument(
-        None,  # Now optional!
-        help="City name (detects automatically if omitted)"
+        None,
+        help="City name (detects automatically if omitted)",
     )
 ):
     """
@@ -37,13 +38,14 @@ def main(
         if city is None:
             # Auto-location failed, fall back to Chicago
             console.print(
-                "[yellow]⚠️  Could not detect location. Using Chicago as default.[/yellow]"
+                "[yellow]⚠️  Could not detect location. "
+                "Using Chicago as default.[/yellow]"
             )
             city = "Chicago"
         else:
             console.print(f"[dim]📍 Detected: {city}[/dim]")
 
-    # Convert New_York → "New York" and handle quotes
+    # Convert New_York → "New York" and handle underscores
     full_city = city.replace("_", " ")
 
     weather = get_weather_data(full_city)

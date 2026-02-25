@@ -5,12 +5,11 @@ import requests
 
 
 def get_auto_location() -> Optional[str]:
-    """
-    Detect user's location based on their IP address using ipapi.co.
-    
+    """Detect user's location based on their IP address using ipapi.co.
+
     Returns:
         City name as a string, or None if detection fails.
-    
+
     Examples:
         >>> city = get_auto_location()
         >>> if city:
@@ -20,7 +19,7 @@ def get_auto_location() -> Optional[str]:
         # ipapi.co provides free IP geolocation without API keys
         response = requests.get(
             "https://ipapi.co/json/",
-            timeout=3  # Quick timeout to avoid hanging
+            timeout=3,  # Quick timeout to avoid hanging
         )
         response.raise_for_status()
         data = response.json()
