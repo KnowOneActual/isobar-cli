@@ -62,10 +62,6 @@ def get_weather_data(city: str) -> dict:
         hourly = api_data["hourly"]
         daily = api_data["daily"]
 
-        # Sunrise/Sunset (today's local time)
-        sunrise = daily["sunrise"][0].split("T")[1][:5]  # HH:MM
-        sunset = daily["sunset"][0].split("T")[1][:5]    # HH:MM
-
         # Next 6 hours precip probability (average)
         next_6h_probs = hourly["precipitation_probability"][:6]
         avg_precip_prob = (
@@ -75,10 +71,6 @@ def get_weather_data(city: str) -> dict:
         # Next 6 hours rainfall/snowfall (total inches)
         next_6h_rain = sum(hourly["rain"][:6])
         next_6h_snow = sum(hourly["snowfall"][:6])
-
-        # Parse sunrise/sunset times (today's data is first in array)
-        sunrise_iso = daily["sunrise"][0]
-        sunset_iso = daily["sunset"][0]
 
         # Format times (API returns ISO 8601 format in local timezone)
         def format_time(iso_string: str) -> str:
@@ -118,8 +110,8 @@ def get_weather_data(city: str) -> dict:
             "precip_prob": round(avg_precip_prob),  # % chance next 6h
             "rainfall_inch": next_6h_rain,  # Total rain inches next 6h
             "snowfall_inch": next_6h_snow,  # Total snow inches next 6h
-            "sunrise": sunrise,
-            "sunset": sunset,
+            "sunrise": format_time(daily["sunrise"][0]),
+            "sunset": format_time(daily["sunset"][0]),
         }
 
         # Cache successful result
