@@ -79,7 +79,7 @@ def get_weather_data(city: str) -> dict:
         # Parse sunrise/sunset times (today's data is first in array)
         sunrise_iso = daily["sunrise"][0]
         sunset_iso = daily["sunset"][0]
-        
+
         # Format times (API returns ISO 8601 format in local timezone)
         def format_time(iso_string: str) -> str:
             """Convert ISO 8601 datetime to 12-hour format (e.g., '6:42 AM')."""
@@ -89,7 +89,7 @@ def get_weather_data(city: str) -> dict:
                 dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
                 hour = dt.hour
                 minute = dt.minute
-                
+
                 # Convert to 12-hour format
                 if hour == 0:
                     hour_12 = 12
@@ -103,7 +103,7 @@ def get_weather_data(city: str) -> dict:
                 else:
                     hour_12 = hour - 12
                     period = "PM"
-                
+
                 return f"{hour_12}:{minute:02d} {period}"
             except (ValueError, AttributeError):
                 return "--"
