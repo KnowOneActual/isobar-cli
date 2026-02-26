@@ -4,6 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 import requests
+from timezonefinder import TimezoneFinder
 
 CACHE_DIR = Path.home() / ".cache" / "isobar"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -13,6 +14,7 @@ def get_weather_data(city: str) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
     forecast including rain, snow, sunrise/sunset.
+    Timezone is resolved dynamically from lat/lon using timezonefinder.
     """
     cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}.json"
 
@@ -42,7 +44,11 @@ def get_weather_data(city: str) -> dict:
         region = location.get("admin1", location.get("country", ""))
         clean_city_name = f"{location['name']}, {region}".strip(", ")
 
-        # Updated URL with sunrise/sunset
+        # Resolve timezone dynamically from coordinates
+        tf = TimezoneFinder()
+        timezone = tf.timezone_at(lat=lat, lng=lon) or "UTC"
+
+        # Build weather URL with dynamic timezone
         weather_url = (
             f"https://api.open-meteo.com/v1/forecast?"
             f"latitude={lat}&longitude={lon}&"
@@ -52,7 +58,7 @@ def get_weather_data(city: str) -> dict:
             f"hourly=precipitation_probability,rain,snowfall&"
             f"temperature_unit=fahrenheit&"
             f"wind_speed_unit=mph&precipitation_unit=inch&"
-            f"timezone=America/Chicago&forecast_days=2"
+            f"timezone={timezone}&forecast_days=2"
         )
 
         weather_response = requests.get(weather_url)
