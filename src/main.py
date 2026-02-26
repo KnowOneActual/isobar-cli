@@ -18,35 +18,43 @@ def main(
     city: str = typer.Argument(
         None,
         help="City name (detects automatically if omitted)",
-    )
+    ),
+    city_option: str = typer.Option(
+        None,
+        "--city",
+        "-c",
+        help="City name as a flag (alternative to positional argument)",
+    ),
 ):
     """
     Get the weather and what it FEELS LIKE outside right now.
 
     Examples:
-        isobar                # Auto-detect location
-        isobar Chicago
-        isobar New_York       # ✅ Underscores for multi-word
-        isobar San_Francisco
+        isobar                    # Auto-detect location
+        isobar Chicago            # Positional argument
+        isobar --city Tokyo       # Flag style
+        isobar -c London          # Short flag
+        isobar New_York           # Underscores for multi-word cities
     """
+    # --city flag takes precedence over positional argument
+    resolved_city = city_option or city
 
-    # Auto-location if no city provided
-    if city is None:
+    # Auto-location if no city provided either way
+    if resolved_city is None:
         console.print("[dim]🌍 Detecting location...[/dim]")
-        city = get_auto_location()
+        resolved_city = get_auto_location()
 
-        if city is None:
-            # Auto-location failed, fall back to Chicago
+        if resolved_city is None:
             console.print(
                 "[yellow]⚠️  Could not detect location. "
                 "Using Chicago as default.[/yellow]"
             )
-            city = "Chicago"
+            resolved_city = "Chicago"
         else:
-            console.print(f"[dim]📍 Detected: {city}[/dim]")
+            console.print(f"[dim]📍 Detected: {resolved_city}[/dim]")
 
     # Convert New_York → "New York" and handle underscores
-    full_city = city.replace("_", " ")
+    full_city = resolved_city.replace("_", " ")
 
     weather = get_weather_data(full_city)
     if not weather:
