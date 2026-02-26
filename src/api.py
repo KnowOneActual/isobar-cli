@@ -74,14 +74,26 @@ def get_weather_data(city: str) -> dict:
                 return "--"
             try:
                 dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
-                return dt.strftime('%-I:%M %p')  # Unix/Mac format
+                hour = dt.hour
+                minute = dt.minute
+                
+                # Convert to 12-hour format
+                if hour == 0:
+                    hour_12 = 12
+                    period = "AM"
+                elif hour < 12:
+                    hour_12 = hour
+                    period = "AM"
+                elif hour == 12:
+                    hour_12 = 12
+                    period = "PM"
+                else:
+                    hour_12 = hour - 12
+                    period = "PM"
+                
+                return f"{hour_12}:{minute:02d} {period}"
             except (ValueError, AttributeError):
-                try:
-                    # Windows fallback
-                    dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
-                    return dt.strftime('%#I:%M %p')
-                except (ValueError, AttributeError):
-                    return "--"
+                return "--"
 
         result = {
             "city": clean_city_name,
