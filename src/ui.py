@@ -67,6 +67,8 @@ def display_weather(weather_data: dict):
     precip_prob = weather_data.get("precip_prob", 0)
     rainfall_inch = weather_data.get("rainfall_inch", 0)
     snowfall_inch = weather_data.get("snowfall_inch", 0)
+    sunrise = weather_data.get("sunrise", "--")
+    sunset = weather_data.get("sunset", "--")
 
     temp_color = get_temp_color(temp)
     feels_color = get_temp_color(feels_like)
@@ -113,13 +115,13 @@ def display_weather(weather_data: dict):
     if rainfall_inch > 0.01:
         table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
 
-    # Rain only if meaningful accumulation expected
-    if rainfall_inch > 0.01:
-        table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
-
     # Snow only if meaningful accumulation expected
     if snowfall_inch > 0.01:
         table.add_row("❄️", "Snow Expected:", f"~{snowfall_inch:.2f}\"")
+
+    # Sunrise/Sunset times
+    table.add_row("🌅", "Sunrise:", f"[yellow]{sunrise}[/yellow]")
+    table.add_row("🌇", "Sunset:", f"[orange1]{sunset}[/orange1]")
 
     console.print(table)
     print()  # Adds a blank line at the end for clean spacing
