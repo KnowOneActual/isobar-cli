@@ -8,10 +8,11 @@ import requests
 CACHE_DIR = Path.home() / ".cache" / "isobar"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def get_weather_data(city: str) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
-    forecast including rain and snow, plus sunrise/sunset times.
+    forecast including rain, snow, sunrise/sunset.
     """
     cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}.json"
 
@@ -41,8 +42,18 @@ def get_weather_data(city: str) -> dict:
         region = location.get("admin1", location.get("country", ""))
         clean_city_name = f"{location['name']}, {region}".strip(", ")
 
-        # Updated URL: adds daily sunrise/sunset + timezone info
-        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,wind_speed_10m,relative_humidity_2m,precipitation&hourly=precipitation_probability,rain,snowfall&daily=sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&forecast_days=2"
+        # Updated URL with sunrise/sunset
+        weather_url = (
+            f"https://api.open-meteo.com/v1/forecast?"
+            f"latitude={lat}&longitude={lon}&"
+            f"current=temperature_2m,apparent_temperature,wind_speed_10m,"
+            f"relative_humidity_2m,precipitation&"
+            f"daily=sunrise,sunset&"
+            f"hourly=precipitation_probability,rain,snowfall&"
+            f"temperature_unit=fahrenheit&"
+            f"wind_speed_unit=mph&precipitation_unit=inch&"
+            f"timezone=America/Chicago&forecast_days=2"
+        )
 
         weather_response = requests.get(weather_url)
         weather_response.raise_for_status()
@@ -51,16 +62,18 @@ def get_weather_data(city: str) -> dict:
         hourly = api_data["hourly"]
         daily = api_data["daily"]
 
+        # Sunrise/Sunset (today's local time)
+        sunrise = daily["sunrise"][0].split("T")[1][:5]  # HH:MM
+        sunset = daily["sunset"][0].split("T")[1][:5]    # HH:MM
+
         # Next 6 hours precip probability (average)
         next_6h_probs = hourly["precipitation_probability"][:6]
         avg_precip_prob = (
             sum(next_6h_probs) / len(next_6h_probs) if next_6h_probs else 0
         )
 
-        # Next 6 hours rainfall (total inches)
+        # Next 6 hours rainfall/snowfall (total inches)
         next_6h_rain = sum(hourly["rain"][:6])
-
-        # Next 6 hours snowfall (total inches)
         next_6h_snow = sum(hourly["snowfall"][:6])
 
         # Parse sunrise/sunset times (today's data is first in array)
@@ -105,8 +118,8 @@ def get_weather_data(city: str) -> dict:
             "precip_prob": round(avg_precip_prob),  # % chance next 6h
             "rainfall_inch": next_6h_rain,  # Total rain inches next 6h
             "snowfall_inch": next_6h_snow,  # Total snow inches next 6h
-            "sunrise": format_time(sunrise_iso),
-            "sunset": format_time(sunset_iso)
+            "sunrise": sunrise,
+            "sunset": sunset,
         }
 
         # Cache successful result
