@@ -8,6 +8,42 @@ from rich.table import Table
 console = Console()
 CACHE_DIR = Path.home() / ".cache" / "isobar"
 
+
+# WMO Weather interpretation codes -> (emoji, description)
+# https://open-meteo.com/en/docs
+WMO_CODES: dict[int, tuple[str, str]] = {
+    0:  ("☀️",  "Clear sky"),
+    1:  ("🌤️",  "Mainly clear"),
+    2:  ("⛅",  "Partly cloudy"),
+    3:  ("☁️",  "Overcast"),
+    45: ("🌫️",  "Foggy"),
+    48: ("🌫️",  "Rime fog"),
+    51: ("🌦️",  "Light drizzle"),
+    53: ("🌦️",  "Moderate drizzle"),
+    55: ("🌧️",  "Dense drizzle"),
+    61: ("🌧️",  "Slight rain"),
+    63: ("🌧️",  "Moderate rain"),
+    65: ("🌧️",  "Heavy rain"),
+    71: ("🌨️",  "Slight snow"),
+    73: ("🌨️",  "Moderate snow"),
+    75: ("❄️",  "Heavy snow"),
+    77: ("🌨️",  "Snow grains"),
+    80: ("🌦️",  "Slight showers"),
+    81: ("🌧️",  "Moderate showers"),
+    82: ("🌧️",  "Violent showers"),
+    85: ("🌨️",  "Slight snow showers"),
+    86: ("❄️",  "Heavy snow showers"),
+    95: ("⛈️",  "Thunderstorm"),
+    96: ("⛈️",  "Thunderstorm w/ hail"),
+    99: ("⛈️",  "Thunderstorm w/ heavy hail"),
+}
+
+
+def get_weather_icon(code: int) -> tuple[str, str]:
+    """Return (emoji, description) for a WMO weather code."""
+    return WMO_CODES.get(code, ("🌡️", "Unknown"))
+
+
 def get_temp_color(temp_val) -> str:
     """Returns a Rich color tag based on the temperature."""
     try:
@@ -23,6 +59,7 @@ def get_temp_color(temp_val) -> str:
         return "bold red"
     except (ValueError, TypeError):
         return "white"
+
 
 def get_precip_headline(weather_data: dict) -> str:
     """Generate a single-line comfort summary for precip decisions."""
@@ -51,6 +88,7 @@ def get_precip_headline(weather_data: dict) -> str:
 
     return ""
 
+
 def display_weather(weather_data: dict):
     """
     Renders the weather data in a visually pleasing terminal panel.
@@ -69,9 +107,11 @@ def display_weather(weather_data: dict):
     snowfall_inch = weather_data.get("snowfall_inch", 0)
     sunrise = weather_data.get("sunrise", "--")
     sunset = weather_data.get("sunset", "--")
+    weather_code = weather_data.get("weather_code", 0)
 
     temp_color = get_temp_color(temp)
     feels_color = get_temp_color(feels_like)
+    condition_icon, condition_desc = get_weather_icon(weather_code)
 
     # Cache timestamp (only if cached)
     if city != "Unknown Location":
@@ -98,6 +138,8 @@ def display_weather(weather_data: dict):
     table.add_column("Label", justify="left")
     table.add_column("Value", justify="right")
 
+    # Condition row at the top — sets the scene instantly
+    table.add_row(condition_icon, "Conditions:", f"[bold]{condition_desc}[/bold]")
     table.add_row("🌡️", "Temperature:", f"[{temp_color}]{temp}°F[/{temp_color}]")
     table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
     table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")

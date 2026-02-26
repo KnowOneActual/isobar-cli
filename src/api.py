@@ -13,7 +13,7 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 def get_weather_data(city: str) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
-    forecast including rain, snow, sunrise/sunset.
+    forecast including rain, snow, sunrise/sunset, and WMO weather code.
     Timezone is resolved dynamically from lat/lon using timezonefinder.
     """
     cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}.json"
@@ -48,12 +48,12 @@ def get_weather_data(city: str) -> dict:
         tf = TimezoneFinder()
         timezone = tf.timezone_at(lat=lat, lng=lon) or "UTC"
 
-        # Build weather URL with dynamic timezone
+        # Build weather URL with dynamic timezone and weather_code
         weather_url = (
             f"https://api.open-meteo.com/v1/forecast?"
             f"latitude={lat}&longitude={lon}&"
             f"current=temperature_2m,apparent_temperature,wind_speed_10m,"
-            f"relative_humidity_2m,precipitation&"
+            f"relative_humidity_2m,precipitation,weather_code&"
             f"daily=sunrise,sunset&"
             f"hourly=precipitation_probability,rain,snowfall&"
             f"temperature_unit=fahrenheit&"
@@ -113,6 +113,7 @@ def get_weather_data(city: str) -> dict:
             "wind_speed": current["wind_speed_10m"],
             "humidity": current["relative_humidity_2m"],
             "precipitation": current["precipitation"],
+            "weather_code": current.get("weather_code", 0),
             "precip_prob": round(avg_precip_prob),  # % chance next 6h
             "rainfall_inch": next_6h_rain,  # Total rain inches next 6h
             "snowfall_inch": next_6h_snow,  # Total snow inches next 6h
