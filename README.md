@@ -1,5 +1,11 @@
 # Isobar CLI
 
+![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
+![Version](https://img.shields.io/badge/version-0.4.3-blue)
+![Ruff](https://img.shields.io/badge/linting-ruff-purple)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 A terminal weather tool designed to give you a fast, clean sense of what the weather **feels like** outside — right now and for the week ahead. Built with Python and Rich.
 
 ## Philosophy
@@ -89,12 +95,14 @@ isobar -c Sydney -f
 | [ip-api.com](http://ip-api.com/) | Auto-location detection (free) |
 | [timezonefinder](https://github.com/jannikmi/timezonefinder) | Dynamic timezone from coordinates (offline) |
 | [Ruff](https://docs.astral.sh/ruff/) | Linting + formatting |
+| [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning (CI) |
 
 ## 📈 Project Status
 
 ✅ **Phase 1 Complete** — Caching + Auto-Location  
 ✅ **Phase 2 Complete** — Precipitation, Sunrise/Sunset, Condition Icons  
 ✅ **Phase 3 Complete** — 7-Day Forecast, Dynamic Timezone, `--city` flag  
+✅ **CI/CD** — Ruff lint + security audit on every push and PR  
 See [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md)
 
 ## 🤝 Contributing
