@@ -1,5 +1,6 @@
 import json
 import time
+from datetime import datetime
 from pathlib import Path
 
 from rich.console import Console
@@ -66,7 +67,6 @@ def get_precip_headline(weather_data: dict) -> str:
     precip_prob = weather_data.get("precip_prob", 0)
     rainfall = weather_data.get("rainfall_inch", 0)
     snowfall = weather_data.get("snowfall_inch", 0)
-
     total_precip = rainfall + snowfall
 
     if precip_prob < 30:
@@ -76,7 +76,6 @@ def get_precip_headline(weather_data: dict) -> str:
             return "Very low precip risk"
         return "Possible light precip"
     else:
-        # High chance (>60%)
         if snowfall > rainfall and snowfall > 0.25:
             return "Snowy conditions likely"
         elif rainfall > 0.75:
@@ -91,7 +90,7 @@ def get_precip_headline(weather_data: dict) -> str:
 
 def display_weather(weather_data: dict):
     """
-    Renders the weather data in a visually pleasing terminal panel.
+    Renders the current conditions weather card.
     """
     if not weather_data:
         console.print("[bold red]No weather data available.[/bold red]")
@@ -125,45 +124,92 @@ def display_weather(weather_data: dict):
                     minutes_ago = int((time.time() - timestamp) / 60)
                     console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
             except Exception:
-                pass  # Silently ignore cache issues
+                pass
 
     table = Table(
         title=f"\n[bold white]{city} Weather[/bold white]",
         show_header=False,
         box=None,
-        padding=(0, 1)
+        padding=(0, 1),
     )
-
     table.add_column("Icon", justify="center")
     table.add_column("Label", justify="left")
     table.add_column("Value", justify="right")
 
-    # Condition row at the top — sets the scene instantly
     table.add_row(condition_icon, "Conditions:", f"[bold]{condition_desc}[/bold]")
     table.add_row("🌡️", "Temperature:", f"[{temp_color}]{temp}°F[/{temp_color}]")
     table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
     table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")
     table.add_row("💧", "Humidity:", f"{humidity}%")
 
-    # Precip Chance + Headline (together!)
     headline = get_precip_headline(weather_data)
     precip_value = f"{precip_prob}% (6h)"
     if headline:
         precip_value += f" | [dim italic yellow]{headline}[/dim italic yellow]"
-
     table.add_row("☔", "Precip Chance:", precip_value)
 
-    # Rain only if meaningful accumulation expected
     if rainfall_inch > 0.01:
         table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
-
-    # Snow only if meaningful accumulation expected
     if snowfall_inch > 0.01:
         table.add_row("❄️", "Snow Expected:", f"~{snowfall_inch:.2f}\"")
 
-    # Sunrise/Sunset times
     table.add_row("🌅", "Sunrise:", f"[yellow]{sunrise}[/yellow]")
     table.add_row("🌇", "Sunset:", f"[orange1]{sunset}[/orange1]")
 
     console.print(table)
-    print()  # Adds a blank line at the end for clean spacing
+    print()
+
+
+def display_forecast(weather_data: dict):
+    """
+    Renders a 7-day forecast table below the current conditions card.
+    """
+    forecast = weather_data.get("forecast", [])
+    if not forecast:
+        console.print("[yellow]No forecast data available.[/yellow]")
+        return
+
+    city = weather_data.get("city", "Unknown Location")
+
+    table = Table(
+        title=f"[bold white]7-Day Forecast — {city}[/bold white]",
+        show_header=True,
+        header_style="bold dim",
+        box=None,
+        padding=(0, 2),
+    )
+    table.add_column("Day", justify="left", min_width=10)
+    table.add_column("", justify="center")   # emoji
+    table.add_column("Conditions", justify="left", min_width=18)
+    table.add_column("High", justify="right")
+    table.add_column("Low", justify="right")
+    table.add_column("Rain%", justify="right")
+
+    for i, day in enumerate(forecast):
+        # Parse date string to get weekday name
+        try:
+            dt = datetime.strptime(day["date"], "%Y-%m-%d")
+            day_label = "Today" if i == 0 else dt.strftime("%a %b %-d")
+        except ValueError:
+            day_label = day["date"]
+
+        icon, desc = get_weather_icon(int(day["weather_code"]))
+        high = day["high"]
+        low = day["low"]
+        precip = int(day["precip_prob"])
+
+        high_color = get_temp_color(high)
+        low_color = get_temp_color(low)
+        rain_color = "cyan" if precip >= 60 else "yellow" if precip >= 30 else "dim"
+
+        table.add_row(
+            f"[bold]{day_label}[/bold]" if i == 0 else day_label,
+            icon,
+            desc,
+            f"[{high_color}]{high}°F[/{high_color}]",
+            f"[{low_color}]{low}°F[/{low_color}]",
+            f"[{rain_color}]{precip}%[/{rain_color}]",
+        )
+
+    console.print(table)
+    print()

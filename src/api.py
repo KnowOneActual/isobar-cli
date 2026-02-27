@@ -13,7 +13,8 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 def get_weather_data(city: str) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
-    forecast including rain, snow, sunrise/sunset, and WMO weather code.
+    forecast including rain, snow, sunrise/sunset, WMO weather code, and
+    a 7-day daily forecast.
     Timezone is resolved dynamically from lat/lon using timezonefinder.
     """
     cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}.json"
@@ -28,7 +29,10 @@ def get_weather_data(city: str) -> dict:
         except (json.JSONDecodeError, KeyError, ValueError):
             pass  # Cache invalid, proceed to API
 
-    geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1&format=json"
+    geo_url = (
+        f"https://geocoding-api.open-meteo.com/v1/search"
+        f"?name={city}&count=1&format=json"
+    )
 
     try:
         geo_response = requests.get(geo_url)
@@ -48,17 +52,18 @@ def get_weather_data(city: str) -> dict:
         tf = TimezoneFinder()
         timezone = tf.timezone_at(lat=lat, lng=lon) or "UTC"
 
-        # Build weather URL with dynamic timezone and weather_code
+        # Build weather URL — 7-day daily forecast + current conditions
         weather_url = (
             f"https://api.open-meteo.com/v1/forecast?"
             f"latitude={lat}&longitude={lon}&"
             f"current=temperature_2m,apparent_temperature,wind_speed_10m,"
             f"relative_humidity_2m,precipitation,weather_code&"
-            f"daily=sunrise,sunset&"
+            f"daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,"
+            f"weather_code,precipitation_probability_max&"
             f"hourly=precipitation_probability,rain,snowfall&"
             f"temperature_unit=fahrenheit&"
             f"wind_speed_unit=mph&precipitation_unit=inch&"
-            f"timezone={timezone}&forecast_days=2"
+            f"timezone={timezone}&forecast_days=7"
         )
 
         weather_response = requests.get(weather_url)
@@ -84,11 +89,9 @@ def get_weather_data(city: str) -> dict:
             if not iso_string:
                 return "--"
             try:
-                dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
+                dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
                 hour = dt.hour
                 minute = dt.minute
-
-                # Convert to 12-hour format
                 if hour == 0:
                     hour_12 = 12
                     period = "AM"
@@ -101,10 +104,23 @@ def get_weather_data(city: str) -> dict:
                 else:
                     hour_12 = hour - 12
                     period = "PM"
-
                 return f"{hour_12}:{minute:02d} {period}"
             except (ValueError, AttributeError):
                 return "--"
+
+        # Build 7-day forecast list (index 0 = today)
+        num_days = len(daily["time"])
+        forecast = []
+        for i in range(num_days):
+            forecast.append(
+                {
+                    "date": daily["time"][i],  # YYYY-MM-DD
+                    "high": daily["temperature_2m_max"][i],
+                    "low": daily["temperature_2m_min"][i],
+                    "weather_code": daily["weather_code"][i],
+                    "precip_prob": daily["precipitation_probability_max"][i] or 0,
+                }
+            )
 
         result = {
             "city": clean_city_name,
@@ -119,6 +135,7 @@ def get_weather_data(city: str) -> dict:
             "snowfall_inch": next_6h_snow,  # Total snow inches next 6h
             "sunrise": format_time(daily["sunrise"][0]),
             "sunset": format_time(daily["sunset"][0]),
+            "forecast": forecast,  # List of 7 daily dicts
         }
 
         # Cache successful result

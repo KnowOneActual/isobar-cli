@@ -3,7 +3,7 @@ from rich.console import Console
 
 from src.api import get_weather_data
 from src.location import get_auto_location
-from src.ui import display_weather
+from src.ui import display_forecast, display_weather
 
 app = typer.Typer(
     help=(
@@ -25,16 +25,24 @@ def main(
         "-c",
         help="City name as a flag (alternative to positional argument)",
     ),
+    forecast: bool = typer.Option(
+        False,
+        "--forecast",
+        "-f",
+        help="Show 7-day forecast after current conditions",
+    ),
 ):
     """
     Get the weather and what it FEELS LIKE outside right now.
 
     Examples:
-        isobar                    # Auto-detect location
-        isobar Chicago            # Positional argument
-        isobar --city Tokyo       # Flag style
-        isobar -c London          # Short flag
-        isobar New_York           # Underscores for multi-word cities
+        isobar                        # Auto-detect location
+        isobar Chicago                # Positional argument
+        isobar --city Tokyo           # Flag style
+        isobar -c London              # Short flag
+        isobar New_York               # Underscores for multi-word cities
+        isobar --forecast             # Current + 7-day outlook
+        isobar --city Paris -f        # Paris with 7-day forecast
     """
     # --city flag takes precedence over positional argument
     resolved_city = city_option or city
@@ -63,6 +71,9 @@ def main(
         raise typer.Exit(code=1)
 
     display_weather(weather)
+
+    if forecast:
+        display_forecast(weather)
 
 
 if __name__ == "__main__":
