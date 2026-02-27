@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-02-26
+
+### Added
+- **7-Day Forecast** - Pass `--forecast` or `-f` to display a full week outlook below the current conditions card. Each day shows the weekday, a WMO condition icon, plain-English description, color-coded high/low temps, and daily rain probability. Rain% is color-coded: cyan (≥60%), yellow (≥30%), dim (dry).
+- **`--forecast` / `-f` flag** - New CLI option; composable with `--city` (e.g., `isobar --city Paris -f`).
+
+### Changed
+- API now fetches 7 days of daily data (`forecast_days=7`) including `temperature_2m_max`, `temperature_2m_min`, `weather_code`, and `precipitation_probability_max`.
+- Stale city caches from before `0.4.3` will show `No forecast data available` until cleared (`rm ~/.cache/isobar/<city>.json`).
+
 ## [0.4.2] - 2026-02-26
 
 ### Added
