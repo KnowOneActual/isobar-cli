@@ -10,7 +10,7 @@ A terminal weather tool designed to give you a fast, clean sense of what the wea
 
 ## Philosophy
 
-Isobar CLI answers a simple question: **"What does it feel like outside right now?"**
+Isobar CLI answers a simple question: **"What does it feel like outside right now, and how do I prepare to be outside?"**
 
 Most weather apps overwhelm you with data. Isobar strips away everything except what matters when you're deciding whether to grab a jacket.
 
