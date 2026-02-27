@@ -58,7 +58,7 @@ Everything here is optional until it proves it actually improves that mission.
 - [x] **pytest test suite** — Unit tests for `format_time()`, `get_weather_icon()`, `get_precip_headline()`, `get_temp_color()`, and the WMO code mapper.
 - [x] **API response mocking** — Test `get_weather_data()` against fixture JSON without hitting the live API.
 - [x] **CI test job** — Add a `test` job to `ci.yml` that runs `pytest` on every push alongside lint and security.
-- [ ] **Code coverage badge** — Add `codecov` or `coverage.py` report to README.
+- [x] **Code coverage badge** — Add `codecov` or `coverage.py` report to README.
 
 ---
 
