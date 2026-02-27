@@ -95,6 +95,8 @@ isobar -c Sydney -f
 | [Open-Meteo](https://open-meteo.com/) | Weather + forecast data (free, no key) |
 | [ip-api.com](http://ip-api.com/) | Auto-location detection (free) |
 | [timezonefinder](https://github.com/jannikmi/timezonefinder) | Dynamic timezone from coordinates (offline) |
+| [pytest](https://docs.pytest.org/) | Unit testing framework |
+| [requests-mock](https://requests-mock.readthedocs.io/) | Mocking for API testing |
 | [Ruff](https://docs.astral.sh/ruff/) | Linting + formatting |
 | [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning (CI) |
 
