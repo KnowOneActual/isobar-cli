@@ -59,13 +59,17 @@ If you’re unsure, open a small issue first and describe the problem and why it
    - Keep PRs small and single-purpose.
    - If you find unrelated cleanups, either keep them minimal or send them as a separate PR.
 
-4. **Run basic checks**
+4. **Run tests & checks**
    - Ensure the CLI still runs:
      ```bash
-     pip install -e .
+     pip install -e ".[test]"
      isobar "Chicago"
      ```
-   - Add or update tests if they exist for the area you touched.
+   - Run the test suite:
+     ```bash
+     pytest
+     ```
+   - For detailed instructions on writing and running tests, see [docs/TESTING.md](docs/TESTING.md).
 
 5. **Open a Pull Request**
    - Clearly state:
