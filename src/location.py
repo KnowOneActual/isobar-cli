@@ -1,4 +1,5 @@
 """Location detection module for automatic city detection via IP."""
+
 from typing import Optional
 
 import requests
@@ -9,8 +10,7 @@ def get_auto_location() -> Optional[str]:
     try:
         headers = {
             "User-Agent": (
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                "AppleWebKit/537.36"
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
             )
         }
         response = requests.get(

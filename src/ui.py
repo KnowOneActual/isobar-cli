@@ -13,30 +13,30 @@ CACHE_DIR = Path.home() / ".cache" / "isobar"
 # WMO Weather interpretation codes -> (emoji, description)
 # https://open-meteo.com/en/docs
 WMO_CODES: dict[int, tuple[str, str]] = {
-    0:  ("☀️",  "Clear sky"),
-    1:  ("🌤️",  "Mainly clear"),
-    2:  ("⛅",  "Partly cloudy"),
-    3:  ("☁️",  "Overcast"),
-    45: ("🌫️",  "Foggy"),
-    48: ("🌫️",  "Rime fog"),
-    51: ("🌦️",  "Light drizzle"),
-    53: ("🌦️",  "Moderate drizzle"),
-    55: ("🌧️",  "Dense drizzle"),
-    61: ("🌧️",  "Slight rain"),
-    63: ("🌧️",  "Moderate rain"),
-    65: ("🌧️",  "Heavy rain"),
-    71: ("🌨️",  "Slight snow"),
-    73: ("🌨️",  "Moderate snow"),
-    75: ("❄️",  "Heavy snow"),
-    77: ("🌨️",  "Snow grains"),
-    80: ("🌦️",  "Slight showers"),
-    81: ("🌧️",  "Moderate showers"),
-    82: ("🌧️",  "Violent showers"),
-    85: ("🌨️",  "Slight snow showers"),
-    86: ("❄️",  "Heavy snow showers"),
-    95: ("⛈️",  "Thunderstorm"),
-    96: ("⛈️",  "Thunderstorm w/ hail"),
-    99: ("⛈️",  "Thunderstorm w/ heavy hail"),
+    0: ("☀️", "Clear sky"),
+    1: ("🌤️", "Mainly clear"),
+    2: ("⛅", "Partly cloudy"),
+    3: ("☁️", "Overcast"),
+    45: ("🌫️", "Foggy"),
+    48: ("🌫️", "Rime fog"),
+    51: ("🌦️", "Light drizzle"),
+    53: ("🌦️", "Moderate drizzle"),
+    55: ("🌧️", "Dense drizzle"),
+    61: ("🌧️", "Slight rain"),
+    63: ("🌧️", "Moderate rain"),
+    65: ("🌧️", "Heavy rain"),
+    71: ("🌨️", "Slight snow"),
+    73: ("🌨️", "Moderate snow"),
+    75: ("❄️", "Heavy snow"),
+    77: ("🌨️", "Snow grains"),
+    80: ("🌦️", "Slight showers"),
+    81: ("🌧️", "Moderate showers"),
+    82: ("🌧️", "Violent showers"),
+    85: ("🌨️", "Slight snow showers"),
+    86: ("❄️", "Heavy snow showers"),
+    95: ("⛈️", "Thunderstorm"),
+    96: ("⛈️", "Thunderstorm w/ hail"),
+    99: ("⛈️", "Thunderstorm w/ heavy hail"),
 }
 
 
@@ -149,9 +149,9 @@ def display_weather(weather_data: dict):
     table.add_row("☔", "Precip Chance:", precip_value)
 
     if rainfall_inch > 0.01:
-        table.add_row("🌧️", "Rain Expected:", f"~{rainfall_inch:.2f}\"")
+        table.add_row("🌧️", "Rain Expected:", f'~{rainfall_inch:.2f}"')
     if snowfall_inch > 0.01:
-        table.add_row("❄️", "Snow Expected:", f"~{snowfall_inch:.2f}\"")
+        table.add_row("❄️", "Snow Expected:", f'~{snowfall_inch:.2f}"')
 
     table.add_row("🌅", "Sunrise:", f"[yellow]{sunrise}[/yellow]")
     table.add_row("🌇", "Sunset:", f"[orange1]{sunset}[/orange1]")
@@ -179,7 +179,7 @@ def display_forecast(weather_data: dict):
         padding=(0, 2),
     )
     table.add_column("Day", justify="left", min_width=10)
-    table.add_column("", justify="center")   # emoji
+    table.add_column("", justify="center")  # emoji
     table.add_column("Conditions", justify="left", min_width=18)
     table.add_column("High", justify="right")
     table.add_column("Low", justify="right")

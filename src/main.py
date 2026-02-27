@@ -6,9 +6,7 @@ from src.location import get_auto_location
 from src.ui import display_forecast, display_weather
 
 app = typer.Typer(
-    help=(
-        "Terminal weather focused on what it FEELS LIKE outside right now."
-    )
+    help=("Terminal weather focused on what it FEELS LIKE outside right now.")
 )
 console = Console()
 
