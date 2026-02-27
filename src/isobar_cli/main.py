@@ -1,9 +1,9 @@
 import typer
 from rich.console import Console
 
-from src.api import get_weather_data
-from src.location import get_auto_location
-from src.ui import display_forecast, display_weather
+from isobar_cli.api import get_weather_data
+from isobar_cli.location import get_auto_location
+from isobar_cli.ui import display_forecast, display_weather
 
 app = typer.Typer(
     help=("Terminal weather focused on what it FEELS LIKE outside right now.")

@@ -1,7 +1,8 @@
 # Isobar CLI
 
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
-![Version](https://img.shields.io/badge/version-0.4.3-blue)
+![Coverage](https://img.shields.io/badge/coverage-34%25-orange)
+![Version](https://img.shields.io/badge/version-0.4.4-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -94,6 +95,8 @@ isobar -c Sydney -f
 | [Open-Meteo](https://open-meteo.com/) | Weather + forecast data (free, no key) |
 | [ip-api.com](http://ip-api.com/) | Auto-location detection (free) |
 | [timezonefinder](https://github.com/jannikmi/timezonefinder) | Dynamic timezone from coordinates (offline) |
+| [pytest](https://docs.pytest.org/) | Unit testing framework |
+| [requests-mock](https://requests-mock.readthedocs.io/) | Mocking for API testing |
 | [Ruff](https://docs.astral.sh/ruff/) | Linting + formatting |
 | [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning (CI) |
 
