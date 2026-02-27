@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Ruff Lint** — `ruff check .` enforces code style, catches unused variables, import order, and bugbear rules.
   - **Security Audit** — `pip-audit` scans all dependencies for known CVEs.
 - **README Badges** — CI status (live from GitHub Actions), version, ruff, Python 3.8+, and MIT license badges added to the README header.
+- **Initial Test Suite** — Added `pytest` and `requests-mock` setup with unit tests for `api.py` and `location.py` in the `tests/` directory.
+
+### Changed
+- **Src Layout Refactor** — Moved source files from `src/` to `src/isobar_cli/` and updated `pyproject.toml` to follow modern Python packaging standards.
+- **Dependency Management** — Added `[project.optional-dependencies]` for testing (`pip install ".[test]"`).
+
+### Fixed
+- **Repository Cleanup** — Removed legacy build artifacts (`build/`, `*.egg-info/`, `.ruff_cache/`) and unified the project structure.
 
 ## [0.4.3] - 2026-02-26
 

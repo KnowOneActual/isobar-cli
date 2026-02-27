@@ -17,11 +17,18 @@ dependencies = [
 ]
 requires-python = ">=3.8"
 
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "requests-mock>=1.11.0",
+]
+
 [project.scripts]
-isobar = "src.main:app"  # This allows you to type 'isobar' in the terminal to run it
+isobar = "isobar_cli.main:app"  # This allows you to type 'isobar' in the terminal to run it
 
 [tool.setuptools]
-packages = ["src"]
+package-dir = {"" = "src"}
+packages = ["isobar_cli"]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
