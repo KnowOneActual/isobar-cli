@@ -6,7 +6,7 @@
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A terminal weather tool designed to give you a fast, clean sense of what the weather **feels like** outside — right now and for the week ahead. Built with Python and Rich.
+A terminal weather tool designed to give you a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
 
 ## Philosophy
 
