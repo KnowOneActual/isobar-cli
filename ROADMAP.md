@@ -10,101 +10,90 @@ Everything here is optional until it proves it actually improves that mission.
 
 ---
 
-## Phase 1: Speed & Flow (COMPLETE ✅)
+## Phase 1: Speed & Flow ✅ COMPLETE
 
 **Goal:** Make the existing experience faster and more convenient, without changing what Isobar is.
 
-- [X] **Local Caching (≈ 15 minutes)**  
-       Cache the last successful response per location to: - Avoid hammering the API on repeated checks. - Make repeated calls feel instant when conditions haven't changed much.  
-       This will only ship if it delivers noticeable UX gains over the current Open-Meteo latency.
-
-- [X] **Auto-Location (optional flag or default)**  
-       Allow running `isobar` with no city to use current IP-based location.  
-       Must: - Fail gracefully with a clear message. - Never require config files or accounts.
+- [x] **Local Caching (15 minutes)** — Cache per city in `~/.cache/isobar/`. Avoids hammering the API; repeat calls feel instant.
+- [x] **Auto-Location** — Run `isobar` with no arguments to detect city via IP. Fails gracefully with a clear message; no config files required.
 
 ---
 
-## Phase 2: Deeper Comfort Context
+## Phase 2: Deeper Comfort Context ✅ COMPLETE
 
-**Goal:** Add _a bit more_ information that directly informs comfort, without turning into a dashboard.
+**Goal:** Add information that directly informs comfort decisions, without turning into a dashboard.
 
-- [ ] **Rain / Snow / Cloud Coverage**
-> **In Progress**
-       : Show a simple percentage of rain, snow (expanded currently), and cloud coverage for the current location.
-
-- [ ] **Air Quality Index (AQI)**  
-       Show a simple AQI metric and qualitative label (e.g., "Good", "Moderate") for the current location.
-
-- [ ] **Sunrise / Sunset Times**  
-       Add sunrise and sunset to the readout so users can quickly gauge remaining daylight.
-
-Any new metric added here must answer:  
-**"Would I make a different decision about going outside because of this?"**
+- [x] **Precipitation Probability** — Next 6h rain chance (%) with a plain-English comfort headline ("Dry conditions expected", "Heavy rain likely", etc.).
+- [x] **Rain & Snow Totals** — Next 6h rainfall/snowfall in inches.
+- [x] **Sunrise & Sunset Times** — Shown in the city's local timezone (not the host machine's). Uses `timezonefinder` offline — no API key needed.
 
 ---
 
-## Phase 3: Visual Communication & Forecasting
+## Phase 3: Visual Communication & Forecasting ✅ COMPLETE
 
-**Goal:** Improve how information is communicated, not how much information there is.
+**Goal:** Improve how information is communicated, not how much.
 
-- [ ] **ASCII / Text Weather Icons**  
-       Small text-based icons that reinforce current conditions (sun, rain, snow, clouds).  
-       Must: - Be legible in typical terminal setups. - Add clarity, not visual noise.
+- [x] **Weather Condition Icons** — WMO weather code mapped to emoji + plain-English description (e.g., `☀️ Clear sky`, `🌨️ Moderate snow`, `⛈️ Thunderstorm`). Covers all 23 standard WMO codes. Appears at the top of the card.
+- [x] **7-Day Forecast (`--forecast` / `-f`)** — Full week outlook with per-day condition icon, high/low temps (color-coded), and rain %. Default command stays focused on "right now".
+- [x] **`--city` / `-c` flag** — City can be passed as a named option or positional argument interchangeably.
+- [x] **Dynamic Timezone Detection** — Timezone resolved from coordinates; sunrise/sunset always accurate for the queried city.
 
-- [ ] **Mini Forecast (opt-in flag)**  
-       A short, optional forecast (next few hours or days) exposed via a flag like:
-      `bash
-    isobar "Chicago" --mini-forecast
-    `
-      The default command should remain focused on "right now".
+---
 
-- [ ] **Subtle Visual Enhancements**  
-       Small tweaks (spacing, emphasis, color choices) that make the card clearer without adding busy-ness.
+## Phase 4: Quality & Trust ✅ COMPLETE
+
+**Goal:** Make the project safe to contribute to and easy to trust.
+
+- [x] **GitHub Actions CI** — Automated `ruff check` (lint) + `pip-audit` (security scan) on every push and pull request to `main`.
+- [x] **README Badges** — Live CI status, version, ruff, Python 3.8+, and MIT license badges.
+- [x] **Ruff Linting** — Full rule set enforced (pycodestyle, pyflakes, isort, bugbear, comprehensions, pyupgrade).
+- [x] **Keep a Changelog** — Every release documented with dated version entries.
+
+---
+
+## Phase 5: Tests & Reliability (Next)
+
+**Goal:** Ensure correctness survives future changes.
+
+- [ ] **pytest test suite** — Unit tests for `format_time()`, `get_weather_icon()`, `get_precip_headline()`, `get_temp_color()`, and the WMO code mapper.
+- [ ] **API response mocking** — Test `get_weather_data()` against fixture JSON without hitting the live API.
+- [ ] **CI test job** — Add a `test` job to `ci.yml` that runs `pytest` on every push alongside lint and security.
+- [ ] **Code coverage badge** — Add `codecov` or `coverage.py` report to README.
 
 ---
 
 ## Nice to Have (Carefully Considered)
 
-Ideas that could be fun but are not core to the mission. These will only be implemented if they **don't compromise simplicity** and there is real demand.
+Ideas that could be useful but are not core to the current mission. Will only ship if they don't compromise simplicity.
 
-- [ ] **Animated Weather Icons**  
-       Lightweight ASCII animations that run only when explicitly requested.
-
-- [ ] **Colorful Weather Icons**  
-       Tasteful use of color that remains readable on common background themes.
+- [ ] **Celsius / metric units flag** — `--metric` for non-Fahrenheit users.
+- [ ] **Hourly outlook** — Next 12h temperature curve, opt-in via `--hourly`.
+- [ ] **Multiple cities** — `isobar Chicago London Tokyo` side-by-side comparison.
+- [ ] **Shell completion** — Tab-complete city names from cache history.
 
 ---
 
-## Future Roadmap (Highly Skeptical)
+## Future (Highly Skeptical)
 
-These are **not planned** features. They're noted here primarily to say:  
-"Not unless there's a very strong reason."
+Not planned. Noted here to say: *"Not unless there's a very strong reason."*
 
-- [ ] **Customizable Units**  
-       Might ship if enough non-Fahrenheit users adopt Isobar.
-
-- [ ] **Multi-Language Support**  
-       Might ship if enough non-English speakers adopt Isobar. It's not a priority.
-
-- [ ] **Multiple Cities in One Run**  
-       	It might be shipped if enough users are interested in checking multiple locations at once. However, I'm unsure whether this feature would be useful enough for many people to spend time on.
-
-- [ ] **Customization Surface (colors, layout, icons, fonts, backgrounds, themes, etc.)**
+- [ ] **Multi-language support**
+- [ ] **Customization surface** (colors, themes, layouts)
+- [ ] **Animated icons**
+- [ ] **Push notifications / alerts**
 
 If any of these are ever considered, they must:
-
 1. Not require config files for basic use.
-2. Keep `isobar <city>` simple and uncluttered.
+2. Keep `isobar` simple and uncluttered.
 3. Justify themselves in terms of comfort-understanding, not aesthetics alone.
 
 ---
 
-## How to Use This Roadmap 
+## How to Use This Roadmap
 
 If you're proposing a change:
-
-- Point to where it fits (Phase 1/2/3, Nice to Have, or Future).
+- Point to where it fits (Phase 1–5, Nice to Have, or Future).
 - Explain why it deserves to move from "Future" to a real phase.
-- Be explicit about what you'd remove, not just what you'd add.
+- Be explicit about what you'd **remove**, not just what you'd add.
 
-> The roadmap is a **guardrail against scope creep**, not a promise that everything listed here will ship.
+> The roadmap is a **guardrail against scope creep**, not a promise that everything listed will ship.
