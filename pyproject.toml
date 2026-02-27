@@ -75,8 +75,7 @@ select = [
     "C4",  # flake8-comprehensions
     "UP",  # pyupgrade
 ]
-lint.ignore = ["E501"]
-ignore = []
+ignore = ["E501"]
 
 [tool.ruff.format]
 quote-style = "double"
