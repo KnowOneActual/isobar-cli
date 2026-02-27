@@ -42,3 +42,21 @@ jobs:
 
       - name: Run pip-audit
         run: pip-audit --requirement <(pip install . --dry-run -q 2>&1 | grep -v '^\s' || true) || pip-audit
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install .[test]
+
+      - name: Run pytest
+        run: pytest
