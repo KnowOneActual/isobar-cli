@@ -10,14 +10,15 @@ CACHE_DIR = Path.home() / ".cache" / "isobar"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def get_weather_data(city: str) -> dict:
+def get_weather_data(city: str, metric: bool = False) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
     forecast including rain, snow, sunrise/sunset, WMO weather code, and
     a 7-day daily forecast.
     Timezone is resolved dynamically from lat/lon using timezonefinder.
     """
-    cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}.json"
+    unit_suffix = "_metric" if metric else "_imperial"
+    cache_file = CACHE_DIR / f"{city.lower().replace(' ', '_')}{unit_suffix}.json"
 
     # Check cache first
     if cache_file.exists():
@@ -53,6 +54,10 @@ def get_weather_data(city: str) -> dict:
         timezone = tf.timezone_at(lat=lat, lng=lon) or "UTC"
 
         # Build weather URL — 7-day daily forecast + current conditions
+        temp_unit = "celsius" if metric else "fahrenheit"
+        wind_unit = "kmh" if metric else "mph"
+        precip_unit = "mm" if metric else "inch"
+
         weather_url = (
             f"https://api.open-meteo.com/v1/forecast?"
             f"latitude={lat}&longitude={lon}&"
@@ -61,8 +66,8 @@ def get_weather_data(city: str) -> dict:
             f"daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,"
             f"weather_code,precipitation_probability_max&"
             f"hourly=precipitation_probability,rain,snowfall&"
-            f"temperature_unit=fahrenheit&"
-            f"wind_speed_unit=mph&precipitation_unit=inch&"
+            f"temperature_unit={temp_unit}&"
+            f"wind_speed_unit={wind_unit}&precipitation_unit={precip_unit}&"
             f"timezone={timezone}&forecast_days=7"
         )
 
@@ -131,11 +136,16 @@ def get_weather_data(city: str) -> dict:
             "precipitation": current["precipitation"],
             "weather_code": current.get("weather_code", 0),
             "precip_prob": round(avg_precip_prob),  # % chance next 6h
-            "rainfall_inch": next_6h_rain,  # Total rain inches next 6h
-            "snowfall_inch": next_6h_snow,  # Total snow inches next 6h
+            "rainfall": next_6h_rain,  # Total rain next 6h
+            "snowfall": next_6h_snow,  # Total snow next 6h
             "sunrise": format_time(daily["sunrise"][0]),
             "sunset": format_time(daily["sunset"][0]),
             "forecast": forecast,  # List of 7 daily dicts
+            "units": {
+                "temp": "°C" if metric else "°F",
+                "wind": "km/h" if metric else "mph",
+                "precip": "mm" if metric else "in",
+            },
         }
 
         # Cache successful result

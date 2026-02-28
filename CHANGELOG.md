@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-02-28
+
+### Added
+- **Metric Unit Support** — Pass `--metric` or `-m` to display weather in Celsius, km/h, and mm.
+- **Unit-Aware Color Coding** — Temperature color-coding thresholds automatically adjust for Celsius (e.g., 0°C is cyan, 20°C is green).
+- **Comprehensive Test Suite** — Expanded `pytest` coverage to 73%:
+  - **`test_main.py`** — New CLI integration tests using `typer.testing.CliRunner`.
+  - **Metric Tests** — Unit tests for metric unit API requests and UI rendering.
+  - **Cache Isolation** — Added a `pytest` fixture to mock `CACHE_DIR`, preventing tests from being affected by or polluting the local user cache.
+
+### Changed
+- **API Results** — Added a `units` metadata dictionary to the weather data structure to track display units.
+- **Cache Strategy** — Cache files now include a unit suffix (`_metric.json` or `_imperial.json`) to allow toggling between unit systems without waiting for the cache to expire.
+
+### Fixed
+- **Test Reliability** — Fixed a bug where `test_get_weather_data_success` would fail if a local cache file existed for Chicago.
+- **UI Logic** — Standardized internal keys for rainfall and snowfall (`rainfall_inch` → `rainfall`) to support both unit systems.
+
 ## [0.4.4] - 2026-02-26
 
 ### Added

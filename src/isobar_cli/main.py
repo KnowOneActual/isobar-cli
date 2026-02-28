@@ -29,6 +29,12 @@ def main(
         "-f",
         help="Show 7-day forecast after current conditions",
     ),
+    metric: bool = typer.Option(
+        False,
+        "--metric",
+        "-m",
+        help="Show weather in metric units (Celsius, km/h, mm)",
+    ),
 ):
     """
     Get the weather and what it FEELS LIKE outside right now.
@@ -41,6 +47,7 @@ def main(
         isobar New_York               # Underscores for multi-word cities
         isobar --forecast             # Current + 7-day outlook
         isobar --city Paris -f        # Paris with 7-day forecast
+        isobar --metric               # Metric units
     """
     # --city flag takes precedence over positional argument
     resolved_city = city_option or city
@@ -62,7 +69,7 @@ def main(
     # Convert New_York → "New York" and handle underscores
     full_city = resolved_city.replace("_", " ")
 
-    weather = get_weather_data(full_city)
+    weather = get_weather_data(full_city, metric=metric)
     if not weather:
         console.print(f"[bold red]❌ '{full_city}' not found.[/bold red]")
         console.print("[dim]Try: Chicago, New_York, London, Paris[/dim]")

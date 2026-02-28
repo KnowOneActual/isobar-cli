@@ -66,7 +66,7 @@ Everything here is optional until it proves it actually improves that mission.
 
 Ideas that could be useful but are not core to the current mission. Will only ship if they don't compromise simplicity.
 
-- [ ] **Celsius / metric units flag** — `--metric` for non-Fahrenheit users.
+- [x] **Celsius / metric units flag** — `--metric` for non-Fahrenheit users.
 - [ ] **Hourly outlook** — Next 12h temperature curve, opt-in via `--hourly`.
 - [ ] **Multiple cities** — `isobar Chicago London Tokyo` side-by-side comparison.
 - [ ] **Shell completion** — Tab-complete city names from cache history.

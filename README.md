@@ -32,6 +32,7 @@ Most weather apps overwhelm you with data. Isobar strips away everything except 
 - **Precipitation Forecast** — Next 6h rain/snow chance + totals
 - **Smart Caching** — 15-min cache per city (`~/.cache/isobar/`)
 - **Color-Coded Temps** — Cyan → Blue → Green → Yellow → Red
+- **Metric Support** — `--metric` or `-m` for Celsius, km/h, and mm
 - **No API Keys** — Free Open-Meteo + ip-api.com
 - **Zero Config** — Works instantly after `pip install .`
 
@@ -60,6 +61,11 @@ isobar --forecast
 isobar -f
 isobar --city Paris --forecast
 isobar -c Sydney -f
+
+# Metric units (Celsius, km/h, mm)
+isobar --metric
+isobar -m
+isobar Tokyo -m
 ```
 
 ## 🖥️ Example Output

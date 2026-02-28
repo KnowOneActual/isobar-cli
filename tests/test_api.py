@@ -1,4 +1,13 @@
+import pytest
+
+from isobar_cli import api
 from isobar_cli.api import get_weather_data
+
+
+@pytest.fixture(autouse=True)
+def mock_cache_dir(tmp_path, monkeypatch):
+    """Ensure tests always use a clean, temporary cache directory."""
+    monkeypatch.setattr(api, "CACHE_DIR", tmp_path)
 
 
 def test_get_weather_data_success(requests_mock):
@@ -54,6 +63,61 @@ def test_get_weather_data_success(requests_mock):
     assert result["temp"] == 37.1
     assert result["sunrise"] == "6:29 AM"
     assert result["sunset"] == "5:37 PM"
+    assert result["units"]["temp"] == "°F"
+
+
+def test_get_weather_data_metric(requests_mock):
+    # Mock Geocoding API
+    geo_data = {
+        "results": [
+            {
+                "name": "London",
+                "latitude": 51.5,
+                "longitude": -0.12,
+                "admin1": "England",
+                "country": "United Kingdom",
+            }
+        ]
+    }
+    requests_mock.get(
+        "https://geocoding-api.open-meteo.com/v1/search?name=London&count=1&format=json",
+        json=geo_data,
+    )
+
+    # Mock Weather API (Metric)
+    weather_data = {
+        "current": {
+            "temperature_2m": 12.5,
+            "apparent_temperature": 10.2,
+            "wind_speed_10m": 15.0,
+            "relative_humidity_2m": 80,
+            "precipitation": 0,
+            "weather_code": 3,
+        },
+        "daily": {
+            "time": ["2026-02-26"],
+            "sunrise": ["2026-02-26T06:45"],
+            "sunset": ["2026-02-26T17:35"],
+            "temperature_2m_max": [14.0],
+            "temperature_2m_min": [8.0],
+            "weather_code": [3],
+            "precipitation_probability_max": [10],
+        },
+        "hourly": {
+            "precipitation_probability": [0] * 6,
+            "rain": [0] * 6,
+            "snowfall": [0] * 6,
+        },
+    }
+    requests_mock.get("https://api.open-meteo.com/v1/forecast", json=weather_data)
+
+    result = get_weather_data("London", metric=True)
+
+    assert result["city"] == "London, England"
+    assert result["temp"] == 12.5
+    assert result["units"]["temp"] == "°C"
+    assert result["units"]["wind"] == "km/h"
+    assert result["units"]["precip"] == "mm"
 
 
 def test_get_weather_data_not_found(requests_mock):

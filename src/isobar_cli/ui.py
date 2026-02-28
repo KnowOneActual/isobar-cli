@@ -45,19 +45,32 @@ def get_weather_icon(code: int) -> tuple[str, str]:
     return WMO_CODES.get(code, ("🌡️", "Unknown"))
 
 
-def get_temp_color(temp_val) -> str:
-    """Returns a Rich color tag based on the temperature."""
+def get_temp_color(temp_val, unit="°F") -> str:
+    """Returns a Rich color tag based on the temperature and unit."""
     try:
         t = float(temp_val)
-        if t < 32:
-            return "bold cyan"
-        if t < 60:
-            return "bold blue"
-        if t < 80:
-            return "bold green"
-        if t < 95:
-            return "bold yellow"
-        return "bold red"
+        if unit == "°C":
+            # Celsius thresholds (approximate F to C conversion)
+            if t < 0:
+                return "bold cyan"
+            if t < 15:
+                return "bold blue"
+            if t < 26:
+                return "bold green"
+            if t < 35:
+                return "bold yellow"
+            return "bold red"
+        else:
+            # Fahrenheit thresholds
+            if t < 32:
+                return "bold cyan"
+            if t < 60:
+                return "bold blue"
+            if t < 80:
+                return "bold green"
+            if t < 95:
+                return "bold yellow"
+            return "bold red"
     except (ValueError, TypeError):
         return "white"
 
@@ -65,22 +78,36 @@ def get_temp_color(temp_val) -> str:
 def get_precip_headline(weather_data: dict) -> str:
     """Generate a single-line comfort summary for precip decisions."""
     precip_prob = weather_data.get("precip_prob", 0)
-    rainfall = weather_data.get("rainfall_inch", 0)
-    snowfall = weather_data.get("snowfall_inch", 0)
+    rainfall = weather_data.get("rainfall", 0)
+    snowfall = weather_data.get("snowfall", 0)
+    units = weather_data.get("units", {})
+    unit_precip = units.get("precip", "in")
     total_precip = rainfall + snowfall
+
+    # Use metric thresholds if unit is 'mm'
+    if unit_precip == "mm":
+        low_precip_limit = 2.5
+        med_precip_limit = 6.0
+        high_precip_limit = 19.0
+        snow_precip_limit = 6.0
+    else:
+        low_precip_limit = 0.1
+        med_precip_limit = 0.25
+        high_precip_limit = 0.75
+        snow_precip_limit = 0.25
 
     if precip_prob < 30:
         return "Dry conditions expected"
     elif precip_prob < 60:
-        if total_precip < 0.1:
+        if total_precip < low_precip_limit:
             return "Very low precip risk"
         return "Possible light precip"
     else:
-        if snowfall > rainfall and snowfall > 0.25:
+        if snowfall > rainfall and snowfall > snow_precip_limit:
             return "Snowy conditions likely"
-        elif rainfall > 0.75:
+        elif rainfall > high_precip_limit:
             return "Heavy rain likely"
-        elif rainfall > 0.25:
+        elif rainfall > med_precip_limit:
             return "Moderate rain likely"
         else:
             return "Light rain likely"
@@ -102,20 +129,23 @@ def display_weather(weather_data: dict):
     wind_speed = weather_data.get("wind_speed", "--")
     humidity = weather_data.get("humidity", "--")
     precip_prob = weather_data.get("precip_prob", 0)
-    rainfall_inch = weather_data.get("rainfall_inch", 0)
-    snowfall_inch = weather_data.get("snowfall_inch", 0)
+    rainfall = weather_data.get("rainfall", 0)
+    snowfall = weather_data.get("snowfall", 0)
     sunrise = weather_data.get("sunrise", "--")
     sunset = weather_data.get("sunset", "--")
     weather_code = weather_data.get("weather_code", 0)
+    units = weather_data.get("units", {"temp": "°F", "wind": "mph", "precip": "in"})
 
-    temp_color = get_temp_color(temp)
-    feels_color = get_temp_color(feels_like)
+    temp_color = get_temp_color(temp, units["temp"])
+    feels_color = get_temp_color(feels_like, units["temp"])
     condition_icon, condition_desc = get_weather_icon(weather_code)
 
     # Cache timestamp (only if cached)
     if city != "Unknown Location":
         input_city = city.split(",")[0].strip().lower().replace(" ", "_")
-        cache_file = CACHE_DIR / f"{input_city}.json"
+        # Check both metric and imperial caches
+        unit_suffix = "_metric" if units["temp"] == "°C" else "_imperial"
+        cache_file = CACHE_DIR / f"{input_city}{unit_suffix}.json"
         if cache_file.exists():
             try:
                 cache_data = json.loads(cache_file.read_text())
@@ -137,9 +167,13 @@ def display_weather(weather_data: dict):
     table.add_column("Value", justify="right")
 
     table.add_row(condition_icon, "Conditions:", f"[bold]{condition_desc}[/bold]")
-    table.add_row("🌡️", "Temperature:", f"[{temp_color}]{temp}°F[/{temp_color}]")
-    table.add_row("🤔", "Real Feel:", f"[{feels_color}]{feels_like}°F[/{feels_color}]")
-    table.add_row("💨", "Wind Speed:", f"{wind_speed} mph")
+    table.add_row(
+        "🌡️", "Temperature:", f"[{temp_color}]{temp}{units['temp']}[/{temp_color}]"
+    )
+    table.add_row(
+        "🤔", "Real Feel:", f"[{feels_color}]{feels_like}{units['temp']}[/{feels_color}]"
+    )
+    table.add_row("💨", "Wind Speed:", f"{wind_speed} {units['wind']}")
     table.add_row("💧", "Humidity:", f"{humidity}%")
 
     headline = get_precip_headline(weather_data)
@@ -148,10 +182,10 @@ def display_weather(weather_data: dict):
         precip_value += f" | [dim italic yellow]{headline}[/dim italic yellow]"
     table.add_row("☔", "Precip Chance:", precip_value)
 
-    if rainfall_inch > 0.01:
-        table.add_row("🌧️", "Rain Expected:", f'~{rainfall_inch:.2f}"')
-    if snowfall_inch > 0.01:
-        table.add_row("❄️", "Snow Expected:", f'~{snowfall_inch:.2f}"')
+    if rainfall > 0.01:
+        table.add_row("🌧️", "Rain Expected:", f"~{rainfall:.2f}{units['precip']}")
+    if snowfall > 0.01:
+        table.add_row("❄️", "Snow Expected:", f"~{snowfall:.2f}{units['precip']}")
 
     table.add_row("🌅", "Sunrise:", f"[yellow]{sunrise}[/yellow]")
     table.add_row("🌇", "Sunset:", f"[orange1]{sunset}[/orange1]")
@@ -170,6 +204,7 @@ def display_forecast(weather_data: dict):
         return
 
     city = weather_data.get("city", "Unknown Location")
+    units = weather_data.get("units", {"temp": "°F", "wind": "mph", "precip": "in"})
 
     table = Table(
         title=f"[bold white]7-Day Forecast — {city}[/bold white]",
@@ -198,16 +233,16 @@ def display_forecast(weather_data: dict):
         low = day["low"]
         precip = int(day["precip_prob"])
 
-        high_color = get_temp_color(high)
-        low_color = get_temp_color(low)
+        high_color = get_temp_color(high, units["temp"])
+        low_color = get_temp_color(low, units["temp"])
         rain_color = "cyan" if precip >= 60 else "yellow" if precip >= 30 else "dim"
 
         table.add_row(
             f"[bold]{day_label}[/bold]" if i == 0 else day_label,
             icon,
             desc,
-            f"[{high_color}]{high}°F[/{high_color}]",
-            f"[{low_color}]{low}°F[/{low_color}]",
+            f"[{high_color}]{high}{units['temp']}[/{high_color}]",
+            f"[{low_color}]{low}{units['temp']}[/{low_color}]",
             f"[{rain_color}]{precip}%[/{rain_color}]",
         )
 

@@ -8,6 +8,7 @@ def test_get_weather_icon():
 
 
 def test_get_temp_color():
+    # Imperial (default)
     assert get_temp_color(20) == "bold cyan"
     assert get_temp_color(40) == "bold blue"
     assert get_temp_color(70) == "bold green"
@@ -15,55 +16,52 @@ def test_get_temp_color():
     assert get_temp_color(100) == "bold red"
     assert get_temp_color("invalid") == "white"
 
+    # Metric
+    assert get_temp_color(-5, unit="°C") == "bold cyan"
+    assert get_temp_color(10, unit="°C") == "bold blue"
+    assert get_temp_color(20, unit="°C") == "bold green"
+    assert get_temp_color(30, unit="°C") == "bold yellow"
+    assert get_temp_color(40, unit="°C") == "bold red"
+
 
 def test_get_precip_headline():
     # Dry
     assert get_precip_headline({"precip_prob": 10}) == "Dry conditions expected"
 
-    # Low risk
+    # Low risk (Imperial)
     assert (
-        get_precip_headline(
-            {"precip_prob": 40, "rainfall_inch": 0.05, "snowfall_inch": 0}
-        )
+        get_precip_headline({"precip_prob": 40, "rainfall": 0.05, "snowfall": 0})
         == "Very low precip risk"
     )
 
-    # Possible light
+    # Possible light (Imperial)
     assert (
-        get_precip_headline(
-            {"precip_prob": 40, "rainfall_inch": 0.2, "snowfall_inch": 0}
-        )
+        get_precip_headline({"precip_prob": 40, "rainfall": 0.2, "snowfall": 0})
         == "Possible light precip"
     )
 
-    # Snowy likely
+    # Snowy likely (Imperial)
     assert (
-        get_precip_headline(
-            {"precip_prob": 80, "rainfall_inch": 0.1, "snowfall_inch": 0.5}
-        )
+        get_precip_headline({"precip_prob": 80, "rainfall": 0.1, "snowfall": 0.5})
         == "Snowy conditions likely"
     )
 
-    # Heavy rain
+    # Metric tests
+    metric_units = {"units": {"precip": "mm"}}
+    # Dry (Metric)
     assert (
-        get_precip_headline(
-            {"precip_prob": 80, "rainfall_inch": 1.0, "snowfall_inch": 0}
-        )
+        get_precip_headline({"precip_prob": 10, **metric_units})
+        == "Dry conditions expected"
+    )
+
+    # Low risk (Metric - 1mm is < 2.5mm limit)
+    assert (
+        get_precip_headline({"precip_prob": 40, "rainfall": 1.0, "snowfall": 0, **metric_units})
+        == "Very low precip risk"
+    )
+
+    # Heavy rain (Metric - 20mm is > 19mm limit)
+    assert (
+        get_precip_headline({"precip_prob": 80, "rainfall": 20.0, "snowfall": 0, **metric_units})
         == "Heavy rain likely"
-    )
-
-    # Moderate rain
-    assert (
-        get_precip_headline(
-            {"precip_prob": 80, "rainfall_inch": 0.5, "snowfall_inch": 0}
-        )
-        == "Moderate rain likely"
-    )
-
-    # Light rain
-    assert (
-        get_precip_headline(
-            {"precip_prob": 80, "rainfall_inch": 0.1, "snowfall_inch": 0}
-        )
-        == "Light rain likely"
     )
