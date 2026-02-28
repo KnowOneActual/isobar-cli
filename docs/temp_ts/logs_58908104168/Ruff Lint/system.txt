@@ -1,8 +1,0 @@
-2026-02-28T19:11:48.8570000Z Job is waiting for a hosted runner to come online.
-2026-02-28T19:11:48.8510000Z Job is about to start running on the hosted runner: GitHub Actions 1000004571
-2026-02-28T19:11:48.8480000Z Requested labels: ubuntu-latest
-2026-02-28T19:11:48.8480000Z Job defined at: KnowOneActual/isobar-cli/.github/workflows/ci.yml@refs/heads/main
-2026-02-28T19:11:48.8480000Z Waiting for a runner to pick up this job...
-2026-02-28T19:11:48.8480000Z Evaluating lint.if
-2026-02-28T19:11:48.8480000Z Evaluating: success()
-2026-02-28T19:11:48.8480000Z Result: true
