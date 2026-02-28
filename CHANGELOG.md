@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.3] - 2026-02-28
+
+### Added
+- **Major Test Coverage Boost** — Increased project test coverage from 77% to 98% by adding a comprehensive new test suite (`tests/test_isobar_extra.py`).
+  - **API Edge Cases** — Added tests for cache invalidation, API failures, and hourly data index errors.
+  - **Main Logic** — Verified multi-city support and all CLI flags (`--hourly`, `--forecast`, `--city`).
+  - **UI Conditions** — New unit tests for Wind Chill, Heat Index, and various precipitation intensities (Moderate/Light rain and snow).
+
 ## [0.6.2] - 2026-02-28
 
 ### Added

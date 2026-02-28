@@ -1,8 +1,8 @@
 # Isobar CLI
 
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-75%25-green)
-![Version](https://img.shields.io/badge/version-0.6.1-blue)
+![Coverage](https://img.shields.io/badge/coverage-98%25-green)
+![Version](https://img.shields.io/badge/version-0.6.3-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
