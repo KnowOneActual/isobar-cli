@@ -137,3 +137,4 @@ weights/
 # Add any files or folders specific to the project you're currently in.
 # For example:
 # /my-secret-folder/
+/docs/temp_ts/

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Hourly Outlook** — Pass `--hourly` or `-H` to see a compact 12-hour forecast including temperature, weather icons, and rain probability.
 - **Improved Test Suite** — Updated mocks and tests to cover hourly data parsing and UI rendering.
 
+### Fixed
+- **CI Stability** — Resolved CI and coverage failures related to project layout and ANSI color escape codes in test output.
+- **Test Isolation** — Aggressively disabled color output in CLI tests to ensure reliable help output matching across different environments.
+
 ### Changed
 - **API Cache** — Hourly data is now cached alongside daily data. Older caches (v0.5.0) will automatically refresh when hourly data is requested.
 
