@@ -36,6 +36,12 @@ pytest tests/test_api.py
 
 All tests should be placed in the `tests/` directory and follow the `test_*.py` naming convention.
 
+### Cache Isolation
+Tests automatically use a temporary directory for caching thanks to a `pytest` fixture in `tests/test_api.py`. This ensures your local `~/.cache/isobar/` remains untouched and tests are reproducible.
+
+### CLI Integration Tests
+We use `typer.testing.CliRunner` in `tests/test_main.py` to test the full command-line experience. When adding new flags or arguments, add a corresponding test case there.
+
 ### Mocking API Calls
 Isobar CLI depends on external APIs (Open-Meteo, ip-api.com). **Never make real network requests in tests.**
 
