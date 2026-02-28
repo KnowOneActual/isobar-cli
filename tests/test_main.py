@@ -71,3 +71,10 @@ def test_main_with_hourly(mock_api):
     assert "Hourly Forecast — Chicago, TestState" in result.output
     assert "12 PM" in result.output
 
+
+def test_main_multiple_cities(mock_api):
+    result = runner.invoke(app, ["Chicago", "London"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
+    assert result.exit_code == 0
+    assert "Chicago, TestState Weather" in result.output
+    assert "London, TestState Weather" in result.output
+

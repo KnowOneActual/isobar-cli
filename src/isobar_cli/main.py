@@ -13,9 +13,9 @@ console = Console()
 
 @app.command()
 def main(
-    city: str = typer.Argument(
+    cities: list[str] = typer.Argument(
         None,
-        help="City name (detects automatically if omitted)",
+        help="City name(s) (detects automatically if omitted). Use underscores for multi-word cities.",
     ),
     city_option: str = typer.Option(
         None,
@@ -47,48 +47,57 @@ def main(
 
     Examples:
         isobar                        # Auto-detect location
-        isobar Chicago                # Positional argument
+        isobar Chicago                # Single city
+        isobar London Tokyo Paris     # Multiple cities
         isobar --city Tokyo           # Flag style
-        isobar -c London              # Short flag
         isobar New_York               # Underscores for multi-word cities
         isobar --forecast             # Current + 7-day outlook
         isobar --hourly               # Current + next 12 hours
-        isobar --city Paris -f        # Paris with 7-day forecast
         isobar --metric               # Metric units
     """
-    # --city flag takes precedence over positional argument
-    resolved_city = city_option or city
+    # Resolve cities list
+    cities_to_fetch = []
+    if city_option:
+        cities_to_fetch.append(city_option)
+    if cities:
+        cities_to_fetch.extend(cities)
 
     # Auto-location if no city provided either way
-    if resolved_city is None:
+    if not cities_to_fetch:
         console.print("[dim]🌍 Detecting location...[/dim]")
-        resolved_city = get_auto_location()
+        auto_city = get_auto_location()
 
-        if resolved_city is None:
+        if auto_city is None:
             console.print(
                 "[yellow]⚠️  Could not detect location. "
                 "Using Chicago as default.[/yellow]"
             )
-            resolved_city = "Chicago"
+            cities_to_fetch = ["Chicago"]
         else:
-            console.print(f"[dim]📍 Detected: {resolved_city}[/dim]")
+            console.print(f"[dim]📍 Detected: {auto_city}[/dim]")
+            cities_to_fetch = [auto_city]
 
-    # Convert New_York → "New York" and handle underscores
-    full_city = resolved_city.replace("_", " ")
+    # Process each city
+    for i, city_name in enumerate(cities_to_fetch):
+        # Convert New_York → "New York" and handle underscores
+        full_city = city_name.replace("_", " ")
 
-    weather = get_weather_data(full_city, metric=metric)
-    if not weather:
-        console.print(f"[bold red]❌ '{full_city}' not found.[/bold red]")
-        console.print("[dim]Try: Chicago, New_York, London, Paris[/dim]")
-        raise typer.Exit(code=1)
+        weather = get_weather_data(full_city, metric=metric)
+        if not weather:
+            console.print(f"[bold red]❌ '{full_city}' not found.[/bold red]")
+            continue
 
-    display_weather(weather)
+        # Add visual separator between multiple cities
+        if i > 0:
+            console.print("[dim]───────────────────────────────────────[/dim]")
 
-    if hourly:
-        display_hourly(weather)
+        display_weather(weather)
 
-    if forecast:
-        display_forecast(weather)
+        if hourly:
+            display_hourly(weather)
+
+        if forecast:
+            display_forecast(weather)
 
 
 if __name__ == "__main__":

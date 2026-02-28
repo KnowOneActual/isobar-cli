@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - 2026-02-28
+
+### Added
+- **Multiple Cities Support** — Fetch and display weather for multiple cities in a single command (e.g., `isobar London Tokyo Paris`).
+- **Visual Separators** — Clean dashed separators between city cards when viewing multiple locations.
+
+### Changed
+- The `city` argument is now `cities` (a list), allowing for one or more positional arguments.
+
 ## [0.5.1] - 2026-02-28
 
 ### Added
