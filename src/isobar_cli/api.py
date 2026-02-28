@@ -35,6 +35,33 @@ def format_time(iso_string: str) -> str:
         return "--"
 
 
+def get_city_suggestions(city: str) -> list[str]:
+    """
+    Fetches a list of likely city name matches for a given input string.
+    Useful for 'Did you mean?' suggestions.
+    """
+    url = (
+        f"https://geocoding-api.open-meteo.com/v1/search"
+        f"?name={city}&count=5&format=json"
+    )
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        if "results" not in data:
+            return []
+
+        suggestions = []
+        for loc in data["results"]:
+            region = loc.get("admin1", loc.get("country", ""))
+            name = f"{loc['name']}, {region}".strip(", ")
+            if name not in suggestions:
+                suggestions.append(name)
+        return suggestions
+    except Exception:
+        return []
+
+
 def get_weather_data(city: str, metric: bool = False) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
@@ -101,6 +128,21 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
         weather_response = requests.get(weather_url)
         weather_response.raise_for_status()
         api_data = weather_response.json()
+
+        # Build Air Quality URL (separate API)
+        aqi_url = (
+            f"https://air-quality-api.open-meteo.com/v1/air-quality?"
+            f"latitude={lat}&longitude={lon}&current=us_aqi"
+        )
+        aqi_value = None
+        try:
+            aqi_response = requests.get(aqi_url)
+            aqi_response.raise_for_status()
+            aqi_data = aqi_response.json()
+            aqi_value = aqi_data.get("current", {}).get("us_aqi")
+        except Exception:
+            pass  # AQI is non-essential, don't fail if API is down
+
         current = api_data["current"]
         hourly = api_data["hourly"]
         daily = api_data["daily"]
@@ -164,6 +206,7 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
             "sunset": format_time(daily["sunset"][0]),
             "forecast": forecast,  # List of 7 daily dicts
             "hourly": hourly_forecast,  # Next 24 hours
+            "aqi": aqi_value,
             "last_updated": current_time,
             "units": {
                 "temp": "°C" if metric else "°F",

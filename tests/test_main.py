@@ -20,6 +20,8 @@ def mock_api(monkeypatch):
     from isobar_cli import main
 
     def mock_get_weather_data(city, metric=False):
+        if city == "Unknown":
+            return {}
         return {
             "city": f"{city}, TestState",
             "temp": 20,
@@ -42,6 +44,7 @@ def mock_api(monkeypatch):
                     "precip_prob": 0,
                 }
             ],
+            "aqi": 10,
             "units": {
                 "temp": "°C" if metric else "°F",
                 "wind": "km/h" if metric else "mph",
@@ -49,7 +52,11 @@ def mock_api(monkeypatch):
             }
         }
 
+    def mock_get_city_suggestions(city):
+        return ["Suggested City"]
+
     monkeypatch.setattr(main, "get_weather_data", mock_get_weather_data)
+    monkeypatch.setattr(main, "get_city_suggestions", mock_get_city_suggestions)
 
 def test_main_with_city(mock_api):
     result = runner.invoke(app, ["Chicago"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
@@ -77,4 +84,11 @@ def test_main_multiple_cities(mock_api):
     assert result.exit_code == 0
     assert "Chicago, TestState Weather" in result.output
     assert "London, TestState Weather" in result.output
+
+
+def test_main_not_found_with_suggestions(mock_api):
+    result = runner.invoke(app, ["Unknown"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
+    assert result.exit_code == 1
+    assert "'Unknown' not found" in result.output
+    assert "Did you mean: Suggested City?" in result.output
 

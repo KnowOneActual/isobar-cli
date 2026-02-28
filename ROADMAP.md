@@ -69,6 +69,8 @@ Ideas that could be useful but are not core to the current mission. Will only sh
 - [x] **Celsius / metric units flag** — `--metric` for non-Fahrenheit users.
 - [x] **Hourly outlook** — Next 12h temperature curve, opt-in via `--hourly`.
 - [x] **Multiple cities** — `isobar Chicago London Tokyo` side-by-side comparison.
+- [x] **Air Quality Index (AQI)** — Integrated health classification.
+- [x] **Fuzzy City Suggestions** — "Did you mean?" suggestions for typos.
 - [ ] **Shell completion** — Tab-complete city names from cache history.
 
 ---

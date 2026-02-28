@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-75%25-green)
-![Version](https://img.shields.io/badge/version-0.5.2-blue)
+![Version](https://img.shields.io/badge/version-0.6.0-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -27,9 +27,11 @@ Most weather apps overwhelm you with data. Isobar strips away everything except 
 - **Auto-Location** — `isobar` detects your city automatically 🌍
 - **Weather Condition Icons** — WMO-standard emoji + plain-English description (☀️ Clear sky, 🌨️ Moderate snow, ⛈️ Thunderstorm)
 - **Real Feel** — Apparent temperature (what it *feels* like)
+- **Air Quality Index** — US AQI with health classifications 😷
 - **7-Day Forecast** — Full week outlook with color-coded highs/lows and daily rain %
 - **Hourly Outlook** — Next 12 hours of temp and rain chance (`--hourly`)
-- **Multiple Cities** — Compare weather across several cities at once
+- **Multiple Cities** — Compare weather across several cities at once (side-by-side)
+- **Smart Suggesions** — Fuzzy city name matching if you make a typo
 - **Dynamic Timezone** — Sunrise/sunset always shown in the city's local time, not yours
 - **Precipitation Forecast** — Next 6h rain/snow chance + totals
 - **Smart Caching** — 15-min cache per city (`~/.cache/isobar/`)

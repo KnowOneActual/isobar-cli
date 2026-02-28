@@ -3,9 +3,14 @@ from typing import Annotated, Optional
 import typer
 from rich.console import Console
 
-from isobar_cli.api import get_weather_data
+from isobar_cli.api import get_city_suggestions, get_weather_data
 from isobar_cli.location import get_auto_location
-from isobar_cli.ui import display_forecast, display_hourly, display_weather
+from isobar_cli.ui import (
+    display_forecast,
+    display_hourly,
+    display_multi_weather,
+    display_weather,
+)
 
 app = typer.Typer(
     help=("Terminal weather focused on what it FEELS LIKE outside right now.")
@@ -90,26 +95,39 @@ def main(
             cities_to_fetch = [auto_city]
 
     # Process each city
-    for i, city_name in enumerate(cities_to_fetch):
-        # Convert New_York → "New York" and handle underscores
+    results = []
+    for city_name in cities_to_fetch:
         full_city = city_name.replace("_", " ")
-
         weather = get_weather_data(full_city, metric=metric)
-        if not weather:
+        if weather:
+            results.append(weather)
+        else:
             console.print(f"[bold red]❌ '{full_city}' not found.[/bold red]")
-            continue
+            suggestions = get_city_suggestions(full_city)
+            if suggestions:
+                suggest_str = ", ".join(suggestions[:3])
+                console.print(f"[dim]Did you mean: {suggest_str}?[/dim]")
 
-        # Add visual separator between multiple cities
-        if i > 0:
-            console.print("[dim]───────────────────────────────────────[/dim]")
+    if not results:
+        raise typer.Exit(code=1)
 
-        display_weather(weather)
+    # UI Rendering
+    # If multiple cities AND no detail flags, show side-by-side
+    if len(results) > 1 and not (hourly or forecast):
+        display_multi_weather(results)
+    else:
+        # Show sequentially (best for hourly/forecast details)
+        for i, weather in enumerate(results):
+            if i > 0:
+                console.print("[dim]───────────────────────────────────────[/dim]")
 
-        if hourly:
-            display_hourly(weather)
+            display_weather(weather)
 
-        if forecast:
-            display_forecast(weather)
+            if hourly:
+                display_hourly(weather)
+
+            if forecast:
+                display_forecast(weather)
 
 
 if __name__ == "__main__":

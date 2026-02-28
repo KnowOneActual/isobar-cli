@@ -1,6 +1,7 @@
 import time
 from datetime import datetime
 
+from rich.columns import Columns
 from rich.console import Console
 from rich.table import Table
 
@@ -112,14 +113,25 @@ def get_precip_headline(weather_data: dict) -> str:
     return ""
 
 
-def display_weather(weather_data: dict):
-    """
-    Renders the current conditions weather card.
-    """
-    if not weather_data:
-        console.print("[bold red]No weather data available.[/bold red]")
-        return
+def get_aqi_label(aqi_val: int) -> tuple[str, str]:
+    """Returns (label, color) for a US AQI value."""
+    if aqi_val <= 50:
+        return "Good", "bold green"
+    if aqi_val <= 100:
+        return "Moderate", "bold yellow"
+    if aqi_val <= 150:
+        return "Unhealthy (Sensitive)", "bold orange1"
+    if aqi_val <= 200:
+        return "Unhealthy", "bold red"
+    if aqi_val <= 300:
+        return "Very Unhealthy", "bold purple"
+    return "Hazardous", "bold dark_red"
 
+
+def build_weather_table(weather_data: dict) -> Table:
+    """
+    Constructs the current conditions weather table.
+    """
     city = weather_data.get("city", "Unknown Location")
     temp = weather_data.get("temp", "--")
     feels_like = weather_data.get("feels_like", "--")
@@ -137,13 +149,6 @@ def display_weather(weather_data: dict):
     feels_color = get_temp_color(feels_like, units["temp"])
     condition_icon, condition_desc = get_weather_icon(weather_code)
 
-    # Show "Updated X min ago" if data is from cache
-    last_updated = weather_data.get("last_updated")
-    if last_updated:
-        minutes_ago = int((time.time() - last_updated) / 60)
-        if minutes_ago > 0:
-            console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
-
     table = Table(
         title=f"\n[bold white]{city} Weather[/bold white]",
         show_header=False,
@@ -158,11 +163,38 @@ def display_weather(weather_data: dict):
     table.add_row(
         "🌡️", "Temperature:", f"[{temp_color}]{temp}{units['temp']}[/{temp_color}]"
     )
+    # Determine "Feels Like" label
+    feels_label = "Real Feel:"
+    try:
+        t_actual = float(temp)
+        t_feels = float(feels_like)
+        is_metric = units["temp"] == "°C"
+
+        if is_metric:
+            # Metric thresholds: Wind chill if <= 10°C, Heat index if >= 27°C
+            if t_actual <= 10 and t_feels < t_actual:
+                feels_label = "Wind Chill:"
+            elif t_actual >= 27 and t_feels > t_actual:
+                feels_label = "Heat Index:"
+        else:
+            # Imperial thresholds: Wind chill if <= 50°F, Heat index if >= 80°F
+            if t_actual <= 50 and t_feels < t_actual:
+                feels_label = "Wind Chill:"
+            elif t_actual >= 80 and t_feels > t_actual:
+                feels_label = "Heat Index:"
+    except (ValueError, TypeError):
+        pass
+
     table.add_row(
-        "🤔", "Real Feel:", f"[{feels_color}]{feels_like}{units['temp']}[/{feels_color}]"
+        "🤔", feels_label, f"[{feels_color}]{feels_like}{units['temp']}[/{feels_color}]"
     )
     table.add_row("💨", "Wind Speed:", f"{wind_speed} {units['wind']}")
     table.add_row("💧", "Humidity:", f"{humidity}%")
+
+    aqi = weather_data.get("aqi")
+    if aqi is not None:
+        aqi_label, aqi_color = get_aqi_label(int(aqi))
+        table.add_row("😷", "Air Quality:", f"[{aqi_color}]{aqi} ({aqi_label})[/{aqi_color}]")
 
     headline = get_precip_headline(weather_data)
     precip_value = f"{precip_prob}% (6h)"
@@ -178,7 +210,51 @@ def display_weather(weather_data: dict):
     table.add_row("🌅", "Sunrise:", f"[yellow]{sunrise}[/yellow]")
     table.add_row("🌇", "Sunset:", f"[orange1]{sunset}[/orange1]")
 
+    return table
+
+
+def display_weather(weather_data: dict):
+    """
+    Renders the current conditions weather card for a single city.
+    """
+    if not weather_data:
+        console.print("[bold red]No weather data available.[/bold red]")
+        return
+
+    # Show "Updated X min ago" if data is from cache
+    last_updated = weather_data.get("last_updated")
+    if last_updated:
+        minutes_ago = int((time.time() - last_updated) / 60)
+        if minutes_ago > 0:
+            console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
+
+    table = build_weather_table(weather_data)
     console.print(table)
+    print()
+
+
+def display_multi_weather(weather_list: list[dict]):
+    """
+    Renders multiple weather cards side-by-side using Columns.
+    """
+    tables = []
+    for weather in weather_list:
+        if weather:
+            tables.append(build_weather_table(weather))
+
+    if not tables:
+        console.print("[bold red]No weather data available.[/bold red]")
+        return
+
+    # Show cache info if any city was cached
+    times = [w.get("last_updated") for w in weather_list if w.get("last_updated")]
+    if times:
+        avg_last_updated = sum(times) / len(times)
+        minutes_ago = int((time.time() - avg_last_updated) / 60)
+        if minutes_ago > 0:
+            console.print(f"[dim]Cached data ~{minutes_ago} min ago[/dim]")
+
+    console.print(Columns(tables, equal=True, expand=False))
     print()
 
 

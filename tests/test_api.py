@@ -1,7 +1,7 @@
 import pytest
 
 from isobar_cli import api
-from isobar_cli.api import get_weather_data
+from isobar_cli.api import get_city_suggestions, get_weather_data
 
 
 @pytest.fixture(autouse=True)
@@ -26,6 +26,13 @@ def test_get_weather_data_success(requests_mock):
     requests_mock.get(
         "https://geocoding-api.open-meteo.com/v1/search?name=Chicago&count=1&format=json",
         json=geo_data,
+    )
+
+    # Mock Air Quality API
+    aqi_data = {"current": {"us_aqi": 42}}
+    requests_mock.get(
+        "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=41.85&longitude=-87.65&current=us_aqi",
+        json=aqi_data,
     )
 
     # Mock Weather API
@@ -88,6 +95,12 @@ def test_get_weather_data_metric(requests_mock):
         json=geo_data,
     )
 
+    # Mock Air Quality API
+    requests_mock.get(
+        "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=51.5&longitude=-0.12&current=us_aqi",
+        json={"current": {"us_aqi": 10}},
+    )
+
     # Mock Weather API (Metric)
     weather_data = {
         "current": {
@@ -136,3 +149,21 @@ def test_get_weather_data_not_found(requests_mock):
 
     result = get_weather_data("NonExistentCity")
     assert result == {}
+
+
+def test_get_city_suggestions(requests_mock):
+    geo_data = {
+        "results": [
+            {"name": "Paris", "admin1": "Ile-de-France"},
+            {"name": "Paris", "admin1": "Texas"},
+        ]
+    }
+    requests_mock.get(
+        "https://geocoding-api.open-meteo.com/v1/search?name=Paris&count=5&format=json",
+        json=geo_data,
+    )
+
+    suggestions = get_city_suggestions("Paris")
+    assert "Paris, Ile-de-France" in suggestions
+    assert "Paris, Texas" in suggestions
+    assert len(suggestions) == 2

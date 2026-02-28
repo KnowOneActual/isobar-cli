@@ -1,4 +1,9 @@
-from isobar_cli.ui import get_precip_headline, get_temp_color, get_weather_icon
+from isobar_cli.ui import (
+    get_aqi_label,
+    get_precip_headline,
+    get_temp_color,
+    get_weather_icon,
+)
 
 
 def test_get_weather_icon():
@@ -24,7 +29,48 @@ def test_get_temp_color():
     assert get_temp_color(40, unit="°C") == "bold red"
 
 
-def test_get_precip_headline():
+def test_get_aqi_label():
+    assert get_aqi_label(20) == ("Good", "bold green")
+    assert get_aqi_label(75) == ("Moderate", "bold yellow")
+    assert get_aqi_label(125) == ("Unhealthy (Sensitive)", "bold orange1")
+    assert get_aqi_label(175) == ("Unhealthy", "bold red")
+    assert get_aqi_label(250) == ("Very Unhealthy", "bold purple")
+    assert get_aqi_label(400) == ("Hazardous", "bold dark_red")
+
+
+def test_build_weather_table_labels():
+    from isobar_cli.ui import build_weather_table
+
+    # Standard
+    data = {
+        "city": "Test",
+        "temp": 70,
+        "feels_like": 70,
+        "units": {"temp": "°F", "wind": "mph", "precip": "in"},
+    }
+    table = build_weather_table(data)
+    # Check if "Real Feel" is in the table (as a column/row value)
+    assert any("Real Feel" in str(row) for row in table.columns[1]._cells)
+
+    # Wind Chill
+    data_cold = {
+        "city": "Cold",
+        "temp": 20,
+        "feels_like": 10,
+        "units": {"temp": "°F", "wind": "mph", "precip": "in"},
+    }
+    table_cold = build_weather_table(data_cold)
+    assert any("Wind Chill" in str(row) for row in table_cold.columns[1]._cells)
+
+    # Heat Index
+    data_hot = {
+        "city": "Hot",
+        "temp": 95,
+        "feels_like": 105,
+        "units": {"temp": "°F", "wind": "mph", "precip": "in"},
+    }
+    table_hot = build_weather_table(data_hot)
+    assert any("Heat Index" in str(row) for row in table_hot.columns[1]._cells)
     # Dry
     assert get_precip_headline({"precip_prob": 10}) == "Dry conditions expected"
 

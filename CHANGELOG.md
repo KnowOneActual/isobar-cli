@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-02-28
+
+### Added
+- **Air Quality Index (AQI)** — Integrated US AQI data with color-coded health classifications (Good, Moderate, Unhealthy, etc.).
+- **Side-by-Side Multi-City View** — Multiple cities are now displayed in columns when requested together (without detailed forecast flags), significantly improving information density.
+- **Smart City Suggestions** — Added "Did you mean?" suggestions using the geocoding API when a city name is misspelled or not found.
+- **Extreme Temperature Labels** — The "Real Feel" label now dynamically changes to "Wind Chill" or "Heat Index" when conditions are extreme.
+
+### Changed
+- Refactored UI and API modules to clearly separate data processing from rendering.
+- Cache metadata is now passed directly from the API layer to the UI.
+
 ## [0.5.2] - 2026-02-28
 
 ### Added
