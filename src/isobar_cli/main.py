@@ -1,3 +1,5 @@
+from typing import Annotated, Optional
+
 import typer
 from rich.console import Console
 
@@ -13,34 +15,44 @@ console = Console()
 
 @app.command()
 def main(
-    cities: list[str] = typer.Argument(
-        None,
-        help="City name(s) (detects automatically if omitted). Use underscores for multi-word cities.",
-    ),
-    city_option: str = typer.Option(
-        None,
-        "--city",
-        "-c",
-        help="City name as a flag (alternative to positional argument)",
-    ),
-    forecast: bool = typer.Option(
-        False,
-        "--forecast",
-        "-f",
-        help="Show 7-day forecast after current conditions",
-    ),
-    hourly: bool = typer.Option(
-        False,
-        "--hourly",
-        "-H",
-        help="Show next 12 hours of weather",
-    ),
-    metric: bool = typer.Option(
-        False,
-        "--metric",
-        "-m",
-        help="Show weather in metric units (Celsius, km/h, mm)",
-    ),
+    cities: Annotated[
+        Optional[list[str]],
+        typer.Argument(
+            help="City name(s) (detects automatically if omitted). Use underscores for multi-word cities.",
+        ),
+    ] = None,
+    city_option: Annotated[
+        Optional[str],
+        typer.Option(
+            "--city",
+            "-c",
+            help="City name as a flag (alternative to positional argument)",
+        ),
+    ] = None,
+    forecast: Annotated[
+        bool,
+        typer.Option(
+            "--forecast",
+            "-f",
+            help="Show 7-day forecast after current conditions",
+        ),
+    ] = False,
+    hourly: Annotated[
+        bool,
+        typer.Option(
+            "--hourly",
+            "-H",
+            help="Show next 12 hours of weather",
+        ),
+    ] = False,
+    metric: Annotated[
+        bool,
+        typer.Option(
+            "--metric",
+            "-m",
+            help="Show weather in metric units (Celsius, km/h, mm)",
+        ),
+    ] = False,
 ):
     """
     Get the weather and what it FEELS LIKE outside right now.
