@@ -1,0 +1,17 @@
+﻿2026-02-28T19:11:52.0309693Z ##[group]Run pip install ruff
+2026-02-28T19:11:52.0310281Z [36;1mpip install ruff[0m
+2026-02-28T19:11:52.0426963Z shell: /usr/bin/bash -e {0}
+2026-02-28T19:11:52.0427465Z env:
+2026-02-28T19:11:52.0427952Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0428768Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+2026-02-28T19:11:52.0429589Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0430299Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0431013Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0431741Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+2026-02-28T19:11:52.0432334Z ##[endgroup]
+2026-02-28T19:11:54.9152154Z Collecting ruff
+2026-02-28T19:11:54.9729084Z   Downloading ruff-0.15.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+2026-02-28T19:11:54.9884101Z Downloading ruff-0.15.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.2 MB)
+2026-02-28T19:11:55.0559728Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.2/11.2 MB 221.6 MB/s  0:00:00
+2026-02-28T19:11:55.1002124Z Installing collected packages: ruff
+2026-02-28T19:11:55.2374700Z Successfully installed ruff-0.15.4

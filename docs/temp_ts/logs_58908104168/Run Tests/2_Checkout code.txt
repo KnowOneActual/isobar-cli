@@ -1,0 +1,72 @@
+﻿2026-02-28T19:11:51.7614874Z ##[group]Run actions/checkout@v4
+2026-02-28T19:11:51.7616017Z with:
+2026-02-28T19:11:51.7616536Z   repository: KnowOneActual/isobar-cli
+2026-02-28T19:11:51.7617208Z   token: ***
+2026-02-28T19:11:51.7617593Z   ssh-strict: true
+2026-02-28T19:11:51.7617969Z   ssh-user: git
+2026-02-28T19:11:51.7618361Z   persist-credentials: true
+2026-02-28T19:11:51.7618792Z   clean: true
+2026-02-28T19:11:51.7619180Z   sparse-checkout-cone-mode: true
+2026-02-28T19:11:51.7619638Z   fetch-depth: 1
+2026-02-28T19:11:51.7620023Z   fetch-tags: false
+2026-02-28T19:11:51.7620411Z   show-progress: true
+2026-02-28T19:11:51.7620795Z   lfs: false
+2026-02-28T19:11:51.7621152Z   submodules: false
+2026-02-28T19:11:51.7621538Z   set-safe-directory: true
+2026-02-28T19:11:51.7622266Z ##[endgroup]
+2026-02-28T19:11:51.8709303Z Syncing repository: KnowOneActual/isobar-cli
+2026-02-28T19:11:51.8710994Z ##[group]Getting Git version info
+2026-02-28T19:11:51.8711704Z Working directory is '/home/runner/work/isobar-cli/isobar-cli'
+2026-02-28T19:11:51.8712877Z [command]/usr/bin/git version
+2026-02-28T19:11:51.8820757Z git version 2.53.0
+2026-02-28T19:11:51.8849503Z ##[endgroup]
+2026-02-28T19:11:51.8868619Z Temporarily overriding HOME='/home/runner/work/_temp/02750d7c-90c0-4e22-9dc4-3356a4107496' before making global git config changes
+2026-02-28T19:11:51.8873904Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-28T19:11:51.8875097Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/isobar-cli/isobar-cli
+2026-02-28T19:11:51.8916623Z Deleting the contents of '/home/runner/work/isobar-cli/isobar-cli'
+2026-02-28T19:11:51.8920489Z ##[group]Initializing the repository
+2026-02-28T19:11:51.8925030Z [command]/usr/bin/git init /home/runner/work/isobar-cli/isobar-cli
+2026-02-28T19:11:51.9042362Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-02-28T19:11:51.9043450Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-02-28T19:11:51.9044485Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-02-28T19:11:51.9045961Z hint: call:
+2026-02-28T19:11:51.9046669Z hint:
+2026-02-28T19:11:51.9047536Z hint: 	git config --global init.defaultBranch <name>
+2026-02-28T19:11:51.9048600Z hint:
+2026-02-28T19:11:51.9049621Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-02-28T19:11:51.9051242Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-02-28T19:11:51.9052078Z hint:
+2026-02-28T19:11:51.9052540Z hint: 	git branch -m <name>
+2026-02-28T19:11:51.9053062Z hint:
+2026-02-28T19:11:51.9053730Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-02-28T19:11:51.9054913Z Initialized empty Git repository in /home/runner/work/isobar-cli/isobar-cli/.git/
+2026-02-28T19:11:51.9061215Z [command]/usr/bin/git remote add origin https://github.com/KnowOneActual/isobar-cli
+2026-02-28T19:11:51.9095115Z ##[endgroup]
+2026-02-28T19:11:51.9096089Z ##[group]Disabling automatic garbage collection
+2026-02-28T19:11:51.9099713Z [command]/usr/bin/git config --local gc.auto 0
+2026-02-28T19:11:51.9128019Z ##[endgroup]
+2026-02-28T19:11:51.9128694Z ##[group]Setting up auth
+2026-02-28T19:11:51.9135188Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-02-28T19:11:51.9166732Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-02-28T19:11:51.9536606Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-28T19:11:51.9566804Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-02-28T19:11:51.9797941Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-28T19:11:51.9830954Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-02-28T19:11:52.0070591Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-02-28T19:11:52.0106309Z ##[endgroup]
+2026-02-28T19:11:52.0107585Z ##[group]Fetching the repository
+2026-02-28T19:11:52.0116491Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +20c3c5dc21b52bc9d527578b68e72b08919083ad:refs/remotes/origin/main
+2026-02-28T19:11:52.1752537Z From https://github.com/KnowOneActual/isobar-cli
+2026-02-28T19:11:52.1753940Z  * [new ref]         20c3c5dc21b52bc9d527578b68e72b08919083ad -> origin/main
+2026-02-28T19:11:52.1789715Z ##[endgroup]
+2026-02-28T19:11:52.1790659Z ##[group]Determining the checkout info
+2026-02-28T19:11:52.1792186Z ##[endgroup]
+2026-02-28T19:11:52.1797581Z [command]/usr/bin/git sparse-checkout disable
+2026-02-28T19:11:52.1844573Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-02-28T19:11:52.1875360Z ##[group]Checking out the ref
+2026-02-28T19:11:52.1881211Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-02-28T19:11:52.1946915Z Switched to a new branch 'main'
+2026-02-28T19:11:52.1949921Z branch 'main' set up to track 'origin/main'.
+2026-02-28T19:11:52.1958827Z ##[endgroup]
+2026-02-28T19:11:52.1998119Z [command]/usr/bin/git log -1 --format=%H
+2026-02-28T19:11:52.2021749Z 20c3c5dc21b52bc9d527578b68e72b08919083ad

@@ -1,0 +1,161 @@
+﻿2026-02-28T19:11:50.5645766Z Current runner version: '2.331.0'
+2026-02-28T19:11:50.5678443Z ##[group]Runner Image Provisioner
+2026-02-28T19:11:50.5679331Z Hosted Compute Agent
+2026-02-28T19:11:50.5679866Z Version: 20260213.493
+2026-02-28T19:11:50.5680477Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-02-28T19:11:50.5681274Z Build Date: 2026-02-13T00:28:41Z
+2026-02-28T19:11:50.5681897Z Worker ID: {8da75eb5-1c85-473c-9717-58ea199c7996}
+2026-02-28T19:11:50.5682586Z Azure Region: northcentralus
+2026-02-28T19:11:50.5683159Z ##[endgroup]
+2026-02-28T19:11:50.5684630Z ##[group]Operating System
+2026-02-28T19:11:50.5685204Z Ubuntu
+2026-02-28T19:11:50.5685785Z 24.04.3
+2026-02-28T19:11:50.5686479Z LTS
+2026-02-28T19:11:50.5687005Z ##[endgroup]
+2026-02-28T19:11:50.5687467Z ##[group]Runner Image
+2026-02-28T19:11:50.5688106Z Image: ubuntu-24.04
+2026-02-28T19:11:50.5688700Z Version: 20260224.36.1
+2026-02-28T19:11:50.5689928Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260224.36/images/ubuntu/Ubuntu2404-Readme.md
+2026-02-28T19:11:50.5691394Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260224.36
+2026-02-28T19:11:50.5692330Z ##[endgroup]
+2026-02-28T19:11:50.5693408Z ##[group]GITHUB_TOKEN Permissions
+2026-02-28T19:11:50.5695224Z Contents: read
+2026-02-28T19:11:50.5695904Z Metadata: read
+2026-02-28T19:11:50.5696740Z Packages: read
+2026-02-28T19:11:50.5697230Z ##[endgroup]
+2026-02-28T19:11:50.5699287Z Secret source: Actions
+2026-02-28T19:11:50.5700221Z Prepare workflow directory
+2026-02-28T19:11:50.6108554Z Prepare all required actions
+2026-02-28T19:11:50.6164239Z Getting action download info
+2026-02-28T19:11:50.9142326Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-02-28T19:11:51.0291115Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-02-28T19:11:51.2216883Z Complete job name: Ruff Lint
+2026-02-28T19:11:51.2920394Z ##[group]Run actions/checkout@v4
+2026-02-28T19:11:51.2921215Z with:
+2026-02-28T19:11:51.2921622Z   repository: KnowOneActual/isobar-cli
+2026-02-28T19:11:51.2922299Z   token: ***
+2026-02-28T19:11:51.2922671Z   ssh-strict: true
+2026-02-28T19:11:51.2923058Z   ssh-user: git
+2026-02-28T19:11:51.2923444Z   persist-credentials: true
+2026-02-28T19:11:51.2923875Z   clean: true
+2026-02-28T19:11:51.2924262Z   sparse-checkout-cone-mode: true
+2026-02-28T19:11:51.2924734Z   fetch-depth: 1
+2026-02-28T19:11:51.2925107Z   fetch-tags: false
+2026-02-28T19:11:51.2925496Z   show-progress: true
+2026-02-28T19:11:51.2925888Z   lfs: false
+2026-02-28T19:11:51.2926482Z   submodules: false
+2026-02-28T19:11:51.2926884Z   set-safe-directory: true
+2026-02-28T19:11:51.2927562Z ##[endgroup]
+2026-02-28T19:11:51.4018991Z Syncing repository: KnowOneActual/isobar-cli
+2026-02-28T19:11:51.4020805Z ##[group]Getting Git version info
+2026-02-28T19:11:51.4021623Z Working directory is '/home/runner/work/isobar-cli/isobar-cli'
+2026-02-28T19:11:51.4022621Z [command]/usr/bin/git version
+2026-02-28T19:11:51.4084482Z git version 2.53.0
+2026-02-28T19:11:51.4111582Z ##[endgroup]
+2026-02-28T19:11:51.4128100Z Temporarily overriding HOME='/home/runner/work/_temp/2d44443b-5990-494a-a1e4-d56568897f9a' before making global git config changes
+2026-02-28T19:11:51.4130481Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-28T19:11:51.4142570Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/isobar-cli/isobar-cli
+2026-02-28T19:11:51.4183594Z Deleting the contents of '/home/runner/work/isobar-cli/isobar-cli'
+2026-02-28T19:11:51.4187635Z ##[group]Initializing the repository
+2026-02-28T19:11:51.4192908Z [command]/usr/bin/git init /home/runner/work/isobar-cli/isobar-cli
+2026-02-28T19:11:51.4278401Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-02-28T19:11:51.4279718Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-02-28T19:11:51.4280976Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-02-28T19:11:51.4282289Z hint: call:
+2026-02-28T19:11:51.4282769Z hint:
+2026-02-28T19:11:51.4283592Z hint: 	git config --global init.defaultBranch <name>
+2026-02-28T19:11:51.4284623Z hint:
+2026-02-28T19:11:51.4285599Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-02-28T19:11:51.4287460Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-02-28T19:11:51.4288840Z hint:
+2026-02-28T19:11:51.4289537Z hint: 	git branch -m <name>
+2026-02-28T19:11:51.4290255Z hint:
+2026-02-28T19:11:51.4291257Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-02-28T19:11:51.4293033Z Initialized empty Git repository in /home/runner/work/isobar-cli/isobar-cli/.git/
+2026-02-28T19:11:51.4295913Z [command]/usr/bin/git remote add origin https://github.com/KnowOneActual/isobar-cli
+2026-02-28T19:11:51.4331836Z ##[endgroup]
+2026-02-28T19:11:51.4333040Z ##[group]Disabling automatic garbage collection
+2026-02-28T19:11:51.4337052Z [command]/usr/bin/git config --local gc.auto 0
+2026-02-28T19:11:51.4367844Z ##[endgroup]
+2026-02-28T19:11:51.4369028Z ##[group]Setting up auth
+2026-02-28T19:11:51.4375492Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-02-28T19:11:51.4407208Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-02-28T19:11:51.4738847Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-28T19:11:51.4768112Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-02-28T19:11:51.4996140Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-28T19:11:51.5034212Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-02-28T19:11:51.5270093Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-02-28T19:11:51.5306030Z ##[endgroup]
+2026-02-28T19:11:51.5307523Z ##[group]Fetching the repository
+2026-02-28T19:11:51.5318318Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +20c3c5dc21b52bc9d527578b68e72b08919083ad:refs/remotes/origin/main
+2026-02-28T19:11:51.7907172Z From https://github.com/KnowOneActual/isobar-cli
+2026-02-28T19:11:51.7908267Z  * [new ref]         20c3c5dc21b52bc9d527578b68e72b08919083ad -> origin/main
+2026-02-28T19:11:51.7942029Z ##[endgroup]
+2026-02-28T19:11:51.7942798Z ##[group]Determining the checkout info
+2026-02-28T19:11:51.7944301Z ##[endgroup]
+2026-02-28T19:11:51.7950310Z [command]/usr/bin/git sparse-checkout disable
+2026-02-28T19:11:51.7992907Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-02-28T19:11:51.8020377Z ##[group]Checking out the ref
+2026-02-28T19:11:51.8023971Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-02-28T19:11:51.8084723Z Switched to a new branch 'main'
+2026-02-28T19:11:51.8087952Z branch 'main' set up to track 'origin/main'.
+2026-02-28T19:11:51.8094630Z ##[endgroup]
+2026-02-28T19:11:51.8130287Z [command]/usr/bin/git log -1 --format=%H
+2026-02-28T19:11:51.8153035Z 20c3c5dc21b52bc9d527578b68e72b08919083ad
+2026-02-28T19:11:51.8397771Z ##[group]Run actions/setup-python@v5
+2026-02-28T19:11:51.8398303Z with:
+2026-02-28T19:11:51.8398661Z   python-version: 3.11
+2026-02-28T19:11:51.8399075Z   check-latest: false
+2026-02-28T19:11:51.8399616Z   token: ***
+2026-02-28T19:11:51.8399994Z   update-environment: true
+2026-02-28T19:11:51.8400428Z   allow-prereleases: false
+2026-02-28T19:11:51.8400845Z   freethreaded: false
+2026-02-28T19:11:51.8401225Z ##[endgroup]
+2026-02-28T19:11:52.0093454Z ##[group]Installed versions
+2026-02-28T19:11:52.0189224Z Successfully set up CPython (3.11.14)
+2026-02-28T19:11:52.0190646Z ##[endgroup]
+2026-02-28T19:11:52.0309716Z ##[group]Run pip install ruff
+2026-02-28T19:11:52.0310286Z [36;1mpip install ruff[0m
+2026-02-28T19:11:52.0426984Z shell: /usr/bin/bash -e {0}
+2026-02-28T19:11:52.0427469Z env:
+2026-02-28T19:11:52.0427956Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0428771Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+2026-02-28T19:11:52.0429592Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0430303Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0431016Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:52.0431744Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+2026-02-28T19:11:52.0432337Z ##[endgroup]
+2026-02-28T19:11:54.9152263Z Collecting ruff
+2026-02-28T19:11:54.9729203Z   Downloading ruff-0.15.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+2026-02-28T19:11:54.9884300Z Downloading ruff-0.15.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.2 MB)
+2026-02-28T19:11:55.0559814Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.2/11.2 MB 221.6 MB/s  0:00:00
+2026-02-28T19:11:55.1002240Z Installing collected packages: ruff
+2026-02-28T19:11:55.2374910Z Successfully installed ruff-0.15.4
+2026-02-28T19:11:55.4159740Z ##[group]Run ruff check .
+2026-02-28T19:11:55.4160090Z [36;1mruff check .[0m
+2026-02-28T19:11:55.4211426Z shell: /usr/bin/bash -e {0}
+2026-02-28T19:11:55.4211710Z env:
+2026-02-28T19:11:55.4212008Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:55.4212482Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+2026-02-28T19:11:55.4212934Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:55.4213344Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:55.4213760Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:11:55.4214221Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+2026-02-28T19:11:55.4214573Z ##[endgroup]
+2026-02-28T19:11:55.4379351Z All checks passed!
+2026-02-28T19:11:55.4522915Z Post job cleanup.
+2026-02-28T19:11:55.6227226Z Post job cleanup.
+2026-02-28T19:11:55.7199561Z [command]/usr/bin/git version
+2026-02-28T19:11:55.7237800Z git version 2.53.0
+2026-02-28T19:11:55.7283911Z Temporarily overriding HOME='/home/runner/work/_temp/58d8d1dd-6b2b-44cf-ada3-bb1ebb827cd1' before making global git config changes
+2026-02-28T19:11:55.7285524Z Adding repository directory to the temporary git global config as a safe directory
+2026-02-28T19:11:55.7291172Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/isobar-cli/isobar-cli
+2026-02-28T19:11:55.7333106Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-02-28T19:11:55.7369871Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-02-28T19:11:55.7619282Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-02-28T19:11:55.7642415Z http.https://github.com/.extraheader
+2026-02-28T19:11:55.7656916Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-02-28T19:11:55.7690491Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-02-28T19:11:55.7929605Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-02-28T19:11:55.7962290Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-02-28T19:11:55.8308634Z Cleaning up orphan processes

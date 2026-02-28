@@ -46,6 +46,9 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    env:
+      TERM: dumb
+      NO_COLOR: 1
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

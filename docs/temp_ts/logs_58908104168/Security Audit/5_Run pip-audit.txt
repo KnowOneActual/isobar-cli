@@ -1,0 +1,15 @@
+﻿2026-02-28T19:12:04.3545955Z ##[group]Run pip-audit
+2026-02-28T19:12:04.3546224Z [36;1mpip-audit[0m
+2026-02-28T19:12:04.3596928Z shell: /usr/bin/bash -e {0}
+2026-02-28T19:12:04.3597417Z env:
+2026-02-28T19:12:04.3597662Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:12:04.3598080Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+2026-02-28T19:12:04.3598510Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:12:04.3598865Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:12:04.3599226Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-28T19:12:04.3599597Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+2026-02-28T19:12:04.3599892Z ##[endgroup]
+2026-02-28T19:12:05.4917581Z No known vulnerabilities found
+2026-02-28T19:12:05.4927781Z Name       Skip Reason
+2026-02-28T19:12:05.4928341Z ---------- -------------------------------------------------------------------------
+2026-02-28T19:12:05.4929307Z isobar-cli Dependency not found on PyPI and could not be audited: isobar-cli (0.5.1)
