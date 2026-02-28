@@ -34,6 +34,14 @@ def mock_api(monkeypatch):
             "sunrise": "6:00 AM",
             "sunset": "6:00 PM",
             "forecast": [],
+            "hourly": [
+                {
+                    "time": "2026-02-28T12:00",
+                    "temp": 20,
+                    "weather_code": 0,
+                    "precip_prob": 0,
+                }
+            ],
             "units": {
                 "temp": "°C" if metric else "°F",
                 "wind": "km/h" if metric else "mph",
@@ -54,3 +62,9 @@ def test_main_with_metric(mock_api):
     assert result.exit_code == 0
     assert "London, TestState Weather" in result.output
     assert "20°C" in result.output
+
+def test_main_with_hourly(mock_api):
+    result = runner.invoke(app, ["Chicago", "--hourly"])
+    assert result.exit_code == 0
+    assert "Hourly Forecast — Chicago, TestState" in result.output
+    assert "12 PM" in result.output

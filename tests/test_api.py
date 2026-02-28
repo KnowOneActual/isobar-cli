@@ -31,6 +31,7 @@ def test_get_weather_data_success(requests_mock):
     # Mock Weather API
     weather_data = {
         "current": {
+            "time": "2026-02-26T06:00",
             "temperature_2m": 37.1,
             "apparent_temperature": 30.4,
             "wind_speed_10m": 4.3,
@@ -48,13 +49,14 @@ def test_get_weather_data_success(requests_mock):
             "precipitation_probability_max": [1],
         },
         "hourly": {
-            "precipitation_probability": [0, 0, 0, 0, 0, 0],
-            "rain": [0, 0, 0, 0, 0, 0],
-            "snowfall": [0, 0, 0, 0, 0, 0],
+            "time": ["2026-02-26T06:00", "2026-02-26T07:00"],
+            "temperature_2m": [37.1, 38.2],
+            "weather_code": [0, 1],
+            "precipitation_probability": [0, 5],
+            "rain": [0, 0],
+            "snowfall": [0, 0],
         },
     }
-    # Using real_http=True for local files (like timezonefinder) if needed,
-    # but here we just mock the URL with params
     requests_mock.get("https://api.open-meteo.com/v1/forecast", json=weather_data)
 
     result = get_weather_data("Chicago")
@@ -64,6 +66,8 @@ def test_get_weather_data_success(requests_mock):
     assert result["sunrise"] == "6:29 AM"
     assert result["sunset"] == "5:37 PM"
     assert result["units"]["temp"] == "°F"
+    assert len(result["hourly"]) > 0
+    assert result["hourly"][0]["temp"] == 37.1
 
 
 def test_get_weather_data_metric(requests_mock):
@@ -87,6 +91,7 @@ def test_get_weather_data_metric(requests_mock):
     # Mock Weather API (Metric)
     weather_data = {
         "current": {
+            "time": "2026-02-26T06:00",
             "temperature_2m": 12.5,
             "apparent_temperature": 10.2,
             "wind_speed_10m": 15.0,
@@ -104,9 +109,12 @@ def test_get_weather_data_metric(requests_mock):
             "precipitation_probability_max": [10],
         },
         "hourly": {
-            "precipitation_probability": [0] * 6,
-            "rain": [0] * 6,
-            "snowfall": [0] * 6,
+            "time": ["2026-02-26T06:00"],
+            "temperature_2m": [12.5],
+            "weather_code": [3],
+            "precipitation_probability": [0],
+            "rain": [0],
+            "snowfall": [0],
         },
     }
     requests_mock.get("https://api.open-meteo.com/v1/forecast", json=weather_data)

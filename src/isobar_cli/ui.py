@@ -248,3 +248,55 @@ def display_forecast(weather_data: dict):
 
     console.print(table)
     print()
+
+
+def display_hourly(weather_data: dict):
+    """
+    Renders a compact hourly forecast table for the next 12-24 hours.
+    """
+    hourly = weather_data.get("hourly", [])
+    if not hourly:
+        console.print("[yellow]No hourly data available.[/yellow]")
+        return
+
+    city = weather_data.get("city", "Unknown Location")
+    units = weather_data.get("units", {"temp": "°F", "wind": "mph", "precip": "in"})
+
+    table = Table(
+        title=f"[bold white]Hourly Forecast — {city}[/bold white]",
+        show_header=True,
+        header_style="bold dim",
+        box=None,
+        padding=(0, 2),
+    )
+    table.add_column("Time", justify="left")
+    table.add_column("", justify="center")  # emoji
+    table.add_column("Temp", justify="right")
+    table.add_column("Rain%", justify="right")
+    table.add_column("Conditions", justify="left")
+
+    # Show only next 12 hours for compactness
+    for hour in hourly[:12]:
+        try:
+            dt = datetime.fromisoformat(hour["time"].replace("Z", "+00:00"))
+            time_label = dt.strftime("%-I %p")
+        except ValueError:
+            time_label = hour["time"]
+
+        icon, desc = get_weather_icon(int(hour["weather_code"]))
+        temp = hour["temp"]
+        precip = int(hour["precip_prob"])
+
+        temp_color = get_temp_color(temp, units["temp"])
+        rain_color = "cyan" if precip >= 60 else "yellow" if precip >= 30 else "dim"
+
+        table.add_row(
+            time_label,
+            icon,
+            f"[{temp_color}]{temp}{units['temp']}[/{temp_color}]",
+            f"[{rain_color}]{precip}%[/{rain_color}]",
+            f"[dim]{desc}[/dim]",
+        )
+
+    console.print(table)
+    print()

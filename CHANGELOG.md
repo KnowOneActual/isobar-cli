@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-02-28
+
+### Added
+- **Hourly Outlook** — Pass `--hourly` or `-H` to see a compact 12-hour forecast including temperature, weather icons, and rain probability.
+- **Improved Test Suite** — Updated mocks and tests to cover hourly data parsing and UI rendering.
+
+### Changed
+- **API Cache** — Hourly data is now cached alongside daily data. Older caches (v0.5.0) will automatically refresh when hourly data is requested.
+
 ## [0.5.0] - 2026-02-28
 
 ### Added

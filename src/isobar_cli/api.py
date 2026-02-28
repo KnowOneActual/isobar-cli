@@ -65,7 +65,7 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
             f"relative_humidity_2m,precipitation,weather_code&"
             f"daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,"
             f"weather_code,precipitation_probability_max&"
-            f"hourly=precipitation_probability,rain,snowfall&"
+            f"hourly=precipitation_probability,rain,snowfall,temperature_2m,weather_code&"
             f"temperature_unit={temp_unit}&"
             f"wind_speed_unit={wind_unit}&precipitation_unit={precip_unit}&"
             f"timezone={timezone}&forecast_days=7"
@@ -78,15 +78,34 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
         hourly = api_data["hourly"]
         daily = api_data["daily"]
 
+        # Find the starting index in hourly data that matches current time (rounded down)
+        current_time_iso = current["time"]
+        try:
+            start_idx = hourly["time"].index(current_time_iso)
+        except ValueError:
+            start_idx = 0
+
+        # Build 24h hourly forecast (from current hour onwards)
+        hourly_forecast = []
+        for i in range(start_idx, min(start_idx + 24, len(hourly["time"]))):
+            hourly_forecast.append(
+                {
+                    "time": hourly["time"][i],
+                    "temp": hourly["temperature_2m"][i],
+                    "weather_code": hourly["weather_code"][i],
+                    "precip_prob": hourly["precipitation_probability"][i],
+                }
+            )
+
         # Next 6 hours precip probability (average)
-        next_6h_probs = hourly["precipitation_probability"][:6]
+        next_6h_probs = hourly["precipitation_probability"][start_idx : start_idx + 6]
         avg_precip_prob = (
             sum(next_6h_probs) / len(next_6h_probs) if next_6h_probs else 0
         )
 
         # Next 6 hours rainfall/snowfall (total inches)
-        next_6h_rain = sum(hourly["rain"][:6])
-        next_6h_snow = sum(hourly["snowfall"][:6])
+        next_6h_rain = sum(hourly["rain"][start_idx : start_idx + 6])
+        next_6h_snow = sum(hourly["snowfall"][start_idx : start_idx + 6])
 
         # Format times (API returns ISO 8601 format in local timezone)
         def format_time(iso_string: str) -> str:
@@ -141,6 +160,7 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
             "sunrise": format_time(daily["sunrise"][0]),
             "sunset": format_time(daily["sunset"][0]),
             "forecast": forecast,  # List of 7 daily dicts
+            "hourly": hourly_forecast,  # Next 24 hours
             "units": {
                 "temp": "°C" if metric else "°F",
                 "wind": "km/h" if metric else "mph",
