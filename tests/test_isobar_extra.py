@@ -1,10 +1,16 @@
 import json
 import time
-from pathlib import Path
+
 import pytest
 from typer.testing import CliRunner
-from isobar_cli import api, main, ui, location
-from isobar_cli.api import get_cached_cities, format_time, get_city_suggestions, get_weather_data
+
+from isobar_cli import api, ui
+from isobar_cli.api import (
+    format_time,
+    get_cached_cities,
+    get_city_suggestions,
+    get_weather_data,
+)
 from isobar_cli.main import app
 
 runner = CliRunner()
@@ -58,7 +64,7 @@ def test_get_weather_data_cache_hit(mock_cache_dir, requests_mock):
         "timestamp": time.time() - 100 # 100 seconds ago
     }
     cache_file.write_text(json.dumps(cache_data))
-    
+
     result = get_weather_data(city)
     assert result["city"] == "CacheCity, TestState"
     assert "last_updated" in result
@@ -68,7 +74,7 @@ def test_get_weather_data_cache_invalid_json(mock_cache_dir, requests_mock):
     city = "InvalidCache"
     cache_file = mock_cache_dir / "invalidcache_imperial.json"
     cache_file.write_text("not json")
-    
+
     # Mock Geocoding API to return {} so we can see it proceeded
     requests_mock.get(
         "https://geocoding-api.open-meteo.com/v1/search?name=InvalidCache&count=1&format=json",
@@ -81,7 +87,7 @@ def test_get_weather_data_aqi_error(requests_mock):
     # Mock Geocoding API
     geo_data = {"results": [{"name": "AQIFail", "latitude": 0, "longitude": 0}]}
     requests_mock.get("https://geocoding-api.open-meteo.com/v1/search?name=AQIFail&count=1&format=json", json=geo_data)
-    
+
     # Mock Weather API
     weather_data = {
         "current": {"time": "2026-02-26T06:00", "temperature_2m": 37, "apparent_temperature": 30, "wind_speed_10m": 4, "relative_humidity_2m": 50, "precipitation": 0, "weather_code": 0},
@@ -89,10 +95,10 @@ def test_get_weather_data_aqi_error(requests_mock):
         "hourly": {"time": ["2026-02-26T06:00"], "temperature_2m": [37], "weather_code": [0], "precipitation_probability": [0], "rain": [0], "snowfall": [0]}
     }
     requests_mock.get("https://api.open-meteo.com/v1/forecast", json=weather_data)
-    
+
     # Mock AQI API to fail - explicitly raise Exception to hit 'except Exception: pass'
     requests_mock.get("https://air-quality-api.open-meteo.com/v1/air-quality", exc=Exception("AQI Failed"))
-    
+
     result = get_weather_data("AQIFail")
     assert result["aqi"] is None
 
@@ -100,7 +106,7 @@ def test_get_weather_data_hourly_index_error(requests_mock):
     # Mock Geocoding API
     geo_data = {"results": [{"name": "IndexError", "latitude": 0, "longitude": 0}]}
     requests_mock.get("https://geocoding-api.open-meteo.com/v1/search?name=IndexError&count=1&format=json", json=geo_data)
-    
+
     # Mock Weather API where current time is NOT in hourly time list
     weather_data = {
         "current": {"time": "2026-02-26T06:00", "temperature_2m": 37, "apparent_temperature": 30, "wind_speed_10m": 4, "relative_humidity_2m": 50, "precipitation": 0, "weather_code": 0},
@@ -125,8 +131,8 @@ def test_main_auto_location_fail(monkeypatch):
     monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: None)
     # Mock get_weather_data to avoid real API call
     monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {
-        "city": "Chicago", 
-        "temp": 30, 
+        "city": "Chicago",
+        "temp": 30,
         "feels_like": 25,
         "wind_speed": 10,
         "humidity": 50,
@@ -139,7 +145,7 @@ def test_main_auto_location_fail(monkeypatch):
         "sunset": "6:00 PM",
         "units": {"temp": "F", "wind": "mph", "precip": "in"}
     })
-    
+
     result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Could not detect location" in result.output
     assert "Using Chicago as default" in result.output
@@ -147,8 +153,8 @@ def test_main_auto_location_fail(monkeypatch):
 def test_main_auto_location_success(monkeypatch):
     monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: "New York")
     monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {
-        "city": "New York", 
-        "temp": 30, 
+        "city": "New York",
+        "temp": 30,
         "feels_like": 25,
         "wind_speed": 10,
         "humidity": 50,
@@ -161,14 +167,14 @@ def test_main_auto_location_success(monkeypatch):
         "sunset": "6:00 PM",
         "units": {"temp": "F", "wind": "mph", "precip": "in"}
     })
-    
+
     result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Detected: New York" in result.output
 
 def test_main_city_option(monkeypatch):
     monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {
-        "city": city, 
-        "temp": 30, 
+        "city": city,
+        "temp": 30,
         "feels_like": 25,
         "wind_speed": 10,
         "humidity": 50,
@@ -193,8 +199,8 @@ def test_city_complete(monkeypatch):
 def test_main_with_flags(monkeypatch):
     # Mock data with all necessary keys
     mock_data = {
-        "city": "TestCity", 
-        "temp": 30, 
+        "city": "TestCity",
+        "temp": 30,
         "feels_like": 25,
         "wind_speed": 10,
         "humidity": 50,
@@ -210,23 +216,23 @@ def test_main_with_flags(monkeypatch):
         "units": {"temp": "F", "wind": "mph", "precip": "in"}
     }
     monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {**mock_data, "city": city})
-    
+
     # Multi-city
     result = runner.invoke(app, ["City1", "City2"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert result.exit_code == 0
     assert "City1" in result.output
     assert "City2" in result.output
-    
+
     # Multi-city with flags (covers line 130 in main.py)
     result = runner.invoke(app, ["City1", "City2", "--hourly"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert result.exit_code == 0
     assert "───────────────────────────────────────" in result.output
-    
+
     # Hourly
     result = runner.invoke(app, ["CityH", "--hourly"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert result.exit_code == 0
     assert "Hourly Forecast — CityH" in result.output
-    
+
     # Forecast
     result = runner.invoke(app, ["CityF", "--forecast"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert result.exit_code == 0
@@ -237,7 +243,7 @@ def test_main_with_flags(monkeypatch):
 def test_display_weather_edge_cases():
     # No data
     ui.display_weather({})
-    
+
     # Old cache
     data = {
         "city": "OldCache",
@@ -356,7 +362,7 @@ def test_build_weather_table_extra():
     }
     table = build_weather_table(data)
     assert any("Wind Chill" in str(row) for row in table.columns[1]._cells)
-    
+
     # Metric Heat Index
     data = {
         "city": "Hot", "temp": 30, "feels_like": 35,
@@ -364,7 +370,7 @@ def test_build_weather_table_extra():
     }
     table = build_weather_table(data)
     assert any("Heat Index" in str(row) for row in table.columns[1]._cells)
-    
+
     # ValueError case
     data = {
         "city": "Error", "temp": "invalid", "feels_like": "invalid",
