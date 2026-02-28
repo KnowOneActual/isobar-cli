@@ -6,12 +6,12 @@ from isobar_cli.main import app
 runner = CliRunner()
 
 def test_main_help():
-    result = runner.invoke(app, ["--help"])
+    result = runner.invoke(app, ["--help"], color=False)
     assert result.exit_code == 0
     assert "Get the weather and what it FEELS LIKE" in result.output
 
 def test_main_metric_flag_exists():
-    result = runner.invoke(app, ["--help"])
+    result = runner.invoke(app, ["--help"], color=False)
     assert "--metric" in result.output
     assert "-m" in result.output
 
@@ -52,19 +52,22 @@ def mock_api(monkeypatch):
     monkeypatch.setattr(main, "get_weather_data", mock_get_weather_data)
 
 def test_main_with_city(mock_api):
-    result = runner.invoke(app, ["Chicago"])
+    result = runner.invoke(app, ["Chicago"], color=False)
     assert result.exit_code == 0
     assert "Chicago, TestState Weather" in result.output
     assert "20°F" in result.output
 
+
 def test_main_with_metric(mock_api):
-    result = runner.invoke(app, ["London", "--metric"])
+    result = runner.invoke(app, ["London", "--metric"], color=False)
     assert result.exit_code == 0
     assert "London, TestState Weather" in result.output
     assert "20°C" in result.output
 
+
 def test_main_with_hourly(mock_api):
-    result = runner.invoke(app, ["Chicago", "--hourly"])
+    result = runner.invoke(app, ["Chicago", "--hourly"], color=False)
     assert result.exit_code == 0
     assert "Hourly Forecast — Chicago, TestState" in result.output
     assert "12 PM" in result.output
+
