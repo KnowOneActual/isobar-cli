@@ -77,8 +77,8 @@ Everything here is optional until it proves it actually improves that mission.
 
 ## Nice to Have (Carefully Considered)
 
-Ideas that could be useful but are not core to the current mission. Will only ship if they don't compromise simplicity.
-
+Ideas that could be useful but are not core to the current mission. Will only ship if they don't compromise simplicity. (After careful testing, gathering feedback, and thoughtful review, we've concluded that these elements are valuable and will be added to the project to enhance its overall usefulness.)
+ 
 - [x] **Celsius / metric units flag** — `--metric` for non-Fahrenheit users.
 - [x] **Hourly outlook** — Next 12h temperature curve, opt-in via `--hourly`.
 - [x] **Multiple cities** — `isobar Chicago London Tokyo` side-by-side comparison.
