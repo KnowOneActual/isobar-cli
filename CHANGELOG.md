@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] - 2026-02-28
+
+### Added
+- **PyPI Preparation** — Added rich metadata, classifiers, and project URLs to `pyproject.toml`.
+- **Automated Publishing** — New GitHub Action to automatically publish to PyPI on version tags.
+
+### Changed
+- Updated `.gitignore` to prevent accidental log commits.
+- Expanded the project roadmap to include Homebrew, AUR, and Windows package managers.
+
 ## [0.6.1] - 2026-02-28
 
 ### Added
