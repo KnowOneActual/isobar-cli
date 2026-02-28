@@ -1,7 +1,7 @@
 import pytest
 
 from isobar_cli import api
-from isobar_cli.api import get_city_suggestions, get_weather_data
+from isobar_cli.api import get_cached_cities, get_city_suggestions, get_weather_data
 
 
 @pytest.fixture(autouse=True)
@@ -167,3 +167,19 @@ def test_get_city_suggestions(requests_mock):
     assert "Paris, Ile-de-France" in suggestions
     assert "Paris, Texas" in suggestions
     assert len(suggestions) == 2
+
+
+def test_get_cached_cities(tmp_path, monkeypatch):
+    monkeypatch.setattr(api, "CACHE_DIR", tmp_path)
+
+    # Create dummy cache files
+    (tmp_path / "chicago_imperial.json").write_text("{}")
+    (tmp_path / "london_metric.json").write_text("{}")
+    (tmp_path / "new_york_imperial.json").write_text("{}")
+    (tmp_path / "new_york_metric.json").write_text("{}")  # Duplicate city name
+
+    cached = get_cached_cities()
+    assert "Chicago" in cached
+    assert "London" in cached
+    assert "New York" in cached
+    assert len(cached) == 3

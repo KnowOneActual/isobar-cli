@@ -71,7 +71,7 @@ Ideas that could be useful but are not core to the current mission. Will only sh
 - [x] **Multiple cities** — `isobar Chicago London Tokyo` side-by-side comparison.
 - [x] **Air Quality Index (AQI)** — Integrated health classification.
 - [x] **Fuzzy City Suggestions** — "Did you mean?" suggestions for typos.
-- [ ] **Shell completion** — Tab-complete city names from cache history.
+- [x] **Shell completion** — Tab-complete city names from cache history.
 
 ---
 

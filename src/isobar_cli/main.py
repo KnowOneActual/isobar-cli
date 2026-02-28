@@ -3,7 +3,7 @@ from typing import Annotated, Optional
 import typer
 from rich.console import Console
 
-from isobar_cli.api import get_city_suggestions, get_weather_data
+from isobar_cli.api import get_cached_cities, get_city_suggestions, get_weather_data
 from isobar_cli.location import get_auto_location
 from isobar_cli.ui import (
     display_forecast,
@@ -18,12 +18,19 @@ app = typer.Typer(
 console = Console()
 
 
+def city_complete(incomplete: str):
+    """Callback for shell completion of city names from cache."""
+    cached = get_cached_cities()
+    return [c for c in cached if c.lower().startswith(incomplete.lower())]
+
+
 @app.command()
 def main(
     cities: Annotated[
         Optional[list[str]],
         typer.Argument(
             help="City name(s) (detects automatically if omitted). Use underscores for multi-word cities.",
+            autocompletion=city_complete,
         ),
     ] = None,
     city_option: Annotated[
@@ -32,6 +39,7 @@ def main(
             "--city",
             "-c",
             help="City name as a flag (alternative to positional argument)",
+            autocompletion=city_complete,
         ),
     ] = None,
     forecast: Annotated[

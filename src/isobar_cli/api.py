@@ -10,6 +10,27 @@ CACHE_DIR = Path.home() / ".cache" / "isobar"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def get_cached_cities() -> list[str]:
+    """
+    Returns a list of unique city names from the local cache history.
+    Used for shell completion.
+    """
+    cities = set()
+    if not CACHE_DIR.exists():
+        return []
+
+    for f in CACHE_DIR.glob("*.json"):
+        # Strip unit suffixes and .json extension
+        name = f.stem
+        for suffix in ["_metric", "_imperial"]:
+            if name.endswith(suffix):
+                name = name[: -len(suffix)]
+        # Convert underscores back to spaces for completion
+        cities.add(name.replace("_", " ").title())
+
+    return sorted(cities)
+
+
 def format_time(iso_string: str) -> str:
     """Convert ISO 8601 datetime to 12-hour format (e.g., '6:42 AM')."""
     if not iso_string:
