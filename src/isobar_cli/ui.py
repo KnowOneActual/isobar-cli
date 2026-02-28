@@ -1,13 +1,10 @@
-import json
 import time
 from datetime import datetime
-from pathlib import Path
 
 from rich.console import Console
 from rich.table import Table
 
 console = Console()
-CACHE_DIR = Path.home() / ".cache" / "isobar"
 
 
 # WMO Weather interpretation codes -> (emoji, description)
@@ -140,21 +137,12 @@ def display_weather(weather_data: dict):
     feels_color = get_temp_color(feels_like, units["temp"])
     condition_icon, condition_desc = get_weather_icon(weather_code)
 
-    # Cache timestamp (only if cached)
-    if city != "Unknown Location":
-        input_city = city.split(",")[0].strip().lower().replace(" ", "_")
-        # Check both metric and imperial caches
-        unit_suffix = "_metric" if units["temp"] == "°C" else "_imperial"
-        cache_file = CACHE_DIR / f"{input_city}{unit_suffix}.json"
-        if cache_file.exists():
-            try:
-                cache_data = json.loads(cache_file.read_text())
-                timestamp = cache_data.get("timestamp")
-                if timestamp and time.time() - timestamp < 900:
-                    minutes_ago = int((time.time() - timestamp) / 60)
-                    console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
-            except Exception:
-                pass
+    # Show "Updated X min ago" if data is from cache
+    last_updated = weather_data.get("last_updated")
+    if last_updated:
+        minutes_ago = int((time.time() - last_updated) / 60)
+        if minutes_ago > 0:
+            console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
 
     table = Table(
         title=f"\n[bold white]{city} Weather[/bold white]",

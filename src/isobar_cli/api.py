@@ -10,6 +10,31 @@ CACHE_DIR = Path.home() / ".cache" / "isobar"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def format_time(iso_string: str) -> str:
+    """Convert ISO 8601 datetime to 12-hour format (e.g., '6:42 AM')."""
+    if not iso_string:
+        return "--"
+    try:
+        dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
+        hour = dt.hour
+        minute = dt.minute
+        if hour == 0:
+            hour_12 = 12
+            period = "AM"
+        elif hour < 12:
+            hour_12 = hour
+            period = "AM"
+        elif hour == 12:
+            hour_12 = 12
+            period = "PM"
+        else:
+            hour_12 = hour - 12
+            period = "PM"
+        return f"{hour_12}:{minute:02d} {period}"
+    except (ValueError, AttributeError):
+        return "--"
+
+
 def get_weather_data(city: str, metric: bool = False) -> dict:
     """
     Converts the city name to coordinates, then fetches the weather with precip
@@ -24,8 +49,10 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
     if cache_file.exists():
         try:
             cache_data = json.loads(cache_file.read_text())
-            if time.time() - cache_data["timestamp"] < 900:  # 15 minutes
-                del cache_data["timestamp"]  # Clean up before return
+            timestamp = cache_data.get("timestamp", 0)
+            if time.time() - timestamp < 900:  # 15 minutes
+                # Return data with cache metadata
+                cache_data["last_updated"] = timestamp
                 return cache_data
         except (json.JSONDecodeError, KeyError, ValueError):
             pass  # Cache invalid, proceed to API
@@ -107,31 +134,6 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
         next_6h_rain = sum(hourly["rain"][start_idx : start_idx + 6])
         next_6h_snow = sum(hourly["snowfall"][start_idx : start_idx + 6])
 
-        # Format times (API returns ISO 8601 format in local timezone)
-        def format_time(iso_string: str) -> str:
-            """Convert ISO 8601 datetime to 12-hour format (e.g., '6:42 AM')."""
-            if not iso_string:
-                return "--"
-            try:
-                dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
-                hour = dt.hour
-                minute = dt.minute
-                if hour == 0:
-                    hour_12 = 12
-                    period = "AM"
-                elif hour < 12:
-                    hour_12 = hour
-                    period = "AM"
-                elif hour == 12:
-                    hour_12 = 12
-                    period = "PM"
-                else:
-                    hour_12 = hour - 12
-                    period = "PM"
-                return f"{hour_12}:{minute:02d} {period}"
-            except (ValueError, AttributeError):
-                return "--"
-
         # Build 7-day forecast list (index 0 = today)
         num_days = len(daily["time"])
         forecast = []
@@ -146,6 +148,7 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
                 }
             )
 
+        current_time = time.time()
         result = {
             "city": clean_city_name,
             "temp": current["temperature_2m"],
@@ -161,6 +164,7 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
             "sunset": format_time(daily["sunset"][0]),
             "forecast": forecast,  # List of 7 daily dicts
             "hourly": hourly_forecast,  # Next 24 hours
+            "last_updated": current_time,
             "units": {
                 "temp": "°C" if metric else "°F",
                 "wind": "km/h" if metric else "mph",
@@ -170,7 +174,7 @@ def get_weather_data(city: str, metric: bool = False) -> dict:
 
         # Cache successful result
         result_with_ts = result.copy()
-        result_with_ts["timestamp"] = time.time()
+        result_with_ts["timestamp"] = current_time
         cache_file.write_text(json.dumps(result_with_ts))
 
         return result
