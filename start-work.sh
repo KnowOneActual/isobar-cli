@@ -86,4 +86,33 @@ else
     git checkout -b "$BRANCH" "$MAIN_BRANCH"
 fi
 
+# 5. Environment Setup (Venv validation & repair)
+printf '\n%s=== ENVIRONMENT SETUP ===%s\n' "${GREEN}" "${NC}"
+
+VENV_DIR=".venv"
+REBUILD_VENV=false
+
+if [ ! -d "$VENV_DIR" ]; then
+    log_warn "Virtual environment not found. Creating..."
+    REBUILD_VENV=true
+elif ! "$VENV_DIR/bin/python" --version >/dev/null 2>&1; then
+    log_warn "Virtual environment is broken (likely moved). Recreating..."
+    rm -rf "$VENV_DIR"
+    REBUILD_VENV=true
+fi
+
+if [ "$REBUILD_VENV" = true ]; then
+    python3 -m venv "$VENV_DIR"
+    log_info "Installing dependencies..."
+    "$VENV_DIR/bin/pip" install --upgrade pip
+    "$VENV_DIR/bin/pip" install -e ".[test]"
+    log_success "Environment rebuilt ✓"
+else
+    log_info "Environment verified ✓"
+fi
+
 log_success "✅ Ready on branch: $BRANCH"
+printf '\n%sQuick Start:%s\n' "${BLUE}" "${NC}"
+echo "source .venv/bin/activate"
+echo "isobar Chicago -H"
+echo ""
