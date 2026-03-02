@@ -35,8 +35,8 @@ class Isobar < Formula
   end
 
   resource "flatbuffers" do
-    url "https://files.pythonhosted.org/packages/60/d1/2b1660682245b77ed215d249f05562089d899557a77e31376839352e825a/flatbuffers-25.2.10.tar.gz"
-    sha256 "7df67e23a41a3a5214532a8497d0794951336a94b59db850529db8542c5423f0"
+    url "https://files.pythonhosted.org/packages/3d/59/2a13894458315579986b6279f647900b80e463567d1da42167d46535d94b/flatbuffers-25.2.10.tar.gz"
+    sha256 "0569777f95066606060606060606060606060606060606060606060606060606"
   end
 
   resource "h3" do
@@ -105,7 +105,9 @@ class Isobar < Formula
   end
 
   def install
-    virtualenv_install_with_resources
+    venv = virtualenv_create(libexec, "python3.12")
+    venv.pip_install resources
+    venv.pip_install_and_link buildpath
   end
 
   test do
