@@ -35,8 +35,8 @@ class Isobar < Formula
   end
 
   resource "flatbuffers" do
-    url "https://files.pythonhosted.org/packages/3d/59/2a13894458315579986b6279f647900b80e463567d1da42167d46535d94b/flatbuffers-25.2.10.tar.gz"
-    sha256 "0569777f95066606060606060606060606060606060606060606060606060606"
+    url "https://files.pythonhosted.org/packages/b1/98/96635839596564671440be1388b17c7be5c6460aa7ef90b437284960c91a/flatbuffers-25.2.10.tar.gz"
+    sha256 "97e451377a41262f8d9bd4295cc836133415cc03d8cb966410a4af92eb00d26e"
   end
 
   resource "h3" do
