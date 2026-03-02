@@ -12,10 +12,12 @@ Everything here is optional until it proves it actually improves that mission.
 
 ## Phase 1: Speed & Flow ✅ COMPLETE
 
-**Goal:** Make the existing experience faster and more convenient, without changing what Isobar is.
+**Goal:** Make the existing experience faster and more convenient.
 
 - [x] **Local Caching (15 minutes)** — Cache per city in `~/.cache/isobar/`. Avoids hammering the API; repeat calls feel instant.
-- [x] **Auto-Location** — Run `isobar` with no arguments to detect city via IP. Fails gracefully with a clear message; no config files required.
+- [x] **Auto-Location** — Run `isobar` with no arguments to detect city via IP. Fails gracefully with a clear message.
+- [x] **Fuzzy City Suggestions** — "Did you mean?" suggestions for typos using geocoding metadata.
+- [x] **Shell Completion** — Tab-complete city names from your search history (`isobar --install-completion`).
 
 ---
 
@@ -23,9 +25,11 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Add information that directly informs comfort decisions, without turning into a dashboard.
 
-- [x] **Precipitation Probability** — Next 6h rain chance (%) with a plain-English comfort headline ("Dry conditions expected", "Heavy rain likely", etc.).
-- [x] **Rain & Snow Totals** — Next 6h rainfall/snowfall in inches.
-- [x] **Sunrise & Sunset Times** — Shown in the city's local timezone (not the host machine's). Uses `timezonefinder` offline — no API key needed.
+- [x] **Precipitation Probability** — Next 6h rain chance (%) with a plain-English comfort headline.
+- [x] **Rain & Snow Totals** — Next 6h rainfall/snowfall in inches (or mm).
+- [x] **Sunrise & Sunset Times** — Shown in the city's local timezone (not yours).
+- [x] **Air Quality Index (AQI)** — Integrated US AQI data with color-coded health classifications (Good, Moderate, etc.).
+- [x] **Celsius / Metric Units** — Full support for `--metric` / `-m` across all displays and caches.
 
 ---
 
@@ -33,10 +37,11 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Improve how information is communicated, not how much.
 
-- [x] **Weather Condition Icons** — WMO weather code mapped to emoji + plain-English description (e.g., `☀️ Clear sky`, `🌨️ Moderate snow`, `⛈️ Thunderstorm`). Covers all 23 standard WMO codes. Appears at the top of the card.
-- [x] **7-Day Forecast (`--forecast` / `-f`)** — Full week outlook with per-day condition icon, high/low temps (color-coded), and rain %. Default command stays focused on "right now".
-- [x] **`--city` / `-c` flag** — City can be passed as a named option or positional argument interchangeably.
-- [x] **Dynamic Timezone Detection** — Timezone resolved from coordinates; sunrise/sunset always accurate for the queried city.
+- [x] **Weather Condition Icons** — WMO weather code mapped to emoji + plain-English description.
+- [x] **7-Day Forecast (`--forecast` / `-f`)** — Full week outlook with daily icons, color-coded highs/lows, and rain probability.
+- [x] **Hourly Outlook (`--hourly` / `-H`)** — Next 12h temperature curve and rain probability.
+- [x] **Side-by-Side Comparison** — Compare multiple cities in columns (e.g., `isobar London Tokyo Paris`).
+- [x] **Simplified Positional CLI** — Removed redundant `--city` flags in favor of direct, intuitive arguments (`isobar "New York"`).
 
 ---
 
@@ -44,9 +49,9 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Make the project safe to contribute to and easy to trust.
 
-- [x] **GitHub Actions CI** — Automated `ruff check` (lint) + `pip-audit` (security scan) on every push and pull request to `main`.
+- [x] **GitHub Actions CI** — Automated `ruff check` (lint) + `pip-audit` (security scan) on every push.
 - [x] **README Badges** — Live CI status, version, ruff, Python 3.8+, and MIT license badges.
-- [x] **Ruff Linting** — Full rule set enforced (pycodestyle, pyflakes, isort, bugbear, comprehensions, pyupgrade).
+- [x] **Ruff Linting** — Full rule set enforced (pycodestyle, pyflakes, isort, bugbear, etc.).
 - [x] **Keep a Changelog** — Every release documented with dated version entries.
 
 ---
@@ -55,36 +60,34 @@ Everything here is optional until it proves it actually improves that mission.
 
 **Goal:** Ensure correctness survives future changes.
 
-- [x] **pytest test suite** — Unit tests for `format_time()`, `get_weather_icon()`, `get_precip_headline()`, `get_temp_color()`, and the WMO code mapper.
-- [x] **API response mocking** — Test `get_weather_data()` against fixture JSON without hitting the live API.
-- [x] **CI test job** — Add a `test` job to `ci.yml` that runs `pytest` on every push alongside lint and security.
-- [x] **Code coverage badge** — Add `codecov` or `coverage.py` report to README.
+- [x] **pytest test suite** — Unit tests for formatting, icons, and WMO mappings.
+- [x] **API Response Mocking** — Test logic against fixture JSON without hitting live APIs.
+- [x] **CI Test Job** — Automated `pytest` runs on every push alongside lint and security.
+- [x] **Code Coverage Badge** — Integrated coverage reporting in README (currently ~98%).
 
 ---
 
 ## Phase 6: Distribution & Accessibility 🚀 IN PROGRESS
 
-**Goal:** Make Isobar easy to install and run on any machine, even without a Python environment.
+**Goal:** Make Isobar easy to install and run on any machine.
 
-- [x] **PyPI Release** — Publish `isobar-cli` to PyPI for easy `pip install` or `pipx install`.
-- [x] **Homebrew Formula** — Create a formula for `brew install isobar`.
-- [ ] **AUR Package** — Publish to the Arch User Repository for Arch Linux users.
+- [x] **PyPI Release** — `pip install isobar-cli`.
+- [x] **Homebrew Formula** — `brew install KnowOneActual/tap/isobar`.
+- [ ] **Standalone Binaries** — Generate executable binaries for macOS, Linux, and Windows (no Python required).
+- [ ] **AUR Package** — Publish to the Arch User Repository.
 - [ ] **Winget / Scoop** — Windows package manager support.
-- [ ] **Standalone Binaries** — Generate executable binaries for macOS, Linux, and Windows using PyInstaller or similar.
-- [ ] **Global Install UX** — Ensure `isobar` command works globally after install without manual PATH configuration.
 
 ---
 
-## Nice to Have (Carefully Considered)
+## Phase 7: Human Context & Intuition 💡 NEXT
 
-Ideas that could be useful but are not core to the current mission. Will only ship if they don't compromise simplicity. (After careful testing, gathering feedback, and thoughtful review, we've concluded that these elements are valuable and will be added to the project to enhance its overall usefulness.)
- 
-- [x] **Celsius / metric units flag** — `--metric` for non-Fahrenheit users.
-- [x] **Hourly outlook** — Next 12h temperature curve, opt-in via `--hourly`.
-- [x] **Multiple cities** — `isobar Chicago London Tokyo` side-by-side comparison.
-- [x] **Air Quality Index (AQI)** — Integrated health classification.
-- [x] **Fuzzy City Suggestions** — "Did you mean?" suggestions for typos.
-- [x] **Shell completion** — Tab-complete city names from cache history.
+**Goal:** Move beyond raw data to provide human-centered context.
+
+- [ ] **Clothing Recommendations** — Simple "Preparation" line: *"Heavy jacket & gloves"* or *"T-shirt weather"*.
+- [ ] **Yesterday Comparison** — *"It's 10°F colder than yesterday at this time"* for relative context.
+- [ ] **UV Index & Sun Protection** — *"UV is High: Wear sunscreen if outside for >20 mins."*
+- [ ] **Wind Gust Alert** — Specifically highlight if gusts significantly exceed average wind speed.
+- [ ] **"Home City" Persistence** — `isobar --set-home "City"` to skip IP lookups and get instant local results.
 
 ---
 
@@ -97,18 +100,12 @@ Not planned. Noted here to say: *"Not unless there's a very strong reason."*
 - [ ] **Animated icons**
 - [ ] **Push notifications / alerts**
 
-If any of these are ever considered, they must:
-1. Not require config files for basic use.
-2. Keep `isobar` simple and uncluttered.
-3. Justify themselves in terms of comfort-understanding, not aesthetics alone.
-
 ---
 
 ## How to Use This Roadmap
 
 If you're proposing a change:
-- Point to where it fits (Phase 1–5, Nice to Have, or Future).
-- Explain why it deserves to move from "Future" to a real phase.
+- Point to where it fits (Phase 1–7 or Future).
 - Be explicit about what you'd **remove**, not just what you'd add.
 
 > The roadmap is a **guardrail against scope creep**, not a promise that everything listed will ship.
