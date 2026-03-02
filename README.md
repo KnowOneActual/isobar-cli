@@ -66,9 +66,9 @@ pip install isobar-cli
 
 ---
 
-### 🎓 A Personal Note on Homebrew
+> A Personal Note on Homebrew
 
-Isobar is the first project I've ever pushed to Homebrew. It was a rough road with some trial and error involving virtual environments and dependency resource mapping, but it was an incredible learning experience. If you're installing via `brew`, thanks for being part of that journey!
+Isobar is the first project I've ever pushed to Homebrew. It was a rough road with some trial and error involving virtual environments and dependency resource mapping, but it was a good learning experience. If you're installing via `brew`, thanks for being part of that journey!
 
 
 Or install from source:
