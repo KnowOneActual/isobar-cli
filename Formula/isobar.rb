@@ -10,10 +10,15 @@ class Isobar < Formula
   depends_on "python@3.12"
 
   def install
+    # Create a virtualenv in libexec
     venv = virtualenv_create(libexec, "python3.12")
-    # We'll let pip handle the heavy lifting for dependencies to utilize wheels
-    # while still allowing Homebrew to manage the virtualenv.
-    venv.pip_install "isobar-cli"
+    
+    # Install the package and its dependencies from PyPI (using wheels for speed)
+    # This is more robust than the previous simple call.
+    system libexec/"bin/pip", "install", "isobar-cli"
+    
+    # Explicitly link the binary so 'isobar' works in the terminal
+    bin.install_symlink libexec/"bin/isobar"
   end
 
   test do
