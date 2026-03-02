@@ -67,7 +67,7 @@ Everything here is optional until it proves it actually improves that mission.
 **Goal:** Make Isobar easy to install and run on any machine, even without a Python environment.
 
 - [x] **PyPI Release** — Publish `isobar-cli` to PyPI for easy `pip install` or `pipx install`.
-- [ ] **Homebrew Formula** — Create a formula for `brew install isobar`.
+- [x] **Homebrew Formula** — Create a formula for `brew install isobar`.
 - [ ] **AUR Package** — Publish to the Arch User Repository for Arch Linux users.
 - [ ] **Winget / Scoop** — Windows package manager support.
 - [ ] **Standalone Binaries** — Generate executable binaries for macOS, Linux, and Windows using PyInstaller or similar.

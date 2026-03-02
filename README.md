@@ -50,6 +50,12 @@ The recommended way to install Isobar is via [pipx](https://github.com/pypa/pipx
 pipx install isobar-cli
 ```
 
+You can also install via [Homebrew](https://brew.sh/):
+
+```bash
+brew install KnowOneActual/tap/isobar
+```
+
 Alternatively, you can install directly from PyPI:
 
 ```bash
