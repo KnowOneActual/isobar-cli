@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **PyPI Release** — `isobar-cli` is now available on PyPI. Install via `pip install isobar-cli`.
+- **Homebrew Tap** — Now available via a custom tap. Install with `brew install KnowOneActual/tap/isobar`.
 
 ### Changed
 - **Simplified CLI Usage** — Removed the redundant `--city` flag. Multi-word cities are now handled with standard quotes (e.g., `"New York"`) instead of underscores.

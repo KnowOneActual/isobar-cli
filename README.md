@@ -56,11 +56,20 @@ You can also install via [Homebrew](https://brew.sh/):
 brew install KnowOneActual/tap/isobar
 ```
 
+> **Note:** Installing via Homebrew builds several high-performance dependencies (like `numpy` and `h3`) from source. This is a robust, isolated install but may take 5-10 minutes to complete depending on your machine.
+
 Alternatively, you can install directly from PyPI:
 
 ```bash
 pip install isobar-cli
 ```
+
+---
+
+### 🎓 A Personal Note on Homebrew
+
+Isobar is the first project I've ever pushed to Homebrew. It was a rough road with some trial and error involving virtual environments and dependency resource mapping, but it was an incredible learning experience. If you're installing via `brew`, thanks for being part of that journey!
+
 
 Or install from source:
 
