@@ -56,7 +56,7 @@ You can also install via [Homebrew](https://brew.sh/):
 brew install KnowOneActual/tap/isobar
 ```
 
-> **Note:** Installing via Homebrew builds several high-performance dependencies (like `numpy` and `h3`) from source. This is a robust, isolated install but may take 5-10 minutes to complete depending on your machine.
+> **Note:** Installing via Homebrew builds several high-performance dependencies (like `numpy` and `h3`) from source. This is a robust, isolated install but may take 5-10 minutes to complete as it compiles these C extensions.
 
 Alternatively, you can install directly from PyPI:
 
