@@ -10,6 +10,10 @@ jobs:
     name: Build and publish to PyPI
     runs-on: ubuntu-latest
     if: github.repository == 'KnowOneActual/isobar-cli'
+    # These permissions are required for secure authentication with PyPI
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
