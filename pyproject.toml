@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "isobar-cli"
-version = "0.6.3"
+version = "1.0.0"
 description = "A visually pleasing terminal weather tool focusing on Real Feel and Windchill."
 authors = [
   { name="Beau Bremer / KnowOneActual" },
@@ -13,7 +13,7 @@ readme = "README.md"
 license = { text = "MIT" }
 keywords = ["weather", "cli", "terminal", "meteo", "forecast"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",
