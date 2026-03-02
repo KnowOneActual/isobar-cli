@@ -62,11 +62,11 @@ Everything here is optional until it proves it actually improves that mission.
 
 ---
 
-## Phase 6: Distribution & Accessibility 🚀 NEXT
+## Phase 6: Distribution & Accessibility 🚀 IN PROGRESS
 
 **Goal:** Make Isobar easy to install and run on any machine, even without a Python environment.
 
-- [ ] **PyPI Release** — Publish `isobar-cli` to PyPI for easy `pip install` or `pipx install`.
+- [x] **PyPI Release** — Publish `isobar-cli` to PyPI for easy `pip install` or `pipx install`.
 - [ ] **Homebrew Formula** — Create a formula for `brew install isobar`.
 - [ ] **AUR Package** — Publish to the Arch User Repository for Arch Linux users.
 - [ ] **Winget / Scoop** — Windows package manager support.
