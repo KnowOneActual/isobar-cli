@@ -3,7 +3,7 @@
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-98%25-green)
 [![PyPI version](https://badge.fury.io/py/isobar-cli.svg)](https://badge.fury.io/py/isobar-cli)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.1-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
