@@ -29,16 +29,7 @@ def main(
     cities: Annotated[
         Optional[list[str]],
         typer.Argument(
-            help="City name(s) (detects automatically if omitted). Use underscores for multi-word cities.",
-            autocompletion=city_complete,
-        ),
-    ] = None,
-    city_option: Annotated[
-        Optional[str],
-        typer.Option(
-            "--city",
-            "-c",
-            help="City name as a flag (alternative to positional argument)",
+            help="City name(s) (detects automatically if omitted). Use quotes for multi-word cities (e.g. \"New York\").",
             autocompletion=city_complete,
         ),
     ] = None,
@@ -74,16 +65,13 @@ def main(
         isobar                        # Auto-detect location
         isobar Chicago                # Single city
         isobar London Tokyo Paris     # Multiple cities
-        isobar --city Tokyo           # Flag style
-        isobar New_York               # Underscores for multi-word cities
+        isobar "New York"             # Quotes for multi-word cities
         isobar --forecast             # Current + 7-day outlook
         isobar --hourly               # Current + next 12 hours
         isobar --metric               # Metric units
     """
     # Resolve cities list
     cities_to_fetch = []
-    if city_option:
-        cities_to_fetch.append(city_option)
     if cities:
         cities_to_fetch.extend(cities)
 

@@ -55,12 +55,10 @@ pip install .
 # Auto-detect your location
 isobar
 
-# Specify a city — positional or flag style
+# Specify a city
 isobar Chicago
 isobar London Tokyo Paris     # Multiple cities
-isobar New_York               # Underscores for multi-word cities
-isobar --city Tokyo      # --city flag
-isobar -c London         # -c short flag
+isobar "New York"             # Use quotes for multi-word cities
 
 # Hourly outlook (next 12h)
 isobar --hourly
@@ -69,8 +67,8 @@ isobar -H
 # 7-day forecast
 isobar --forecast
 isobar -f
-isobar --city Paris --forecast
-isobar -c Sydney -f
+isobar "San Francisco" --forecast
+isobar -f Sydney
 
 # Metric units (Celsius, km/h, mm)
 isobar --metric

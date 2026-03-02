@@ -187,7 +187,7 @@ def test_main_city_option(monkeypatch):
         "sunset": "6:00 PM",
         "units": {"temp": "F", "wind": "mph", "precip": "in"}
     })
-    result = runner.invoke(app, ["--city", "Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
+    result = runner.invoke(app, ["Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Tokyo" in result.output
 
 def test_city_complete(monkeypatch):
