@@ -44,7 +44,13 @@ Most weather apps overwhelm you with data. Isobar strips away everything except 
 
 ## 🚀 Installation
 
-Install directly from PyPI:
+The recommended way to install Isobar is via [pipx](https://github.com/pypa/pipx), which installs the tool in an isolated environment:
+
+```bash
+pipx install isobar-cli
+```
+
+Alternatively, you can install directly from PyPI:
 
 ```bash
 pip install isobar-cli
