@@ -3,8 +3,8 @@ class Isobar < Formula
 
   desc "Terminal weather tool focused on what it FEELS LIKE outside"
   homepage "https://github.com/KnowOneActual/isobar-cli"
-  url "https://files.pythonhosted.org/packages/15/18/06bf59f59c673bd93d747ab73074353d718d52be6a5d695813bbef8f6d26/isobar_cli-1.0.0.tar.gz"
-  sha256 "62b28d4f97ae0efced4d18d82e23b636252a9aac74a4a8b2ff8f362c98399f40"
+  url "https://files.pythonhosted.org/packages/b6/14/cff35f1ef59bf4dd969a42dab8f7bf83395af66652541b8772d275eab25f/isobar_cli-1.0.1.tar.gz"
+  sha256 "f215cf9883922fbc4fa4922572d6b6eaa3e889384a4a9c5ab1a4bfe6be3a95fe"
   license "MIT"
 
   depends_on "python@3.12"
