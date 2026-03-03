@@ -1,4 +1,4 @@
-# Isobar CLI
+# Isobar CLI 
 
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-98%25-green)
