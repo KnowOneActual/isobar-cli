@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Create results directory
+        run: mkdir -p sast-results
+
       # Deps/FS scan (Python/JS/Bash files)
       - name: Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -25,7 +28,7 @@ jobs:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'sarif'
-          output: 'trivy.sarif'
+          output: 'sast-results/trivy.sarif'
           severity: 'CRITICAL,HIGH'
           ignore-unfixed: true
 
@@ -33,15 +36,13 @@ jobs:
       - name: Bandit Python scan
         run: |
           pip install bandit
-          mkdir -p bandit-report
-          bandit -r . -f sarif -o bandit-report/bandit-results.sarif -c .bandit || true
+          bandit -r . -f sarif -o sast-results/bandit.sarif -c .bandit || true
 
       # JS/HTML/Python security
       - name: Semgrep Scan
         run: |
           python3 -m pip install semgrep
-          mkdir -p results
-          semgrep scan --sarif --output=results/semgrep.sarif --config=auto || true
+          semgrep scan --sarif --output=sast-results/semgrep.sarif --config=auto || true
 
       # Bash script lint/security
       - name: ShellCheck
@@ -51,10 +52,7 @@ jobs:
 
       # Upload all to GitHub Security tab
       - name: Upload SARIF results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: |
-            trivy.sarif
-            results/semgrep.sarif
-            bandit-report/bandit-results.sarif
+          sarif_file: sast-results
