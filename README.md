@@ -163,7 +163,7 @@ isobar --install-completion bash
 
 ## 🔒 Security
 
-Security is a top priority for Isobar CLI. We employ multiple layers of automated scanning to ensure the tool remains safe and secure for all users.
+Security is a priority for Isobar CLI. Employ multiple layers of automated scanning to ensure the tool remains safe and secure for all users.
 
 ### Security Measures
 - **Vulnerability Scanning:** [Trivy](https://github.com/aquasecurity/trivy) scans our filesystem and dependencies for known vulnerabilities (CVEs).
