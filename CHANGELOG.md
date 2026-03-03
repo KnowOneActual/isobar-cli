@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.1] - 2026-03-03
 
 ### Added
 - **Comprehensive Security Scanning** — Integrated Trivy, Bandit, Semgrep, and ShellCheck into a new GitHub Actions workflow, outputting to the GitHub Security tab.
@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Insecure Transport (HTTPS)** — Resolved a security finding by switching from `ip-api.com` (HTTP) to `ipwho.is` (HTTPS) for automated location detection.
+- **Project Tone** — Standardized documentation and source code to use a professional, objective tone while preserving the project's intuitive personality.
 
 ## [1.0.0] - 2026-03-02
 
