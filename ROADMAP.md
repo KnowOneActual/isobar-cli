@@ -1,113 +1,108 @@
 # Isobar CLI Roadmap
 
-This roadmap describes **intentional, phased changes** to Isobar CLI.
+This roadmap describes the **intentional, phased development** of Isobar CLI.
 
-The mission stays the same:
+## Mission Statement
 
-> Help you quickly understand what it feels like outside, from your terminal.
+> Help people quickly understand what it feels like outside, right from the terminal.
 
-Everything here is optional until it proves it actually improves that mission.
-
----
-
-## Phase 1: Speed & Flow ✅ COMPLETE
-
-**Goal:** Make the existing experience faster and more convenient.
-
-- [x] **Local Caching (15 minutes)** — Cache per city in `~/.cache/isobar/`. Avoids hammering the API; repeat calls feel instant.
-- [x] **Auto-Location** — Run `isobar` with no arguments to detect city via IP. Fails gracefully with a clear message.
-- [x] **Fuzzy City Suggestions** — "Did you mean?" suggestions for typos using geocoding metadata.
-- [x] **Shell Completion** — Tab-complete city names from your search history (`isobar --install-completion`).
+Features are evaluated based on their ability to improve the clarity and speed of weather-related preparation decisions.
 
 ---
 
-## Phase 2: Deeper Comfort Context ✅ COMPLETE
+## Phase 1: Performance & Flow ✅ COMPLETE
 
-**Goal:** Add information that directly informs comfort decisions, without turning into a dashboard.
+**Goal:** Enhance core usability and convenience.
 
-- [x] **Precipitation Probability** — Next 6h rain chance (%) with a plain-English comfort headline.
-- [x] **Rain & Snow Totals** — Next 6h rainfall/snowfall in inches (or mm).
-- [x] **Sunrise & Sunset Times** — Shown in the city's local timezone (not yours).
-- [x] **Air Quality Index (AQI)** — Integrated US AQI data with color-coded health classifications (Good, Moderate, etc.).
-- [x] **Celsius / Metric Units** — Full support for `--metric` / `-m` across all displays and caches.
+- [x] **Local Caching (15 minutes)** — Persistent cache per city in `~/.cache/isobar/` to reduce API latency.
+- [x] **Auto-Location** — Automated city detection via IP.
+- [x] **Fuzzy City Suggestions** — Correction suggestions for misspelled city names.
+- [x] **Shell Completion** — Tab-completion for city names from search history.
 
 ---
 
-## Phase 3: Visual Communication & Forecasting ✅ COMPLETE
+## Phase 2: Contextual Comfort ✅ COMPLETE
 
-**Goal:** Improve how information is communicated, not how much.
+**Goal:** Integrate metrics that directly inform preparation decisions.
 
-- [x] **Weather Condition Icons** — WMO weather code mapped to emoji + plain-English description.
-- [x] **7-Day Forecast (`--forecast` / `-f`)** — Full week outlook with daily icons, color-coded highs/lows, and rain probability.
-- [x] **Hourly Outlook (`--hourly` / `-H`)** — Next 12h temperature curve and rain probability.
-- [x] **Side-by-Side Comparison** — Compare multiple cities in columns (e.g., `isobar London Tokyo Paris`).
-- [x] **Simplified Positional CLI** — Removed redundant `--city` flags in favor of direct, intuitive arguments (`isobar "New York"`).
+- [x] **Precipitation Probability** — 6-hour precipitation forecasts with plain-English summaries.
+- [x] **Precipitation Totals** — Expected rainfall and snowfall amounts.
+- [x] **Solar Events** — Sunrise and sunset times in the local city timezone.
+- [x] **Air Quality Index (AQI)** — US AQI data with color-coded health classifications.
+- [x] **Metric Support** — Comprehensive support for Celsius and metric units.
+
+---
+
+## Phase 3: Visualization & Forecasting ✅ COMPLETE
+
+**Goal:** Optimize information density and communication.
+
+- [x] **Condition Icons** — WMO condition mappings to visual emoji and descriptions.
+- [x] **7-Day Forecast** — Week-at-a-glance outlook with highs, lows, and precipitation trends.
+- [x] **Hourly Outlook** — Short-term temperature and precipitation trends.
+- [x] **Multi-City Comparison** — Side-by-side weather comparisons in a single view.
+- [x] **CLI Refinement** — Streamlined positional arguments for intuitive usage.
 
 ---
 
 ## Phase 4: Quality & Trust ✅ COMPLETE
 
-**Goal:** Make the project safe to contribute to and easy to trust.
+**Goal:** Ensure security, reliability, and maintainability.
 
-- [x] **GitHub Actions CI** — Automated `ruff check` (lint) + `pip-audit` (security scan) on every push.
-- [x] **Comprehensive Security Scans** — Trivy (filesystem), Bandit/Semgrep (SAST), and ShellCheck integration via SARIF to the Security tab.
-- [x] **Dependabot** — Automated PRs for keeping Python dependencies and GitHub Actions up to date.
-- [x] **Release Drafter** — Automated generation of categorized release notes from PR labels.
-- [x] **README Badges** — Live CI status, security scan, version, ruff, Python 3.8+, and MIT license badges.
-- [x] **Keep a Changelog** — Every release documented with dated version entries.
-
----
-
-## Phase 5: Tests & Reliability ✅ COMPLETE
-
-**Goal:** Ensure correctness survives future changes.
-
-- [x] **pytest test suite** — Unit tests for formatting, icons, and WMO mappings.
-- [x] **API Response Mocking** — Test logic against fixture JSON without hitting live APIs.
-- [x] **CI Test Job** — Automated `pytest` runs on every push alongside lint and security.
-- [x] **Codecov Integration** — Automated test coverage reporting directly on Pull Requests, maintaining ~98% coverage.
+- [x] **GitHub Actions CI** — Automated linting and security scanning on all pushes.
+- [x] **Comprehensive Security Scans** — Integration of Trivy, Bandit, Semgrep, and ShellCheck.
+- [x] **Dependabot** — Automated dependency management for security and stability.
+- [x] **Release Drafter** — Categorized release notes automated from PR metadata.
+- [x] **Status Badges** — Real-time monitoring of project health in the repository.
+- [x] **Changelog Maintenance** — Detailed documentation of every release and notable change.
 
 ---
 
-## Phase 6: Distribution & Accessibility 🚀 IN PROGRESS
+## Phase 5: Testing & Reliability ✅ COMPLETE
 
-**Goal:** Make Isobar easy to install and run on any machine.
+**Goal:** Verify functional correctness and prevent regressions.
 
-- [x] **PyPI Release** — `pip install isobar-cli`.
-- [x] **Homebrew Formula** — `brew install KnowOneActual/tap/isobar`.
-- [ ] **Standalone Binaries** — Generate executable binaries for macOS, Linux, and Windows (no Python required).
-- [ ] **AUR Package** — Publish to the Arch User Repository.
-- [ ] **Winget / Scoop** — Windows package manager support.
-
----
-
-## Phase 7: Human Context & Intuition 💡 NEXT
-
-**Goal:** Move beyond raw data to provide human-centered context.
-
-- [ ] **Clothing Recommendations** — Simple "Preparation" line: *"Heavy jacket & gloves"* or *"T-shirt weather"*.
-- [ ] **Yesterday Comparison** — *"It's 10°F colder than yesterday at this time"* for relative context.
-- [ ] **UV Index & Sun Protection** — *"UV is High: Wear sunscreen if outside for >20 mins."*
-- [ ] **Wind Gust Alert** — Specifically highlight if gusts significantly exceed average wind speed.
-- [ ] **"Home City" Persistence** — `isobar --set-home "City"` to skip IP lookups and get instant local results.
+- [x] **pytest Suite** — Unit tests for core formatting and logic modules.
+- [x] **API Mocking** — Offline test execution using simulated API responses.
+- [x] **Automated Verification** — CI-integrated test runs on every pull request.
+- [x] **Code Coverage Tracking** — Integrated reporting to maintain high test coverage standards.
 
 ---
 
-## Future (Highly Skeptical)
+## Phase 6: Distribution ✅ IN PROGRESS
 
-Not planned. Noted here to say: *"Not unless there's a very strong reason."*
+**Goal:** Improve accessibility across different platforms and environments.
 
-- [ ] **Multi-language support**
-- [ ] **Customization surface** (colors, themes, layouts)
-- [ ] **Animated icons**
-- [ ] **Push notifications / alerts**
+- [x] **PyPI Release** — Official package distribution via `pip`.
+- [x] **Homebrew Formula** — Native installation support for macOS and Linux via `brew`.
+- [ ] **Standalone Binaries** — Executable builds for macOS, Linux, and Windows to eliminate local Python dependencies.
+- [ ] **AUR Package** — Distribution via the Arch User Repository.
+- [ ] **Windows Package Managers** — Support for Winget and Scoop.
 
 ---
 
-## How to Use This Roadmap
+## Phase 7: Intuition & Analysis 💡 NEXT
 
-If you're proposing a change:
-- Point to where it fits (Phase 1–7 or Future).
-- Be explicit about what you'd **remove**, not just what you'd add.
+**Goal:** Provide higher-level context and automated insights.
 
-> The roadmap is a **guardrail against scope creep**, not a promise that everything listed will ship.
+- [ ] **Preparation Guidance** — Clothing and gear suggestions based on outdoor conditions.
+- [ ] **Temporal Context** — Comparative analysis with previous day conditions.
+- [ ] **UV Index Monitoring** — Sun protection guidance based on UV intensity.
+- [ ] **Wind Gust Alerts** — Specific highlighting of significant gust events.
+- [ ] **Persistence** — Support for a "Home City" to bypass IP lookups.
+
+---
+
+## Future Considerations
+
+Proposed features are evaluated against the core project philosophy. Complexity is added only when it provides significant value for situational awareness.
+
+---
+
+## Contribution Guidelines
+
+New feature proposals should specify:
+- The target roadmap phase.
+- The specific value provided for situational weather awareness.
+
+> The roadmap is a **guardrail against scope creep**, not a promise that everything listed will ship. It keeps the project sharp and focused on its core purpose.

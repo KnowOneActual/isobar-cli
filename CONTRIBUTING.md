@@ -1,96 +1,91 @@
 # Contributing to Isobar CLI
 
-Thanks for your interest in contributing to Isobar CLI!
+Thank you for your interest in contributing to Isobar CLI.
 
-This project is intentionally small and opinionated. The goal is not to become a full-featured weather dashboard, but to answer one question well:
+This project is intentionally focused and opinionated. The mission is not to provide a comprehensive weather dashboard, but to answer one question well:
 
 > “What does it feel like outside right now?”
 
-Contributions are welcome as long as they respect that constraint.
+Contributions are welcome as long as they align with this objective and the project's design principles.
 
 ## Core Principles
 
-Before opening an issue or PR, align with these principles:
+Proposed changes should align with the following principles:
 
-- **Single purpose** – Everything should serve the “what does it feel like outside?” question.
-- **Essential over comprehensive** – Fewer, more meaningful data points beat large tables of stats.
-- **Terminal-native** – Fast, readable, no GUI thinking sneaking in.
-- **Zero friction** – Avoid config, setup steps, or requirements unless absolutely necessary.
-- **Intentional features** – No feature “just because it’d be cool.”
+- **Single purpose** – Everything should serve the “what does it feel like outside?” mission.
+- **Essential over comprehensive** – Prioritize meaningful data points over exhaustive statistics.
+- **Terminal-native** – Fast, readable, and focused on the command-line experience.
+- **Zero friction** – Avoid introducing complex configuration or setup requirements.
+- **Intentional features** – Features are added based on their utility for situational awareness, not "just because."
 
-If a change doesn’t clearly improve comfort-understanding or developer ergonomics, it probably doesn’t belong.
+Changes that do not clearly enhance comfort-understanding or developer ergonomics are likely outside the project's scope.
 
-## What’s in scope
+## Project Scope
 
-Good candidates for contributions:
+### In Scope
+- Enhancing output clarity (layout, wording, accessibility).
+- Improving comfort-related metrics (e.g., AQI, solar events, short-term forecasts) consistent with the roadmap.
+- Performance optimizations (faster responses, efficient caching) that maintain simplicity.
+- Increasing robustness (better error handling, edge case management, tests).
+- Developer experience improvements that do not increase end-user complexity.
 
-- Improving clarity of the existing output (layout, wording, accessibility).
-- Enhancing comfort-related metrics (e.g., AQI, sunrise/sunset, short forecast) in ways consistent with the roadmap.
-- Performance improvements (faster responses, sensible caching) without complicating usage.
-- Robustness (better error handling, edge cases, tests).
-- Developer experience improvements that don’t leak complexity onto the user.
-
-## What’s out of scope (for now)
-
-Changes that are usually not a fit:
-
-- Heavy customization systems (themes, arbitrary layouts, fonts).
+### Out of Scope
+- Heavy customization systems (themes, arbitrary layouts, font management).
 - Turning Isobar into a general-purpose weather dashboard.
-- Features unrelated to the “feels like outside right now” mission.
-- Large dependency trees or complex configuration for marginal benefit.
+- Features unrelated to the "feels like outside right now" mission.
+- Significant increases in dependency complexity for marginal benefit.
 
-If you’re unsure, open a small issue first and describe the problem and why it matters.
+For ambiguous cases, please open an issue to describe the problem and the proposed value.
 
-## How to contribute
+## Contribution Process
 
-1. **Open an Issue (recommended)**
-   - Describe the problem you’re solving, not just the solution you want.
-   - Explain how it helps answer “what does it feel like outside?”
+1. **Open an Issue**
+   - Define the problem being addressed.
+   - Explain how the proposed change supports the project's core mission.
 
-2. **Fork & Branch**
-   - Fork the repo.
+2. **Fork and Branch**
+   - Fork the repository.
    - Create a branch from `main`:
      ```bash
      git checkout -b feature/short-description
      ```
-   - If you use `start-work.sh`, you can let it handle the branch naming for you.
+   - The `start-work.sh` script may be used to assist with branch management.
 
-3. **Make focused changes**
-   - Keep PRs small and single-purpose.
-   - If you find unrelated cleanups, either keep them minimal or send them as a separate PR.
+3. **Implement Focused Changes**
+   - Maintain small, single-purpose Pull Requests.
+   - Address unrelated cleanups in separate PRs where possible.
 
-4. **Run tests & checks**
+4. **Verify Changes**
    - Ensure the CLI still runs:
      ```bash
      pip install -e ".[test]"
      isobar "Chicago"
      ```
-   - Run the test suite:
+   - Execute the test suite:
      ```bash
      pytest
      ```
-   - For detailed instructions on writing and running tests, see [docs/TESTING.md](docs/TESTING.md).
+   - Refer to [docs/TESTING.md](docs/TESTING.md) for detailed testing instructions.
 
-5. **Open a Pull Request**
-   - Clearly state:
-     - The problem.
-     - The proposed change.
-     - How it supports the project philosophy and roadmap.
-   - If your change touches user-facing behavior, include before/after screenshots or terminal output.
+5. **Submit a Pull Request**
+   - Provide a clear description of:
+     - The problem addressed.
+     - The implementation details.
+     - Alignment with the project philosophy and roadmap.
+   - For user-facing changes, include example output or screenshots.
 
-## Design discussion
+## Design Alignment
 
-For bigger ideas or direction shifts, please:
+For significant structural or directional changes:
+- Reference the "Philosophy" and "Design Principles" sections in the `README.md`.
+- Identify the relevant roadmap items in `ROADMAP.md` or propose new strategic additions.
 
-- Reference the sections in `README.md` (“Philosophy”, “Project Direction”, “What This Project Is Not”).
-- Reference specific roadmap items in `ROADMAP.md` where your idea fits or propose a new item.
+Expect the following question during code review: **"How does this help someone understand what it feels like outside?"** This focus ensures Isobar stays true to its mission.
 
-The maintainer may ask “How does this help someone understand what it feels like outside?” more than once. That’s by design.
+## Code Standards
 
-## Code style
-
-- Favor readability and simplicity over cleverness.
-- Keep modules focused (`api`, `ui`, CLI entrypoint).
+- Prioritize readability and simplicity over cleverness.
+- Maintain modular separation (e.g., `api`, `ui`, CLI entrypoint).
 - Avoid introducing heavy dependencies without a strong, user-facing reason.
 
-Thanks for helping keep Isobar CLI small, sharp, and intentional.
+Thank you for contributing to the continued development of a focused and intentional Isobar CLI.

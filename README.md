@@ -9,68 +9,61 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Security Scan](https://github.com/KnowOneActual/isobar-cli/actions/workflows/security.yml/badge.svg)
 
-A terminal weather tool designed to give you a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
+A terminal weather tool designed to provide a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
 
 ## Philosophy
 
-Isobar CLI answers a simple question: **"What does it feel like outside right now, and how do I prepare to be outside?"**
+Isobar CLI answers a simple question: **"What does it feel like outside right now, and do I need a jacket?"**
 
-Most weather apps overwhelm you with data. Isobar strips away everything except what matters when you're deciding whether to grab a jacket.
+Most weather apps overwhelm with data. Isobar strips away everything except what matters when deciding how to prepare for the day.
 
 ### Design Principles
-- **Essential over comprehensive** — Show Real Feel, not 47 data points
-- **Terminal-native** — Built for quick checks in your workflow
-- **Zero friction** — No API keys, no config files
-- **Information density** — Clean, borderless UI
-- **Intentional features** — Each must answer: *"Does this help understand what it feels like outside?"*
+- **Essential over comprehensive** — Show Real Feel, not 47 data points.
+- **Terminal-native** — Built for quick checks within a developer workflow.
+- **Zero friction** — No API keys or configuration files required.
+- **Information density** — Clean, borderless UI for maximum readability.
+- **Intentional features** — Each feature must answer: *"Does this help someone understand what it feels like outside?"*
 
 ## ✨ Features
 
-- **Auto-Location** — `isobar` detects your city automatically 🌍
+- **Auto-Location** — `isobar` detects the city automatically 🌍
 - **Weather Condition Icons** — WMO-standard emoji + plain-English description (☀️ Clear sky, 🌨️ Moderate snow, ⛈️ Thunderstorm)
-- **Real Feel** — Apparent temperature (what it *feels* like)
+- **Real Feel** — Apparent temperature metrics (what it *actually* feels like).
 - **Air Quality Index** — US AQI with health classifications 😷
 - **7-Day Forecast** — Full week outlook with color-coded highs/lows and daily rain %
-- **Hourly Outlook** — Next 12 hours of temp and rain chance (`--hourly`)
-- **Multiple Cities** — Compare weather across several cities at once (side-by-side)
-- **Smart Suggestions** — Fuzzy city name matching if you make a typo
-- **Shell Completion** — Tab-complete city names from your search history
-- **Dynamic Timezone** — Sunrise/sunset always shown in the city's local time, not yours
-- **Precipitation Forecast** — Next 6h rain/snow chance + totals
-- **Smart Caching** — 15-min cache per city (`~/.cache/isobar/`)
-- **Color-Coded Temps** — Cyan → Blue → Green → Yellow → Red
-- **Metric Support** — `--metric` or `-m` for Celsius, km/h, and mm
-- **No API Keys** — Free Open-Meteo + ip-api.com
-- **Zero Config** — Works instantly after `pip install .`
+- **Hourly Outlook** — Next 12 hours of temperature and rain chance (`--hourly`)
+- **Multiple Cities** — Compare weather across several cities side-by-side.
+- **Smart Suggestions** — Fuzzy city name matching if there is a typo.
+- **Shell Completion** — Tab-complete city names based on search history.
+- **Dynamic Timezone** — Sunrise/sunset shown in the city's local time, not yours.
+- **Precipitation Forecast** — Next 6h rain/snow chance and totals.
+- **Smart Caching** — 15-minute cache per city (`~/.cache/isobar/`)
+- **Color-Coded Temps** — Intuitive color mapping for temperature ranges.
+- **Metric Support** — `--metric` or `-m` for Celsius, km/h, and mm.
+- **No API Keys** — Free Open-Meteo and ip-api.com.
+- **Zero Config** — Works instantly after installation.
 
 ## 🚀 Installation
 
-The recommended way to install Isobar is via [pipx](https://github.com/pypa/pipx), which installs the tool in an isolated environment:
+The recommended way to install Isobar is via [pipx](https://github.com/pypa/pipx):
 
 ```bash
 pipx install isobar-cli
 ```
 
-You can also install via [Homebrew](https://brew.sh/):
+Installation is also supported via [Homebrew](https://brew.sh/):
 
 ```bash
 brew install KnowOneActual/tap/isobar
 ```
 
-> **Note:** Installing via Homebrew builds several high-performance dependencies (like `numpy` and `h3`) from source. This is a robust, isolated install but may take 5-10 minutes to complete as it compiles these C extensions.
+> **Note:** Installing via Homebrew builds several high-performance dependencies (like `numpy` and `h3`) from source. This ensures a robust, isolated install but may take 5-10 minutes to complete.
 
-Alternatively, you can install directly from PyPI:
+Alternatively, install directly from PyPI:
 
 ```bash
 pip install isobar-cli
 ```
-
----
-
-> A Personal Note on Homebrew
-
-Isobar is the first project I've ever pushed to Homebrew. It was a rough road with some trial and error involving virtual environments and dependency resource mapping, but it was a good learning experience. If you're installing via `brew`, thanks for being part of that journey!
-
 
 Or install from source:
 
@@ -83,7 +76,7 @@ pip install .
 ## 📱 Usage
 
 ```bash
-# Auto-detect your location
+# Auto-detect location
 isobar
 
 # Specify a city
@@ -109,7 +102,7 @@ isobar Tokyo -m
 
 ## ⌨️ Shell Completion
 
-Isobar supports tab-completion for city names based on your search history. To enable it for your shell:
+Isobar supports tab-completion for city names. To enable it for a shell:
 
 **Zsh:**
 ```bash
@@ -121,7 +114,7 @@ isobar --install-completion zsh
 isobar --install-completion bash
 ```
 
-*(Note: You may need to restart your terminal after installing completion).*
+*(Note: A terminal restart may be required after installation).*
 
 ## 🖥️ Example Output
 
@@ -153,38 +146,38 @@ isobar --install-completion bash
 |---|---|
 | [Typer](https://typer.tiangolo.com/) | CLI framework |
 | [Rich](https://github.com/Textualize/rich) | Terminal UI |
-| [Open-Meteo](https://open-meteo.com/) | Weather + forecast data (free, no key) |
-| [ip-api.com](http://ip-api.com/) | Auto-location detection (free) |
-| [timezonefinder](https://github.com/jannikmi/timezonefinder) | Dynamic timezone from coordinates (offline) |
+| [Open-Meteo](https://open-meteo.com/) | Weather and forecast data |
+| [ip-api.com](http://ip-api.com/) | Auto-location detection |
+| [timezonefinder](https://github.com/jannikmi/timezonefinder) | Dynamic timezone resolution |
 | [pytest](https://docs.pytest.org/) | Unit testing framework |
-| [requests-mock](https://requests-mock.readthedocs.io/) | Mocking for API testing |
-| [Ruff](https://docs.astral.sh/ruff/) | Linting + formatting |
-| [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning (CI) |
+| [requests-mock](https://requests-mock.readthedocs.io/) | API testing |
+| [Ruff](https://docs.astral.sh/ruff/) | Linting and formatting |
+| [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning |
 
 ## 🔒 Security
 
-Security is a priority for Isobar CLI. Employ multiple layers of automated scanning to ensure the tool remains safe and secure for all users.
+Security is a fundamental priority for Isobar CLI. Multiple layers of automated scanning ensure the tool remains safe and secure for all users.
 
 ### Security Measures
-- **Vulnerability Scanning:** [Trivy](https://github.com/aquasecurity/trivy) scans our filesystem and dependencies for known vulnerabilities (CVEs).
-- **Static Analysis (SAST):** [Bandit](https://github.com/PyCQA/bandit) and [Semgrep](https://semgrep.dev/) analyze our Python code for insecure patterns and potential exploits.
-- **Dependency Auditing:** [pip-audit](https://github.com/pypa/pip-audit) and GitHub Dependabot ensure our third-party packages are up-to-date and free of known issues.
-- **Script Linting:** [ShellCheck](https://www.shellcheck.net/) ensures our Bash scripts follow security best practices.
-- **Secret Scanning:** Automated checks prevent the accidental commitment of sensitive credentials or API keys.
+- **Vulnerability Scanning:** [Trivy](https://github.com/aquasecurity/trivy) scans the filesystem and dependencies for known vulnerabilities.
+- **Static Analysis (SAST):** [Bandit](https://github.com/PyCQA/bandit) and [Semgrep](https://semgrep.dev/) analyze the code for insecure patterns.
+- **Dependency Auditing:** [pip-audit](https://github.com/pypa/pip-audit) and GitHub Dependabot ensure third-party packages stay updated.
+- **Script Linting:** [ShellCheck](https://www.shellcheck.net/) enforces best practices for Bash scripts.
+- **Secret Scanning:** Automated checks prevent the accidental commitment of sensitive credentials.
 
-All security scans are integrated into our CI/CD pipeline and run on every push, pull request, and weekly schedule. Results are monitored via the GitHub Security tab.
+All security scans are integrated into the CI/CD pipeline and run on every push, pull request, and weekly schedule. Results are available via the GitHub Security tab.
 
 ## 📈 Project Status
 
-✅ **Phase 1 Complete** — Caching + Auto-Location  
-✅ **Phase 2 Complete** — Precipitation, Sunrise/Sunset, Condition Icons  
-✅ **Phase 3 Complete** — 7-Day Forecast, Dynamic Timezone, `--city` flag  
-✅ **CI/CD** — Ruff lint + security audit on every push and PR  
-See [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md)
+✅ **Phase 1 Complete** — Caching and Auto-Location  
+✅ **Phase 2 Complete** — Precipitation, Sunrise/Sunset, and Condition Icons  
+✅ **Phase 3 Complete** — 7-Day Forecast, Dynamic Timezone, and UI Refinements  
+✅ **CI/CD** — Linting and security auditing integrated into every push.  
+Refer to [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). New features must answer: **"Does this help understand what it feels like outside?"**
+Detailed instructions are available in [CONTRIBUTING.md](CONTRIBUTING.md). New features must answer: **"Does this help someone understand what it feels like outside?"**
 
 ## 📄 License
 
