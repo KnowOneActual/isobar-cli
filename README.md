@@ -147,7 +147,7 @@ isobar --install-completion bash
 | [Typer](https://typer.tiangolo.com/) | CLI framework |
 | [Rich](https://github.com/Textualize/rich) | Terminal UI |
 | [Open-Meteo](https://open-meteo.com/) | Weather and forecast data |
-| [ip-api.com](http://ip-api.com/) | Auto-location detection |
+| [ipwho.is](https://ipwho.is/) | Auto-location detection |
 | [timezonefinder](https://github.com/jannikmi/timezonefinder) | Dynamic timezone resolution |
 | [pytest](https://docs.pytest.org/) | Unit testing framework |
 | [requests-mock](https://requests-mock.readthedocs.io/) | API testing |

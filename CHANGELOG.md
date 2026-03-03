@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Release Drafter** — Added a workflow to automatically generate structured release notes based on PR labels (`feature`, `fix`, `chore`).
 - **Codecov Integration** — Integrated Codecov into the CI pipeline to track test coverage visually on every PR.
 
+### Fixed
+- **Insecure Transport (HTTPS)** — Resolved a security finding by switching from `ip-api.com` (HTTP) to `ipwho.is` (HTTPS) for automated location detection.
+
 ## [1.0.0] - 2026-03-02
 
 ### Added

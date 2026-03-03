@@ -14,14 +14,14 @@ def get_auto_location() -> Optional[str]:
             )
         }
         response = requests.get(
-            "http://ip-api.com/json/",
+            "https://ipwho.is/",
             headers=headers,
             timeout=3,
         )
         response.raise_for_status()
         data = response.json()
 
-        if data.get("status") == "success":
+        if data.get("success") is True:
             return data.get("city")
 
         return None
