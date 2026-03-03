@@ -1,45 +1,37 @@
-# Homebrew Journey: From zero to Tap
+# Homebrew Integration: Challenges and Implementation
 
-Getting `isobar` onto Homebrew was a milestone for the project, but it came with its own set of challenges. This log documents the "rough road" and what I learned along the way.
+This document logs the challenges and solutions encountered during the integration of `isobar` into the Homebrew ecosystem.
 
-## Initial Setup
-- **Tool used:** `homebrew-pypi-poet` (to generate the formula).
-- **Strategy:** Build a "tap" (a separate GitHub repository) at `KnowOneActual/homebrew-tap` to host the formula.
+## Initial Strategy
+- **Tooling:** `homebrew-pypi-poet` was used to generate the initial formula.
+- **Distribution:** A custom tap repository (`KnowOneActual/homebrew-tap`) was created to host the formula.
 
-## Challenges & Solutions
+## Key Technical Challenges
 
-### 1. The `NameError` (Virtualenvs)
-Initially, I faced a `NameError` related to `virtualenv_install_with_resources`.
-- **Cause:** Homebrew formulas that use Python virtualenvs require the `include Language::Python::Virtualenv` module. I also needed to ensure it was used correctly in the `install` block.
-- **Solution:** Switched to the robust `virtualenv_install_with_resources` method which handles isolation and symlinking automatically.
+### 1. Virtual Environment Installation
+Formulas using Python virtualenvs required the `include Language::Python::Virtualenv` module and correct implementation within the `install` block.
+- **Resolution:** The `virtualenv_install_with_resources` method was implemented to handle isolation and symlinking within the Homebrew environment.
 
-### 2. The `command not found` Error
-Even after a "successful" looking install, the `isobar` command wasn't working.
-- **Cause:** I tried letting `pip` handle the dependencies inside the virtualenv (which is fast because it uses wheels), but Homebrew's sandbox often blocks network requests during the build phase. This led to a broken, empty installation.
-- **Solution:** Reverted to the "standard" Homebrew way: explicitly listing every dependency as a `resource` in the formula. This ensures Homebrew downloads everything *before* the sandbox is closed.
+### 2. Dependency Management and Sandboxing
+Relying on `pip` to manage dependencies within the virtualenv resulted in broken installations because Homebrew's sandbox blocks network requests during the build phase.
+- **Resolution:** Every dependency was explicitly listed as a `resource` in the formula. This ensures Homebrew downloads all necessary components before entering the build sandbox.
 
-### 3. Missing Resources (`flatbuffers`)
-The build stalled because of a missing dependency for `timezonefinder`.
-- **Cause:** `poet` missed the `flatbuffers` resource because its URL wasn't easily discoverable on PyPI.
-- **Solution:** Manually researched the correct PyPI source URL and SHA256 for `flatbuffers` and added it to the formula.
+### 3. Discovered Resource Requirements
+Certain transitive dependencies, such as `flatbuffers` (required by `timezonefinder`), were omitted by automated tools because their URLs were not easily discoverable.
+- **Resolution:** Manual research identified the correct PyPI source URLs and SHA256 hashes, which were then manually added to the formula.
 
-### 4. The "Stall" (Compilation & CMake)
-Installation seemed to hang on `h3` or `numpy`.
-- **Cause:** Homebrew builds from source distributions (`.tar.gz`). Heavy libraries like `numpy` and `h3` (C/C++ extensions) require compilation. Specifically, `h3` requires `cmake` to build its C core, and without it, the build can stall or fail in the Homebrew sandbox.
-- **Solution:** Added `depends_on "cmake" => :build` to the formula. This ensures the environment has the necessary tools to compile the C extensions quickly and correctly.
-- **Learning:** `pipx` is faster because it uses wheels, but `brew` is more robust and isolated. We added a note to the README to warn users about the build time.
+### 4. Compilation and Build Prerequisites
+Installations for libraries such as `numpy` and `h3` (C/C++ extensions) require local compilation from source. `h3` specifically requires `cmake` for its C core.
+- **Resolution:** `depends_on "cmake" => :build` was added to the formula to provide the necessary build environment for C extensions. A note was added to the documentation to advise users on potential build times.
 
+## Core Lessons
+- **Isolation Standards:** Homebrew prioritizes environment isolation and building from source distribution over installation speed.
+- **Resource Definition:** Successful Homebrew integration for a Python CLI requires explicit definition of all transitive dependencies.
+- **Testing Requirements:** True tap verification is only possible after deployment and execution of `brew update`.
 
-## Key Learnings
-- **Homebrew is strict.** It values isolation and "building from source" over speed.
-- **Resources are everything.** For a Python CLI to work on Homebrew, you *must* explicitly define every single transitive dependency.
-- **Testing is hard.** You can't truly test a tap until it's pushed and `brew update` is run.
-
-## Final Result
-A working, isolated installation of `isobar` that lives in `/usr/local/Cellar/isobar/` and is symlinked to `/usr/local/bin/isobar`.
+## Implementation Details
+The final implementation provides a working, isolated installation of `isobar` in `/usr/local/Cellar/isobar/`, with a symlink provided at `/usr/local/bin/isobar`.
 
 ```bash
 brew install KnowOneActual/tap/isobar
 ```
-
-It was a tough road, but now `isobar` is part of the Homebrew ecosystem! 🍻

@@ -1,74 +1,74 @@
 # Testing Procedure
 
-This document outlines how to run and write tests for Isobar CLI. We use [pytest](https://docs.pytest.org/) for testing and [requests-mock](https://requests-mock.readthedocs.io/) to simulate API responses.
+This document outlines the procedures for executing and developing tests for Isobar CLI. The project utilizes [pytest](https://docs.pytest.org/) for test execution and [requests-mock](https://requests-mock.readthedocs.io/) for API simulation.
 
 ## 🛠 Setup
 
-Before running tests, install the project with the `test` extra:
+Prior to executing tests, install the project with the `test` extra:
 
 ```bash
 pip install -e ".[test]"
 ```
 
-This installs `pytest`, `requests-mock`, and all other necessary development dependencies.
+This ensures `pytest`, `requests-mock`, and all other development dependencies are available.
 
 ## 🚀 Running Tests
 
-### Standard Run
-Run all tests from the project root:
+### Standard Execution
+Execute all tests from the project root:
 ```bash
 pytest
 ```
 
-### With Coverage
-To see which parts of the code are covered (requires `pytest-cov`):
+### Coverage Analysis
+To analyze code coverage (requires `pytest-cov`):
 ```bash
 pytest --cov=isobar_cli
 ```
 
 ### Codecov Integration
-When you push code to GitHub or open a Pull Request, the CI pipeline automatically runs the test suite and uploads the coverage report to [Codecov.io](https://codecov.io). A bot will automatically comment on your PR with a summary of how your changes affect the overall project coverage.
+Upon pushing code to GitHub or opening a Pull Request, the CI pipeline automatically executes the test suite and uploads the coverage report to [Codecov.io](https://codecov.io). A summary of coverage impacts is automatically provided on Pull Requests.
 
-### Specific Files
-Run tests in a single file:
+### Targeted Execution
+Execute tests in a specific file:
 ```bash
 pytest tests/test_api.py
 ```
 
-## 🧪 Writing New Tests
+## 🧪 Developing New Tests
 
-All tests should be placed in the `tests/` directory and follow the `test_*.py` naming convention.
+All tests should be located in the `tests/` directory and adhere to the `test_*.py` naming convention.
 
 ### Cache Isolation
-Tests automatically use a temporary directory for caching thanks to a `pytest` fixture in `tests/test_api.py`. This ensures your local `~/.cache/isobar/` remains untouched and tests are reproducible.
+Tests utilize a temporary directory for caching, managed by a `pytest` fixture in `tests/test_api.py`. This ensures that local user caches remain unaffected and tests are reproducible.
 
-### CLI Integration Tests
-We use `typer.testing.CliRunner` in `tests/test_main.py` to test the full command-line experience. When adding new flags or arguments, add a corresponding test case there.
+### CLI Integration Testing
+`typer.testing.CliRunner` is used in `tests/test_main.py` to verify the command-line interface. New flags or arguments should include corresponding test cases in this module.
 
-### Mocking API Calls
-Isobar CLI depends on external APIs (Open-Meteo, ip-api.com). **Never make real network requests in tests.**
+### API Simulation
+Isobar CLI interacts with external APIs (Open-Meteo, ip-api.com). **Network requests are prohibited during test execution.**
 
-Use the `requests_mock` fixture to intercept calls:
+Utilize the `requests_mock` fixture to simulate API responses:
 
 ```python
-def test_my_feature(requests_mock):
-    # Intercept the Geocoding API
+def test_feature_implementation(requests_mock):
+    # Simulate the Geocoding API response
     requests_mock.get(
         "https://geocoding-api.open-meteo.com/v1/search?name=London&count=1&format=json",
         json={"results": [{"name": "London", "latitude": 51.5, "longitude": -0.1}]}
     )
     
-    # Now call your function
+    # Execute and verify the function
     ...
 ```
 
-### Key Areas to Test
-1. **API parsing**: Ensure new weather fields from Open-Meteo are handled correctly in `isobar_cli/api.py`.
-2. **UI formatting**: Verify that temperature colors and condition icons map correctly in `isobar_cli/ui.py`.
-3. **Location logic**: Test auto-detection fallbacks in `isobar_cli/location.py`.
+### Key Testing Areas
+1. **API Parsing**: Verify that weather fields from Open-Meteo are correctly processed in `isobar_cli/api.py`.
+2. **UI Rendering**: Ensure temperature color mapping and condition icons are correctly handled in `isobar_cli/ui.py`.
+3. **Location Resolution**: Verify auto-detection and fallback logic in `isobar_cli/location.py`.
 
-## 🧹 Linting & Style
-We use [Ruff](https://docs.astral.sh/ruff/) for linting and formatting. Ensure your code passes linting before submitting a PR:
+## 🧹 Linting & Style Standards
+The project employs [Ruff](https://docs.astral.sh/ruff/) for linting and formatting. Code must pass all style checks prior to pull request submission:
 
 ```bash
 ruff check .
