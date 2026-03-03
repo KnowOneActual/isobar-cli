@@ -1,0 +1,60 @@
+name: Full Security Scan (Python/JS/Bash)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Deps/FS scan (Python/JS/Bash files)
+      - name: Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy.sarif'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
+
+      # Python security (insecure code)
+      - name: Bandit Python scan
+        run: |
+          pip install bandit
+          mkdir -p bandit-report
+          bandit -r . -f sarif -o bandit-report/bandit-results.sarif -c .bandit || true
+
+      # JS/HTML/Python security
+      - name: Semgrep Scan
+        run: |
+          python3 -m pip install semgrep
+          mkdir -p results
+          semgrep scan --sarif --output=results/semgrep.sarif --config=auto || true
+
+      # Bash script lint/security
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          severity: warning
+
+      # Upload all to GitHub Security tab
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: |
+            trivy.sarif
+            results/semgrep.sarif
+            bandit-report/bandit-results.sarif

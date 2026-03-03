@@ -1,0 +1,3 @@
+[bandit]
+skips = ["tests"]
+exclude_dirs = [".venv", "venv", ".git", ".tox", ".pytest_cache", ".ruff_cache", "build", "dist"]

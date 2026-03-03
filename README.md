@@ -7,6 +7,7 @@
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![Security Scan](https://github.com/KnowOneActual/isobar-cli/actions/workflows/security.yml/badge.svg)
 
 A terminal weather tool designed to give you a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
 
@@ -159,6 +160,19 @@ isobar --install-completion bash
 | [requests-mock](https://requests-mock.readthedocs.io/) | Mocking for API testing |
 | [Ruff](https://docs.astral.sh/ruff/) | Linting + formatting |
 | [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning (CI) |
+
+## 🔒 Security
+
+Security is a top priority for Isobar CLI. We employ multiple layers of automated scanning to ensure the tool remains safe and secure for all users.
+
+### Security Measures
+- **Vulnerability Scanning:** [Trivy](https://github.com/aquasecurity/trivy) scans our filesystem and dependencies for known vulnerabilities (CVEs).
+- **Static Analysis (SAST):** [Bandit](https://github.com/PyCQA/bandit) and [Semgrep](https://semgrep.dev/) analyze our Python code for insecure patterns and potential exploits.
+- **Dependency Auditing:** [pip-audit](https://github.com/pypa/pip-audit) and GitHub Dependabot ensure our third-party packages are up-to-date and free of known issues.
+- **Script Linting:** [ShellCheck](https://www.shellcheck.net/) ensures our Bash scripts follow security best practices.
+- **Secret Scanning:** Automated checks prevent the accidental commitment of sensitive credentials or API keys.
+
+All security scans are integrated into our CI/CD pipeline and run on every push, pull request, and weekly schedule. Results are monitored via the GitHub Security tab.
 
 ## 📈 Project Status
 
