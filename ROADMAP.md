@@ -50,8 +50,10 @@ Everything here is optional until it proves it actually improves that mission.
 **Goal:** Make the project safe to contribute to and easy to trust.
 
 - [x] **GitHub Actions CI** — Automated `ruff check` (lint) + `pip-audit` (security scan) on every push.
-- [x] **README Badges** — Live CI status, version, ruff, Python 3.8+, and MIT license badges.
-- [x] **Ruff Linting** — Full rule set enforced (pycodestyle, pyflakes, isort, bugbear, etc.).
+- [x] **Comprehensive Security Scans** — Trivy (filesystem), Bandit/Semgrep (SAST), and ShellCheck integration via SARIF to the Security tab.
+- [x] **Dependabot** — Automated PRs for keeping Python dependencies and GitHub Actions up to date.
+- [x] **Release Drafter** — Automated generation of categorized release notes from PR labels.
+- [x] **README Badges** — Live CI status, security scan, version, ruff, Python 3.8+, and MIT license badges.
 - [x] **Keep a Changelog** — Every release documented with dated version entries.
 
 ---
@@ -63,7 +65,7 @@ Everything here is optional until it proves it actually improves that mission.
 - [x] **pytest test suite** — Unit tests for formatting, icons, and WMO mappings.
 - [x] **API Response Mocking** — Test logic against fixture JSON without hitting live APIs.
 - [x] **CI Test Job** — Automated `pytest` runs on every push alongside lint and security.
-- [x] **Code Coverage Badge** — Integrated coverage reporting in README (currently ~98%).
+- [x] **Codecov Integration** — Automated test coverage reporting directly on Pull Requests, maintaining ~98% coverage.
 
 ---
 

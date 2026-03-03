@@ -26,6 +26,9 @@ To see which parts of the code are covered (requires `pytest-cov`):
 pytest --cov=isobar_cli
 ```
 
+### Codecov Integration
+When you push code to GitHub or open a Pull Request, the CI pipeline automatically runs the test suite and uploads the coverage report to [Codecov.io](https://codecov.io). A bot will automatically comment on your PR with a summary of how your changes affect the overall project coverage.
+
 ### Specific Files
 Run tests in a single file:
 ```bash

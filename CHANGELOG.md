@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Comprehensive Security Scanning** — Integrated Trivy, Bandit, Semgrep, and ShellCheck into a new GitHub Actions workflow, outputting to the GitHub Security tab.
+- **Automated Dependency Updates** — Configured Dependabot for `pip` and `github-actions` ecosystems.
+- **Release Drafter** — Added a workflow to automatically generate structured release notes based on PR labels (`feature`, `fix`, `chore`).
+- **Codecov Integration** — Integrated Codecov into the CI pipeline to track test coverage visually on every PR.
+
 ## [1.0.0] - 2026-03-02
 
 ### Added
