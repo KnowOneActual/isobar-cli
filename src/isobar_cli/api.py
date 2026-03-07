@@ -75,7 +75,7 @@ class AirQualityClient:
             )
             response.raise_for_status()
             return response.json().get("current", {}).get("us_aqi")
-        except requests.RequestException:
+        except Exception:
             return None
 
 
