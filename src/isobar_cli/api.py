@@ -2,7 +2,7 @@ import json
 import time
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 import requests
 from timezonefinder import TimezoneFinder
@@ -18,9 +18,11 @@ class GeocodingClient:
     BASE_URL = "https://geocoding-api.open-meteo.com/v1/search"
 
     @classmethod
-    def search(cls, city: str, count: int = 1) -> List[dict]:
+    def search(cls, city: str, count: int = 1) -> list[dict]:
         try:
-            response = requests.get(f"{cls.BASE_URL}?name={city}&count={count}&format=json")
+            response = requests.get(
+                f"{cls.BASE_URL}?name={city}&count={count}&format=json"
+            )
             response.raise_for_status()
             return response.json().get("results", [])
         except Exception:
@@ -46,17 +48,17 @@ class WeatherClient:
             "latitude": self.lat,
             "longitude": self.lon,
             "current": "temperature_2m,apparent_temperature,wind_speed_10m,"
-                       "relative_humidity_2m,precipitation,weather_code",
+            "relative_humidity_2m,precipitation,weather_code",
             "daily": "sunrise,sunset,temperature_2m_max,temperature_2m_min,"
-                     "weather_code,precipitation_probability_max",
+            "weather_code,precipitation_probability_max",
             "hourly": "precipitation_probability,rain,snowfall,temperature_2m,weather_code",
             "temperature_unit": temp_unit,
             "wind_speed_unit": wind_unit,
             "precipitation_unit": precip_unit,
             "timezone": self.timezone,
-            "forecast_days": 7
+            "forecast_days": 7,
         }
-        
+
         response = requests.get(self.BASE_URL, params=params)
         response.raise_for_status()
         return response.json()
@@ -68,14 +70,16 @@ class AirQualityClient:
     @classmethod
     def get_aqi(cls, lat: float, lon: float) -> Optional[int]:
         try:
-            response = requests.get(f"{cls.BASE_URL}?latitude={lat}&longitude={lon}&current=us_aqi")
+            response = requests.get(
+                f"{cls.BASE_URL}?latitude={lat}&longitude={lon}&current=us_aqi"
+            )
             response.raise_for_status()
             return response.json().get("current", {}).get("us_aqi")
         except requests.RequestException:
             return None
 
 
-def get_cached_cities() -> List[str]:
+def get_cached_cities() -> list[str]:
     """Returns a list of unique city names from the local cache history."""
     if not CACHE_DIR.exists():
         return []
@@ -85,12 +89,12 @@ def get_cached_cities() -> List[str]:
         name = f.stem
         for suffix in ["_metric", "_imperial"]:
             if name.endswith(suffix):
-                name = name[:-len(suffix)]
+                name = name[: -len(suffix)]
         cities.add(name.replace("_", " ").title())
     return sorted(cities)
 
 
-def get_city_suggestions(city: str) -> List[str]:
+def get_city_suggestions(city: str) -> list[str]:
     """Fetches a list of likely city name matches for a given input string."""
     results = GeocodingClient.search(city, count=5)
     suggestions = []
@@ -133,7 +137,7 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
     # Timezone & Weather
     tf = TimezoneFinder()
     timezone = tf.timezone_at(lat=lat, lng=lon) or "UTC"
-    
+
     try:
         weather_client = WeatherClient(lat, lon, timezone, metric)
         api_data = weather_client.fetch()
@@ -157,7 +161,7 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
             time=hourly["time"][i],
             temp=hourly["temperature_2m"][i],
             weather_code=hourly["weather_code"][i],
-            precip_prob=hourly["precipitation_probability"][i]
+            precip_prob=hourly["precipitation_probability"][i],
         )
         for i in range(start_idx, min(start_idx + 24, len(hourly["time"])))
     ]
@@ -175,7 +179,7 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
             high=daily["temperature_2m_max"][i],
             low=daily["temperature_2m_min"][i],
             weather_code=daily["weather_code"][i],
-            precip_prob=daily["precipitation_probability_max"][i] or 0
+            precip_prob=daily["precipitation_probability_max"][i] or 0,
         )
         for i in range(len(daily["time"]))
     ]
@@ -199,11 +203,16 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
         units=weather_client.units,
         aqi=aqi_value,
         last_updated=now,
-        timestamp=now
+        timestamp=now,
     )
 
     # Caching (serialize to dict)
-    cache_data = json.loads(json.dumps(weather_data, default=lambda o: o.__dict__ if not isinstance(o, Enum) else o.value))
+    cache_data = json.loads(
+        json.dumps(
+            weather_data,
+            default=lambda o: o.__dict__ if not isinstance(o, Enum) else o.value,
+        )
+    )
     cache_file.write_text(json.dumps(cache_data))
 
     return weather_data

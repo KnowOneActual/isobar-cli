@@ -1,17 +1,20 @@
 import pytest
+
+from isobar_cli.models import WeatherData, WeatherUnits
 from isobar_cli.ui import (
+    build_weather_table,
     get_aqi_label,
     get_precip_headline,
     get_temp_color,
     get_weather_icon,
-    build_weather_table,
 )
-from isobar_cli.models import WeatherData, WeatherUnits
+
 
 def test_get_weather_icon():
     assert get_weather_icon(0) == ("☀️", "Clear sky")
     assert get_weather_icon(95) == ("⛈️", "Thunderstorm")
     assert get_weather_icon(999) == ("🌡️", "Unknown")
+
 
 def test_get_temp_color():
     # Imperial (default)
@@ -20,7 +23,7 @@ def test_get_temp_color():
     assert get_temp_color(70) == "bold green"
     assert get_temp_color(90) == "bold yellow"
     assert get_temp_color(100) == "bold red"
-    
+
     with pytest.raises(ValueError):
         get_temp_color("invalid")
 
@@ -31,6 +34,7 @@ def test_get_temp_color():
     assert get_temp_color(30, unit="°C") == "bold yellow"
     assert get_temp_color(40, unit="°C") == "bold red"
 
+
 def test_get_aqi_label():
     assert get_aqi_label(20) == ("Good", "bold green")
     assert get_aqi_label(75) == ("Moderate", "bold yellow")
@@ -39,34 +43,72 @@ def test_get_aqi_label():
     assert get_aqi_label(250) == ("Very Unhealthy", "bold purple")
     assert get_aqi_label(400) == ("Hazardous", "bold dark_red")
 
+
 def test_build_weather_table_labels():
     # Standard
     units_f = WeatherUnits(temp="°F", wind="mph", precip="in")
     data = WeatherData(
-        city="Test", temp=70, feels_like=70, wind_speed=10, humidity=50,
-        precipitation=0, weather_code=0, precip_prob=10, rainfall=0, snowfall=0,
-        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units_f
+        city="Test",
+        temp=70,
+        feels_like=70,
+        wind_speed=10,
+        humidity=50,
+        precipitation=0,
+        weather_code=0,
+        precip_prob=10,
+        rainfall=0,
+        snowfall=0,
+        sunrise="6:00 AM",
+        sunset="6:00 PM",
+        forecast=[],
+        hourly=[],
+        units=units_f,
     )
     table = build_weather_table(data)
     assert any("Real Feel" in str(row) for row in table.columns[1]._cells)
 
     # Wind Chill
     data_cold = WeatherData(
-        city="Cold", temp=20, feels_like=10, wind_speed=10, humidity=50,
-        precipitation=0, weather_code=0, precip_prob=10, rainfall=0, snowfall=0,
-        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units_f
+        city="Cold",
+        temp=20,
+        feels_like=10,
+        wind_speed=10,
+        humidity=50,
+        precipitation=0,
+        weather_code=0,
+        precip_prob=10,
+        rainfall=0,
+        snowfall=0,
+        sunrise="6:00 AM",
+        sunset="6:00 PM",
+        forecast=[],
+        hourly=[],
+        units=units_f,
     )
     table_cold = build_weather_table(data_cold)
     assert any("Wind Chill" in str(row) for row in table_cold.columns[1]._cells)
 
     # Heat Index
     data_hot = WeatherData(
-        city="Hot", temp=95, feels_like=105, wind_speed=10, humidity=50,
-        precipitation=0, weather_code=0, precip_prob=10, rainfall=0, snowfall=0,
-        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units_f
+        city="Hot",
+        temp=95,
+        feels_like=105,
+        wind_speed=10,
+        humidity=50,
+        precipitation=0,
+        weather_code=0,
+        precip_prob=10,
+        rainfall=0,
+        snowfall=0,
+        sunrise="6:00 AM",
+        sunset="6:00 PM",
+        forecast=[],
+        hourly=[],
+        units=units_f,
     )
     table_hot = build_weather_table(data_hot)
     assert any("Heat Index" in str(row) for row in table_hot.columns[1]._cells)
+
 
 def test_get_precip_headline_logic():
     # Dry

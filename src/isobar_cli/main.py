@@ -29,7 +29,7 @@ def main(
     cities: Annotated[
         Optional[list[str]],
         typer.Argument(
-            help="City name(s) (detects automatically if omitted). Use quotes for multi-word cities (e.g. \"New York\").",
+            help='City name(s) (detects automatically if omitted). Use quotes for multi-word cities (e.g. "New York").',
             autocompletion=city_complete,
         ),
     ] = None,

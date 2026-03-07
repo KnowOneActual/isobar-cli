@@ -1,12 +1,15 @@
 import pytest
+
 from isobar_cli import api
 from isobar_cli.api import get_cached_cities, get_city_suggestions, get_weather_data
 from isobar_cli.models import WeatherData
+
 
 @pytest.fixture(autouse=True)
 def mock_cache_dir(tmp_path, monkeypatch):
     """Ensure tests always use a clean, temporary cache directory."""
     monkeypatch.setattr(api, "CACHE_DIR", tmp_path)
+
 
 def test_get_weather_data_success(requests_mock):
     # Mock Geocoding API
@@ -75,6 +78,7 @@ def test_get_weather_data_success(requests_mock):
     assert len(result.hourly) > 0
     assert result.hourly[0].temp == 37.1
 
+
 def test_get_weather_data_metric(requests_mock):
     # Mock Geocoding API
     geo_data = {
@@ -138,6 +142,7 @@ def test_get_weather_data_metric(requests_mock):
     assert result.units.wind == "km/h"
     assert result.units.precip == "mm"
 
+
 def test_get_weather_data_not_found(requests_mock):
     requests_mock.get(
         "https://geocoding-api.open-meteo.com/v1/search?name=NonExistentCity&count=1&format=json",
@@ -146,6 +151,7 @@ def test_get_weather_data_not_found(requests_mock):
 
     result = get_weather_data("NonExistentCity")
     assert result is None
+
 
 def test_get_city_suggestions(requests_mock):
     geo_data = {
@@ -163,6 +169,7 @@ def test_get_city_suggestions(requests_mock):
     assert "Paris, Ile-de-France" in suggestions
     assert "Paris, Texas" in suggestions
     assert len(suggestions) == 2
+
 
 def test_get_cached_cities(tmp_path, monkeypatch):
     monkeypatch.setattr(api, "CACHE_DIR", tmp_path)

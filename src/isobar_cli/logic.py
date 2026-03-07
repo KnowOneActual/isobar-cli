@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Tuple
 
 # WMO Weather interpretation codes -> (emoji, description)
 # https://open-meteo.com/en/docs
@@ -67,7 +66,9 @@ def get_temp_color(temp_val: float, unit="°F") -> str:
         return "bold red"
 
 
-def get_precip_headline(precip_prob: int, rainfall: float, snowfall: float, unit_precip: str) -> str:
+def get_precip_headline(
+    precip_prob: int, rainfall: float, snowfall: float, unit_precip: str
+) -> str:
     """Generate a single-line comfort summary for precip decisions."""
     total_precip = rainfall + snowfall
 
@@ -80,8 +81,12 @@ def get_precip_headline(precip_prob: int, rainfall: float, snowfall: float, unit
     if precip_prob < 30:
         return "Dry conditions expected"
     if precip_prob < 60:
-        return "Very low precip risk" if total_precip < low_limit else "Possible light precip"
-    
+        return (
+            "Very low precip risk"
+            if total_precip < low_limit
+            else "Possible light precip"
+        )
+
     if snowfall > rainfall and snowfall > snow_limit:
         return "Snowy conditions likely"
     if rainfall > high_limit:
@@ -91,7 +96,7 @@ def get_precip_headline(precip_prob: int, rainfall: float, snowfall: float, unit
     return "Light rain likely"
 
 
-def get_aqi_label(aqi_val: int) -> Tuple[str, str]:
+def get_aqi_label(aqi_val: int) -> tuple[str, str]:
     """Returns (label, color) for a US AQI value."""
     thresholds = [
         (50, "Good", "bold green"),

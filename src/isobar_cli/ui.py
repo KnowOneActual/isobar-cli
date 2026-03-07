@@ -26,7 +26,9 @@ def build_weather_table(weather: WeatherData) -> Table:
     icon, desc = get_weather_icon(weather.weather_code)
     temp_color = get_temp_color(weather.temp, weather.units.temp)
     feels_color = get_temp_color(weather.feels_like, weather.units.temp)
-    feels_label = get_feels_like_label(weather.temp, weather.feels_like, weather.units.temp)
+    feels_label = get_feels_like_label(
+        weather.temp, weather.feels_like, weather.units.temp
+    )
 
     table = Table(
         title=f"\n[bold white]{weather.city} Weather[/bold white]",
@@ -39,25 +41,41 @@ def build_weather_table(weather: WeatherData) -> Table:
     table.add_column("Value", justify="right")
 
     table.add_row(icon, "Conditions:", f"[bold]{desc}[/bold]")
-    table.add_row("🌡️", "Temperature:", f"[{temp_color}]{weather.temp}{weather.units.temp}[/{temp_color}]")
-    table.add_row("🤔", feels_label, f"[{feels_color}]{weather.feels_like}{weather.units.temp}[/{feels_color}]")
+    table.add_row(
+        "🌡️",
+        "Temperature:",
+        f"[{temp_color}]{weather.temp}{weather.units.temp}[/{temp_color}]",
+    )
+    table.add_row(
+        "🤔",
+        feels_label,
+        f"[{feels_color}]{weather.feels_like}{weather.units.temp}[/{feels_color}]",
+    )
     table.add_row("💨", "Wind Speed:", f"{weather.wind_speed} {weather.units.wind}")
     table.add_row("💧", "Humidity:", f"{weather.humidity}%")
 
     if weather.aqi is not None:
         label, color = get_aqi_label(weather.aqi)
-        table.add_row("😷", "Air Quality:", f"[{color}]{weather.aqi} ({label})[/{color}]")
+        table.add_row(
+            "😷", "Air Quality:", f"[{color}]{weather.aqi} ({label})[/{color}]"
+        )
 
-    headline = get_precip_headline(weather.precip_prob, weather.rainfall, weather.snowfall, weather.units.precip)
+    headline = get_precip_headline(
+        weather.precip_prob, weather.rainfall, weather.snowfall, weather.units.precip
+    )
     precip_val = f"{weather.precip_prob}% (6h)"
     if headline:
         precip_val += f" | [dim italic yellow]{headline}[/dim italic yellow]"
     table.add_row("☔", "Precip Chance:", precip_val)
 
     if weather.rainfall > 0.01:
-        table.add_row("🌧️", "Rain Expected:", f"~{weather.rainfall:.2f}{weather.units.precip}")
+        table.add_row(
+            "🌧️", "Rain Expected:", f"~{weather.rainfall:.2f}{weather.units.precip}"
+        )
     if weather.snowfall > 0.01:
-        table.add_row("❄️", "Snow Expected:", f"~{weather.snowfall:.2f}{weather.units.precip}")
+        table.add_row(
+            "❄️", "Snow Expected:", f"~{weather.snowfall:.2f}{weather.units.precip}"
+        )
 
     table.add_row("🌅", "Sunrise:", f"[yellow]{weather.sunrise}[/yellow]")
     table.add_row("🌇", "Sunset:", f"[orange1]{weather.sunset}[/orange1]")
@@ -121,10 +139,16 @@ def display_forecast(weather: WeatherData):
     for i, day in enumerate(weather.forecast):
         day_label = "Today" if i == 0 else day.dt.strftime("%a %b %-d")
         icon, desc = get_weather_icon(day.weather_code)
-        
+
         high_color = get_temp_color(day.high, weather.units.temp)
         low_color = get_temp_color(day.low, weather.units.temp)
-        rain_color = "cyan" if day.precip_prob >= 60 else "yellow" if day.precip_prob >= 30 else "dim"
+        rain_color = (
+            "cyan"
+            if day.precip_prob >= 60
+            else "yellow"
+            if day.precip_prob >= 30
+            else "dim"
+        )
 
         table.add_row(
             f"[bold]{day_label}[/bold]" if i == 0 else day_label,
@@ -162,7 +186,13 @@ def display_hourly(weather: WeatherData):
         time_label = hour.dt.strftime("%-I %p")
         icon, desc = get_weather_icon(hour.weather_code)
         temp_color = get_temp_color(hour.temp, weather.units.temp)
-        rain_color = "cyan" if hour.precip_prob >= 60 else "yellow" if hour.precip_prob >= 30 else "dim"
+        rain_color = (
+            "cyan"
+            if hour.precip_prob >= 60
+            else "yellow"
+            if hour.precip_prob >= 30
+            else "dim"
+        )
 
         table.add_row(
             time_label,

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 
 class UnitSystem(Enum):
@@ -61,8 +61,8 @@ class WeatherData:
     snowfall: float  # Total snow next 6h
     sunrise: str  # Formatted time
     sunset: str  # Formatted time
-    forecast: List[ForecastDay]
-    hourly: List[HourlyForecast]
+    forecast: list[ForecastDay]
+    hourly: list[HourlyForecast]
     units: WeatherUnits
     aqi: Optional[int] = None
     last_updated: float = field(default_factory=lambda: 0.0)
