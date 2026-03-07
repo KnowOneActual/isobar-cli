@@ -208,5 +208,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Ruthless Refactor**: Decomposed `api.py` into specialized clients (`GeocodingClient`, `WeatherClient`, `AirQualityClient`).
+- **Logic Extraction**: Moved business logic (Real Feel, comfort thresholds, precipitation headlines) from `ui.py` to `isobar_cli/logic.py`.
+- **Model Introduction**: Implemented `dataclasses` in `isobar_cli/models.py` for structured weather data and unit contracts.
+- **AI Slop Removal**: Replaced manual 12-hour clock logic with standard library `strftime` and eliminated redundant "god" functions.
+- **Improved Reliability**: Replaced silent failures in API calls with explicit error handling and logging.
+
 ### Added
 - Initial project setup.

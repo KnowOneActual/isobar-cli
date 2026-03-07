@@ -1,17 +1,16 @@
 import json
 import time
-
 import pytest
 from typer.testing import CliRunner
-
 from isobar_cli import api, ui
 from isobar_cli.api import (
-    format_time,
     get_cached_cities,
     get_city_suggestions,
     get_weather_data,
 )
+from isobar_cli.logic import format_time
 from isobar_cli.main import app
+from isobar_cli.models import WeatherData, WeatherUnits, ForecastDay, HourlyForecast
 
 runner = CliRunner()
 
@@ -58,56 +57,57 @@ def test_get_city_suggestions_exception(requests_mock):
 def test_get_weather_data_cache_hit(mock_cache_dir, requests_mock):
     city = "CacheCity"
     cache_file = mock_cache_dir / "cachecity_imperial.json"
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
     cache_data = {
         "city": "CacheCity, TestState",
-        "temp": 50,
-        "timestamp": time.time() - 100 # 100 seconds ago
+        "temp": 50.0,
+        "feels_like": 45.0,
+        "wind_speed": 10.0,
+        "humidity": 50,
+        "precipitation": 0.0,
+        "weather_code": 0,
+        "precip_prob": 0,
+        "rainfall": 0.0,
+        "snowfall": 0.0,
+        "sunrise": "6:00 AM",
+        "sunset": "6:00 PM",
+        "forecast": [],
+        "hourly": [],
+        "units": units.__dict__,
+        "aqi": 10,
+        "last_updated": time.time(),
+        "timestamp": time.time() - 100
     }
     cache_file.write_text(json.dumps(cache_data))
 
     result = get_weather_data(city)
-    assert result["city"] == "CacheCity, TestState"
-    assert "last_updated" in result
+    assert result.city == "CacheCity, TestState"
+    assert result.last_updated > 0
 
 def test_get_weather_data_cache_invalid_json(mock_cache_dir, requests_mock):
-    # This should trigger the API call since cache is invalid
     city = "InvalidCache"
     cache_file = mock_cache_dir / "invalidcache_imperial.json"
     cache_file.write_text("not json")
-
-    # Mock Geocoding API to return {} so we can see it proceeded
-    requests_mock.get(
-        "https://geocoding-api.open-meteo.com/v1/search?name=InvalidCache&count=1&format=json",
-        json={}
-    )
+    requests_mock.get("https://geocoding-api.open-meteo.com/v1/search?name=InvalidCache&count=1&format=json", json={})
     result = get_weather_data(city)
-    assert result == {}
+    assert result is None
 
 def test_get_weather_data_aqi_error(requests_mock):
-    # Mock Geocoding API
-    geo_data = {"results": [{"name": "AQIFail", "latitude": 0, "longitude": 0}]}
+    geo_data = {"results": [{"name": "AQIFail", "latitude": 0, "longitude": 0, "admin1": "Illinois"}]}
     requests_mock.get("https://geocoding-api.open-meteo.com/v1/search?name=AQIFail&count=1&format=json", json=geo_data)
-
-    # Mock Weather API
     weather_data = {
         "current": {"time": "2026-02-26T06:00", "temperature_2m": 37, "apparent_temperature": 30, "wind_speed_10m": 4, "relative_humidity_2m": 50, "precipitation": 0, "weather_code": 0},
         "daily": {"time": ["2026-02-26"], "sunrise": ["2026-02-26T06:00"], "sunset": ["2026-02-26T18:00"], "temperature_2m_max": [40], "temperature_2m_min": [30], "weather_code": [0], "precipitation_probability_max": [0]},
         "hourly": {"time": ["2026-02-26T06:00"], "temperature_2m": [37], "weather_code": [0], "precipitation_probability": [0], "rain": [0], "snowfall": [0]}
     }
     requests_mock.get("https://api.open-meteo.com/v1/forecast", json=weather_data)
-
-    # Mock AQI API to fail - explicitly raise Exception to hit 'except Exception: pass'
     requests_mock.get("https://air-quality-api.open-meteo.com/v1/air-quality", exc=Exception("AQI Failed"))
-
     result = get_weather_data("AQIFail")
-    assert result["aqi"] is None
+    assert result.aqi is None
 
 def test_get_weather_data_hourly_index_error(requests_mock):
-    # Mock Geocoding API
-    geo_data = {"results": [{"name": "IndexError", "latitude": 0, "longitude": 0}]}
+    geo_data = {"results": [{"name": "IndexError", "latitude": 0, "longitude": 0, "admin1": "State"}]}
     requests_mock.get("https://geocoding-api.open-meteo.com/v1/search?name=IndexError&count=1&format=json", json=geo_data)
-
-    # Mock Weather API where current time is NOT in hourly time list
     weather_data = {
         "current": {"time": "2026-02-26T06:00", "temperature_2m": 37, "apparent_temperature": 30, "wind_speed_10m": 4, "relative_humidity_2m": 50, "precipitation": 0, "weather_code": 0},
         "daily": {"time": ["2026-02-26"], "sunrise": ["2026-02-26T06:00"], "sunset": ["2026-02-26T18:00"], "temperature_2m_max": [40], "temperature_2m_min": [30], "weather_code": [0], "precipitation_probability_max": [0]},
@@ -115,78 +115,49 @@ def test_get_weather_data_hourly_index_error(requests_mock):
     }
     requests_mock.get("https://api.open-meteo.com/v1/forecast", json=weather_data)
     requests_mock.get("https://air-quality-api.open-meteo.com/v1/air-quality", json={})
-
     result = get_weather_data("IndexError")
-    assert len(result["hourly"]) == 1 # Should fallback to index 0
+    assert len(result.hourly) == 1
 
 def test_get_weather_data_request_exception(requests_mock):
     import requests
     requests_mock.get("https://geocoding-api.open-meteo.com/v1/search", exc=requests.exceptions.RequestException("Connection error"))
     result = get_weather_data("FailCity")
-    assert result == {}
+    assert result is None
 
 # --- Main Tests ---
 
 def test_main_auto_location_fail(monkeypatch):
     monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: None)
-    # Mock get_weather_data to avoid real API call
-    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {
-        "city": "Chicago",
-        "temp": 30,
-        "feels_like": 25,
-        "wind_speed": 10,
-        "humidity": 50,
-        "precipitation": 0,
-        "weather_code": 0,
-        "precip_prob": 10,
-        "rainfall": 0,
-        "snowfall": 0,
-        "sunrise": "6:00 AM",
-        "sunset": "6:00 PM",
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    })
-
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    mock_weather = WeatherData(
+        city="Chicago", temp=30.0, feels_like=25.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units
+    )
+    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: mock_weather)
     result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Could not detect location" in result.output
     assert "Using Chicago as default" in result.output
 
 def test_main_auto_location_success(monkeypatch):
     monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: "New York")
-    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {
-        "city": "New York",
-        "temp": 30,
-        "feels_like": 25,
-        "wind_speed": 10,
-        "humidity": 50,
-        "precipitation": 0,
-        "weather_code": 0,
-        "precip_prob": 10,
-        "rainfall": 0,
-        "snowfall": 0,
-        "sunrise": "6:00 AM",
-        "sunset": "6:00 PM",
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    })
-
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    mock_weather = WeatherData(
+        city="New York", temp=30.0, feels_like=25.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units
+    )
+    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: mock_weather)
     result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Detected: New York" in result.output
 
 def test_main_city_option(monkeypatch):
-    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {
-        "city": city,
-        "temp": 30,
-        "feels_like": 25,
-        "wind_speed": 10,
-        "humidity": 50,
-        "precipitation": 0,
-        "weather_code": 0,
-        "precip_prob": 10,
-        "rainfall": 0,
-        "snowfall": 0,
-        "sunrise": "6:00 AM",
-        "sunset": "6:00 PM",
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    })
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: WeatherData(
+        city=city, temp=30.0, feels_like=25.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units
+    ))
     result = runner.invoke(app, ["Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Tokyo" in result.output
 
@@ -197,25 +168,16 @@ def test_city_complete(monkeypatch):
     assert city_complete("lo") == ["London", "Los Angeles"]
 
 def test_main_with_flags(monkeypatch):
-    # Mock data with all necessary keys
-    mock_data = {
-        "city": "TestCity",
-        "temp": 30,
-        "feels_like": 25,
-        "wind_speed": 10,
-        "humidity": 50,
-        "precipitation": 0,
-        "weather_code": 0,
-        "precip_prob": 10,
-        "rainfall": 0,
-        "snowfall": 0,
-        "sunrise": "6:00 AM",
-        "sunset": "6:00 PM",
-        "forecast": [{"date": "2026-02-28", "high": 40, "low": 30, "weather_code": 0, "precip_prob": 10}],
-        "hourly": [{"time": "2026-02-28T12:00", "temp": 30, "weather_code": 0, "precip_prob": 10}],
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    }
-    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: {**mock_data, "city": city})
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    mock_data_base = dict(
+        temp=30.0, feels_like=25.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM",
+        forecast=[ForecastDay(date="2026-02-28", high=40, low=30, weather_code=0, precip_prob=10)],
+        hourly=[HourlyForecast(time="2026-02-28T12:00", temp=30, weather_code=0, precip_prob=10)],
+        units=units
+    )
+    monkeypatch.setattr("isobar_cli.main.get_weather_data", lambda city, metric=False: WeatherData(city=city, **mock_data_base))
 
     # Multi-city
     result = runner.invoke(app, ["City1", "City2"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
@@ -223,7 +185,7 @@ def test_main_with_flags(monkeypatch):
     assert "City1" in result.output
     assert "City2" in result.output
 
-    # Multi-city with flags (covers line 130 in main.py)
+    # Multi-city with flags
     result = runner.invoke(app, ["City1", "City2", "--hourly"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert result.exit_code == 0
     assert "───────────────────────────────────────" in result.output
@@ -241,139 +203,105 @@ def test_main_with_flags(monkeypatch):
 # --- UI Tests ---
 
 def test_display_weather_edge_cases():
-    # No data
-    ui.display_weather({})
-
-    # Old cache
-    data = {
-        "city": "OldCache",
-        "temp": 50,
-        "last_updated": time.time() - 3600,
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    }
+    ui.display_weather(None)
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    data = WeatherData(
+        city="OldCache", temp=50.0, feels_like=50.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=0, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units,
+        last_updated=time.time() - 3600
+    )
     ui.display_weather(data)
 
 def test_display_multi_weather_edge_cases():
-    # No tables
-    ui.display_multi_weather([{}, {}])
+    ui.display_multi_weather([])
 
 def test_build_weather_table_precip_rows():
-    from isobar_cli.ui import build_weather_table
-    data = {
-        "city": "Precip", "temp": 50,
-        "rainfall": 0.5, "snowfall": 0.5,
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    }
-    table = build_weather_table(data)
-    # Check if Rain Expected and Snow Expected are in the table
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    data = WeatherData(
+        city="Precip", temp=50.0, feels_like=50.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=0, rainfall=0.5, snowfall=0.5,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units
+    )
+    table = ui.build_weather_table(data)
     rows_str = "".join(str(row) for row in table.columns[1]._cells)
     assert "Rain Expected" in rows_str
     assert "Snow Expected" in rows_str
 
-def test_display_forecast_date_parse_error():
-    data = {
-        "city": "Test",
-        "forecast": [{"date": "invalid", "weather_code": 0, "high": 50, "low": 40, "precip_prob": 0}],
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    }
-    ui.display_forecast(data)
-
-def test_display_hourly_time_parse_error():
-    data = {
-        "city": "Test",
-        "hourly": [{"time": "invalid", "weather_code": 0, "temp": 50, "precip_prob": 0}],
-        "units": {"temp": "F", "wind": "mph", "precip": "in"}
-    }
-    ui.display_hourly(data)
-
-def test_display_weather_full(monkeypatch):
-    # Just to execute the code paths
-    data = {
-        "city": "Test City",
-        "temp": 70,
-        "feels_like": 75,
-        "wind_speed": 10,
-        "humidity": 50,
-        "precipitation": 0,
-        "weather_code": 0,
-        "precip_prob": 10,
-        "rainfall": 0,
-        "snowfall": 0,
-        "sunrise": "6:00 AM",
-        "sunset": "6:00 PM",
-        "aqi": 50,
-        "units": {"temp": "°F", "wind": "mph", "precip": "in"}
-    }
+def test_display_weather_full():
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    data = WeatherData(
+        city="Test City", temp=70.0, feels_like=75.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units,
+        aqi=50
+    )
     ui.display_weather(data)
 
 def test_display_forecast_full():
-    data = {
-        "city": "Test City",
-        "forecast": [
-            {"date": "2026-02-28", "high": 80, "low": 60, "weather_code": 0, "precip_prob": 10},
-            {"date": "invalid-date", "high": 80, "low": 60, "weather_code": 0, "precip_prob": 10}
-        ],
-        "units": {"temp": "°F", "wind": "mph", "precip": "in"}
-    }
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    data = WeatherData(
+        city="Test City", temp=70.0, feels_like=70.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", 
+        forecast=[ForecastDay(date="2026-02-28", high=80, low=60, weather_code=0, precip_prob=10)], 
+        hourly=[], units=units
+    )
     ui.display_forecast(data)
 
 def test_display_hourly_full():
-    data = {
-        "city": "Test City",
-        "hourly": [
-            {"time": "2026-02-28T12:00", "temp": 70, "weather_code": 0, "precip_prob": 10},
-            {"time": "invalid-time", "temp": 70, "weather_code": 0, "precip_prob": 10}
-        ],
-        "units": {"temp": "°F", "wind": "mph", "precip": "in"}
-    }
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    data = WeatherData(
+        city="Test City", temp=70.0, feels_like=70.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=10, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[],
+        hourly=[HourlyForecast(time="2026-02-28T12:00", temp=70, weather_code=0, precip_prob=10)],
+        units=units
+    )
     ui.display_hourly(data)
 
 def test_display_multi_weather(mock_cache_dir):
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
     data = [
-        {
-            "city": "City 1",
-            "temp": 70,
-            "feels_like": 70,
-            "last_updated": time.time() - 3600, # 1 hour ago
-            "units": {"temp": "°F", "wind": "mph", "precip": "in"}
-        },
-        {
-            "city": "City 2",
-            "temp": 60,
-            "feels_like": 60,
-            "last_updated": time.time(),
-            "units": {"temp": "°F", "wind": "mph", "precip": "in"}
-        }
+        WeatherData(
+            city="City 1", temp=70.0, feels_like=70.0, wind_speed=10.0, humidity=50,
+            precipitation=0.0, weather_code=0, precip_prob=0, rainfall=0.0, snowfall=0.0,
+            sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units,
+            last_updated=time.time() - 3600
+        ),
+        WeatherData(
+            city="City 2", temp=60.0, feels_like=60.0, wind_speed=10.0, humidity=50,
+            precipitation=0.0, weather_code=0, precip_prob=0, rainfall=0.0, snowfall=0.0,
+            sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units,
+            last_updated=time.time()
+        )
     ]
     ui.display_multi_weather(data)
 
 def test_get_precip_headline_extra():
-    # Moderate rain
-    assert ui.get_precip_headline({"precip_prob": 80, "rainfall": 0.5, "snowfall": 0, "units": {"precip": "in"}}) == "Moderate rain likely"
-    # Light rain
-    assert ui.get_precip_headline({"precip_prob": 80, "rainfall": 0.1, "snowfall": 0, "units": {"precip": "in"}}) == "Light rain likely"
+    assert ui.get_precip_headline(80, 0.5, 0, "in") == "Moderate rain likely"
+    assert ui.get_precip_headline(80, 0.1, 0, "in") == "Light rain likely"
 
 def test_build_weather_table_extra():
-    from isobar_cli.ui import build_weather_table
+    units_m = WeatherUnits(temp="°C", wind="km/h", precip="mm")
     # Metric Wind Chill
-    data = {
-        "city": "Cold", "temp": 5, "feels_like": 2,
-        "units": {"temp": "°C", "wind": "km/h", "precip": "mm"}
-    }
-    table = build_weather_table(data)
+    data = WeatherData(
+        city="Cold", temp=5.0, feels_like=2.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=0, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units_m
+    )
+    table = ui.build_weather_table(data)
     assert any("Wind Chill" in str(row) for row in table.columns[1]._cells)
 
     # Metric Heat Index
-    data = {
-        "city": "Hot", "temp": 30, "feels_like": 35,
-        "units": {"temp": "°C", "wind": "km/h", "precip": "mm"}
-    }
-    table = build_weather_table(data)
-    assert any("Heat Index" in str(row) for row in table.columns[1]._cells)
+    data_hot = WeatherData(
+        city="Hot", temp=30.0, feels_like=35.0, wind_speed=10.0, humidity=50,
+        precipitation=0.0, weather_code=0, precip_prob=0, rainfall=0.0, snowfall=0.0,
+        sunrise="6:00 AM", sunset="6:00 PM", forecast=[], hourly=[], units=units_m
+    )
+    table_hot = ui.build_weather_table(data_hot)
+    assert any("Heat Index" in str(row) for row in table_hot.columns[1]._cells)
 
     # ValueError case
-    data = {
-        "city": "Error", "temp": "invalid", "feels_like": "invalid",
-        "units": {"temp": "°C", "wind": "km/h", "precip": "mm"}
-    }
-    build_weather_table(data) # Should not raise exception
+    with pytest.raises(ValueError):
+        ui.get_temp_color("invalid")
