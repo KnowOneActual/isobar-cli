@@ -1,6 +1,5 @@
 import json
 import time
-from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Optional
@@ -154,7 +153,9 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
     # Hourly processing
     # Open-Meteo current time might include minutes (e.g. T12:32)
     # while hourly times are typically T12:00.
-    target_hour = current["time"][:13] + ":00" if len(current["time"]) >= 13 else current["time"]
+    target_hour = (
+        current["time"][:13] + ":00" if len(current["time"]) >= 13 else current["time"]
+    )
     try:
         start_idx = hourly["time"].index(target_hour)
     except ValueError:
