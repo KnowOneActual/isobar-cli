@@ -208,6 +208,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Hourly Forecast Start Time**: Resolved a bug where the hourly forecast would incorrectly reset to midnight (12 AM) if the current time from the API included minutes (e.g., 12:32 PM). The logic now correctly matches the current hour or finds the next available slot.
+
 ### Changed
 - **Ruthless Refactor**: Decomposed `api.py` into specialized clients (`GeocodingClient`, `WeatherClient`, `AirQualityClient`).
 - **Logic Extraction**: Moved business logic (Real Feel, comfort thresholds, precipitation headlines) from `ui.py` to `isobar_cli/logic.py`.
