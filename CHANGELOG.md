@@ -208,8 +208,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-03-09
+
 ### Fixed
-- **Hourly Forecast Start Time**: Resolved a bug where the hourly forecast would incorrectly reset to midnight (12 AM) if the current time from the API included minutes (e.g., 12:32 PM). The logic now correctly matches the current hour or finds the next available slot.
+- **Hourly Forecast Start Time**: Resolved a bug where the hourly forecast would incorrectly reset to midnight (12 AM) if the current time from the API included minutes (e.g., 12:32 PM). The logic now correctly identifies the current hour or finds the next available slot.
 
 ### Changed
 - **Ruthless Refactor**: Decomposed `api.py` into specialized clients (`GeocodingClient`, `WeatherClient`, `AirQualityClient`).
@@ -217,6 +219,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Model Introduction**: Implemented `dataclasses` in `isobar_cli/models.py` for structured weather data and unit contracts.
 - **AI Slop Removal**: Replaced manual 12-hour clock logic with standard library `strftime` and eliminated redundant "god" functions.
 - **Improved Reliability**: Replaced silent failures in API calls with explicit error handling and logging.
+
 
 ### Added
 - Initial project setup.
