@@ -234,7 +234,9 @@ def test_main_auto_location_fail(monkeypatch):
     monkeypatch.setattr(
         "isobar_cli.main.get_weather_data", lambda city, metric=False: mock_weather
     )
-    result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
+    result = runner.invoke(
+        app, ["main"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+    )
     assert "Could not detect location" in result.output
     assert "Using Chicago as default" in result.output
 
@@ -262,7 +264,9 @@ def test_main_auto_location_success(monkeypatch):
     monkeypatch.setattr(
         "isobar_cli.main.get_weather_data", lambda city, metric=False: mock_weather
     )
-    result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
+    result = runner.invoke(
+        app, ["main"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+    )
     assert "Detected: New York" in result.output
 
 
@@ -289,7 +293,7 @@ def test_main_city_option(monkeypatch):
         ),
     )
     result = runner.invoke(
-        app, ["Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+        app, ["main", "Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
     )
     assert "Tokyo" in result.output
 
@@ -338,7 +342,10 @@ def test_main_with_flags(monkeypatch):
 
     # Multi-city
     result = runner.invoke(
-        app, ["City1", "City2"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+        app,
+        ["main", "City1", "City2"],
+        color=False,
+        env={"TERM": "dumb", "NO_COLOR": "1"},
     )
     assert result.exit_code == 0
     assert "City1" in result.output
@@ -347,7 +354,7 @@ def test_main_with_flags(monkeypatch):
     # Multi-city with flags
     result = runner.invoke(
         app,
-        ["City1", "City2", "--hourly"],
+        ["main", "City1", "City2", "--hourly"],
         color=False,
         env={"TERM": "dumb", "NO_COLOR": "1"},
     )
@@ -356,14 +363,20 @@ def test_main_with_flags(monkeypatch):
 
     # Hourly
     result = runner.invoke(
-        app, ["CityH", "--hourly"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+        app,
+        ["main", "CityH", "--hourly"],
+        color=False,
+        env={"TERM": "dumb", "NO_COLOR": "1"},
     )
     assert result.exit_code == 0
     assert "Hourly Forecast — CityH" in result.output
 
     # Forecast
     result = runner.invoke(
-        app, ["CityF", "--forecast"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+        app,
+        ["main", "CityF", "--forecast"],
+        color=False,
+        env={"TERM": "dumb", "NO_COLOR": "1"},
     )
     assert result.exit_code == 0
     assert "7-Day Forecast — CityF" in result.output
