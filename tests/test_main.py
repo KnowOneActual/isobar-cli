@@ -2,7 +2,7 @@ import pytest
 from typer.testing import CliRunner
 
 from isobar_cli.main import app
-from isobar_cli.models import HourlyForecast, WeatherData, WeatherUnits
+from isobar_cli.models import WeatherData, WeatherUnits
 
 runner = CliRunner()
 
@@ -25,8 +25,6 @@ def test_main_metric_flag_exists():
 
 @pytest.fixture
 def mock_api(monkeypatch):
-    from isobar_cli import main
-
     def mock_get_weather_data(city, metric=False):
         if city == "Unknown":
             return None
