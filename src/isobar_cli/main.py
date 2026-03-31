@@ -14,7 +14,8 @@ from isobar_cli.ui import (
 )
 
 app = typer.Typer(
-    help=("Terminal weather focused on what it FEELS LIKE outside right now.")
+    help=("Terminal weather focused on what it FEELS LIKE outside right now."),
+    invoke_without_command=True,
 )
 console = Console()
 
@@ -23,6 +24,60 @@ def city_complete(incomplete: str):
     """Callback for shell completion of city names from cache."""
     cached = get_cached_cities()
     return [c for c in cached if c.lower().startswith(incomplete.lower())]
+
+
+@app.callback()
+def main(
+    ctx: typer.Context,
+    cities: Annotated[
+        Optional[list[str]],
+        typer.Argument(
+            help='City name(s) (detects automatically if omitted). Use quotes for multi-word cities (e.g. "New York").',
+            autocompletion=city_complete,
+        ),
+    ] = None,
+    forecast: Annotated[
+        bool,
+        typer.Option(
+            "--forecast",
+            "-f",
+            help="Show 7-day forecast after current conditions",
+        ),
+    ] = False,
+    hourly: Annotated[
+        bool,
+        typer.Option(
+            "--hourly",
+            "-H",
+            help="Show next 12 hours of weather",
+        ),
+    ] = False,
+    metric: Annotated[
+        bool,
+        typer.Option(
+            "--metric",
+            "-m",
+            help="Show weather in metric units (Celsius, km/h, mm)",
+        ),
+    ] = False,
+):
+    """
+    Get the weather and what it FEELS LIKE outside right now.
+
+    Examples:
+        isobar                    # Auto-detect location
+        isobar Chicago            # Specific city
+        isobar London Tokyo Paris # Multiple cities
+        isobar --hourly           # Next 12 hours
+        isobar --forecast         # 7-day forecast
+        isobar --metric           # Celsius, km/h, mm
+    """
+    # If a subcommand was called, don't run the default
+    if ctx.invoked_subcommand is not None:
+        return
+
+    # Run the main weather logic
+    _run_weather_logic(cities, forecast, hourly, metric)
 
 
 @app.command()
@@ -66,51 +121,14 @@ def home(
     console.print(f"[green]✓ Home city set to: {city}[/green]")
 
 
-@app.command()
-def main(
-    cities: Annotated[
-        Optional[list[str]],
-        typer.Argument(
-            help='City name(s) (detects automatically if omitted). Use quotes for multi-word cities (e.g. "New York").',
-            autocompletion=city_complete,
-        ),
-    ] = None,
-    forecast: Annotated[
-        bool,
-        typer.Option(
-            "--forecast",
-            "-f",
-            help="Show 7-day forecast after current conditions",
-        ),
-    ] = False,
-    hourly: Annotated[
-        bool,
-        typer.Option(
-            "--hourly",
-            "-H",
-            help="Show next 12 hours of weather",
-        ),
-    ] = False,
-    metric: Annotated[
-        bool,
-        typer.Option(
-            "--metric",
-            "-m",
-            help="Show weather in metric units (Celsius, km/h, mm)",
-        ),
-    ] = False,
+def _run_weather_logic(
+    cities: Optional[list[str]] = None,
+    forecast: bool = False,
+    hourly: bool = False,
+    metric: bool = False,
 ):
     """
-    Get the weather and what it FEELS LIKE outside right now.
-
-    Examples:
-        isobar                        # Auto-detect location
-        isobar Chicago                # Single city
-        isobar London Tokyo Paris     # Multiple cities
-        isobar "New York"             # Quotes for multi-word cities
-        isobar --forecast             # Current + 7-day outlook
-        isobar --hourly               # Current + next 12 hours
-        isobar --metric               # Metric units
+    Core weather logic shared between default callback and main command.
     """
     # Resolve cities list
     cities_to_fetch = []

@@ -212,88 +212,97 @@ def test_get_weather_data_request_exception(requests_mock):
 
 
 def test_main_auto_location_fail(monkeypatch):
-    monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: None)
-    units = WeatherUnits(temp="°F", wind="mph", precip="in")
     mock_weather = WeatherData(
-        city="Chicago",
-        temp=30.0,
-        feels_like=25.0,
-        wind_speed=10.0,
-        humidity=50,
-        precipitation=0.0,
+        city="Chicago, Illinois",
+        temp=75.2,
+        feels_like=78.5,
+        wind_speed=12.4,
+        humidity=65,
+        precipitation=0.1,
         weather_code=0,
-        precip_prob=10,
-        rainfall=0.0,
+        precip_prob=30,
+        rainfall=0.1,
         snowfall=0.0,
-        sunrise="6:00 AM",
-        sunset="6:00 PM",
+        sunrise="6:29 AM",
+        sunset="5:37 PM",
         forecast=[],
         hourly=[],
-        units=units,
+        aqi=45,
+        units=WeatherUnits(temp="°F", wind="mph", precip="in"),
+        wind_gust=25.0,
+        uv_index=6.5,
+        previous_day_temp=70.0,
     )
+    monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: None)
+    monkeypatch.setattr("isobar_cli.main.get_home_city", lambda: None)
     monkeypatch.setattr(
         "isobar_cli.main.get_weather_data", lambda city, metric=False: mock_weather
     )
-    result = runner.invoke(
-        app, ["main"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
-    )
+    result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Could not detect location" in result.output
     assert "Using Chicago as default" in result.output
 
 
 def test_main_auto_location_success(monkeypatch):
-    monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: "New York")
-    units = WeatherUnits(temp="°F", wind="mph", precip="in")
     mock_weather = WeatherData(
-        city="New York",
-        temp=30.0,
-        feels_like=25.0,
-        wind_speed=10.0,
-        humidity=50,
+        city="New York, New York",
+        temp=68.0,
+        feels_like=70.0,
+        wind_speed=8.0,
+        humidity=60,
         precipitation=0.0,
         weather_code=0,
         precip_prob=10,
         rainfall=0.0,
         snowfall=0.0,
-        sunrise="6:00 AM",
-        sunset="6:00 PM",
+        sunrise="6:15 AM",
+        sunset="7:45 PM",
         forecast=[],
         hourly=[],
-        units=units,
+        aqi=30,
+        units=WeatherUnits(temp="°F", wind="mph", precip="in"),
+        wind_gust=12.0,
+        uv_index=5.0,
+        previous_day_temp=65.0,
     )
+    monkeypatch.setattr("isobar_cli.main.get_auto_location", lambda: "New York")
+    monkeypatch.setattr("isobar_cli.main.get_home_city", lambda: None)
     monkeypatch.setattr(
         "isobar_cli.main.get_weather_data", lambda city, metric=False: mock_weather
     )
-    result = runner.invoke(
-        app, ["main"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
-    )
+    result = runner.invoke(app, [], color=False, env={"TERM": "dumb", "NO_COLOR": "1"})
     assert "Detected: New York" in result.output
 
 
 def test_main_city_option(monkeypatch):
     units = WeatherUnits(temp="°F", wind="mph", precip="in")
+    mock_weather = WeatherData(
+        city="Tokyo, Tokyo",
+        temp=60.0,
+        feels_like=62.0,
+        wind_speed=5.0,
+        humidity=50,
+        precipitation=0.0,
+        weather_code=1,
+        precip_prob=20,
+        rainfall=0.0,
+        snowfall=0.0,
+        sunrise="5:30 AM",
+        sunset="6:30 PM",
+        forecast=[],
+        hourly=[],
+        aqi=25,
+        units=units,
+        wind_gust=8.0,
+        uv_index=4.0,
+        previous_day_temp=58.0,
+    )
     monkeypatch.setattr(
         "isobar_cli.main.get_weather_data",
-        lambda city, metric=False: WeatherData(
-            city=city,
-            temp=30.0,
-            feels_like=25.0,
-            wind_speed=10.0,
-            humidity=50,
-            precipitation=0.0,
-            weather_code=0,
-            precip_prob=10,
-            rainfall=0.0,
-            snowfall=0.0,
-            sunrise="6:00 AM",
-            sunset="6:00 PM",
-            forecast=[],
-            hourly=[],
-            units=units,
-        ),
+        lambda city, metric=False: mock_weather if city == "Tokyo" else None,
     )
     result = runner.invoke(
-        app, ["main", "Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+        app, ["Tokyo"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
     )
     assert "Tokyo" in result.output
 
@@ -343,7 +352,7 @@ def test_main_with_flags(monkeypatch):
     # Multi-city
     result = runner.invoke(
         app,
-        ["main", "City1", "City2"],
+        ["City1", "City2"],
         color=False,
         env={"TERM": "dumb", "NO_COLOR": "1"},
     )
@@ -354,7 +363,7 @@ def test_main_with_flags(monkeypatch):
     # Multi-city with flags
     result = runner.invoke(
         app,
-        ["main", "City1", "City2", "--hourly"],
+        ["--hourly", "City1", "City2"],
         color=False,
         env={"TERM": "dumb", "NO_COLOR": "1"},
     )
@@ -364,7 +373,7 @@ def test_main_with_flags(monkeypatch):
     # Hourly
     result = runner.invoke(
         app,
-        ["main", "CityH", "--hourly"],
+        ["--hourly", "CityH"],
         color=False,
         env={"TERM": "dumb", "NO_COLOR": "1"},
     )
@@ -374,7 +383,7 @@ def test_main_with_flags(monkeypatch):
     # Forecast
     result = runner.invoke(
         app,
-        ["main", "CityF", "--forecast"],
+        ["--forecast", "CityF"],
         color=False,
         env={"TERM": "dumb", "NO_COLOR": "1"},
     )

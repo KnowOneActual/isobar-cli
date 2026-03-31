@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-03-30
+
+### Fixed
+- **CLI Structure Regression** — Restored hourly (`-H`) and weekly forecast (`-f`) functionality that was broken when adding the `home` command.
+- **Typer Integration** — Fixed CLI structure to use `invoke_without_command=True` for default weather behavior while maintaining `home` as a subcommand.
+- **Test Updates** — Updated tests to reflect new CLI structure and fix `WeatherData` constructor calls.
+
 ## [1.1.1] - 2026-03-30
 
 ### Fixed
