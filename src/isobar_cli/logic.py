@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 # WMO Weather interpretation codes -> (emoji, description)
 # https://open-meteo.com/en/docs
@@ -125,3 +126,115 @@ def get_feels_like_label(temp: float, feels_like: float, unit: str) -> str:
         if temp >= 80 and feels_like > temp:
             return "Heat Index:"
     return "Real Feel:"
+
+
+def get_uv_guidance(uv_index: float) -> tuple[str, str]:
+    """Returns (label, color) based on UV intensity.
+
+    UV Index Scale:
+    0-2: Low
+    3-5: Moderate
+    6-7: High
+    8-10: Very High
+    11+: Extreme
+    """
+    if uv_index <= 2:
+        return "Low", "bold green"
+    elif uv_index <= 5:
+        return "Moderate", "bold yellow"
+    elif uv_index <= 7:
+        return "High", "bold orange1"
+    elif uv_index <= 10:
+        return "Very High", "bold red"
+    else:
+        return "Extreme", "bold dark_red"
+
+
+def get_wind_gust_alert(wind_speed: float, wind_gust: Optional[float]) -> Optional[str]:
+    """Returns alert if gusts are significantly higher than sustained wind.
+
+    Alerts when gusts are > 1.5x sustained wind speed and > 20 mph (or 32 km/h).
+    """
+    if wind_gust is None:
+        return None
+
+    # Check if gusts are significantly higher than sustained wind
+    if wind_gust > wind_speed * 1.5:
+        # Check if gusts are strong enough to warrant alert
+        if wind_gust > 20:  # mph threshold
+            return f"⚠️ Gusts up to {wind_gust:.0f} mph"
+    return None
+
+
+def get_preparation_guidance(
+    temp: float,
+    feels_like: float,
+    precip_prob: int,
+    weather_code: int,
+    uv_index: Optional[float],
+    unit: str,
+) -> list[str]:
+    """Returns clothing/gear suggestions based on weather conditions."""
+    suggestions = []
+
+    # Temperature-based clothing
+    is_metric = unit == "°C"
+    if is_metric:
+        if temp < 0:
+            suggestions.append("🧥 Heavy winter coat")
+            suggestions.append("🧤 Gloves and hat")
+        elif temp < 10:
+            suggestions.append("🧥 Warm jacket")
+        elif temp < 20:
+            suggestions.append("🧥 Light jacket")
+        elif temp > 30:
+            suggestions.append("👕 Light, breathable clothing")
+    else:
+        if temp < 32:
+            suggestions.append("🧥 Heavy winter coat")
+            suggestions.append("🧤 Gloves and hat")
+        elif temp < 50:
+            suggestions.append("🧥 Warm jacket")
+        elif temp < 68:
+            suggestions.append("🧥 Light jacket")
+        elif temp > 86:
+            suggestions.append("👕 Light, breathable clothing")
+
+    # Precipitation gear
+    if precip_prob > 50:
+        if weather_code in [71, 73, 75, 77, 85, 86]:  # Snow codes
+            suggestions.append("❄️ Waterproof boots")
+        else:
+            suggestions.append("☂️ Umbrella or raincoat")
+
+    # UV protection
+    if uv_index and uv_index >= 3:
+        suggestions.append("🧴 Sunscreen recommended")
+    if uv_index and uv_index >= 6:
+        suggestions.append("🕶️ Sunglasses recommended")
+
+    # Wind protection
+    if feels_like < temp - 5:  # Significant wind chill
+        suggestions.append("🧣 Scarf for wind protection")
+
+    return suggestions
+
+
+def get_temporal_context(
+    current_temp: float, previous_temp: Optional[float], unit: str
+) -> Optional[str]:
+    """Returns context comparing current temperature to previous day."""
+    if previous_temp is None:
+        return None
+
+    diff = current_temp - previous_temp
+    if abs(diff) < 0.5:  # Less than 0.5 degree difference
+        return None
+
+    direction = "↑" if diff > 0 else "↓"
+    abs_diff = abs(diff)
+
+    if unit == "°C":
+        return f"{direction} {abs_diff:.1f}°C {'warmer' if diff > 0 else 'cooler'} than yesterday"
+    else:
+        return f"{direction} {abs_diff:.1f}°F {'warmer' if diff > 0 else 'cooler'} than yesterday"

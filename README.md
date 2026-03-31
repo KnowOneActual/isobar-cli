@@ -42,6 +42,12 @@ Most weather apps overwhelm with data. Isobar strips away everything except what
 - **Metric Support** — `--metric` or `-m` for Celsius, km/h, and mm.
 - **No API Keys** — Free Open-Meteo and ip-api.com.
 - **Zero Config** — Works instantly after installation.
+- **Phase 7: Intuition & Analysis** — Higher-level context and automated insights:
+  - **Preparation Guidance** — Clothing and gear suggestions based on conditions 🧥☂️🧴
+  - **Temporal Context** — Comparison with previous day conditions 📈
+  - **UV Index Monitoring** — Sun protection guidance with intensity levels ☀️
+  - **Wind Gust Alerts** — Highlighting of significant gust events 💨⚠️
+  - **Home City Persistence** — Set a default city with `isobar home "Your City"` 🏠
 
 ## 🚀 Installation
 
@@ -98,6 +104,12 @@ isobar -f Sydney
 isobar --metric
 isobar -m
 isobar Tokyo -m
+
+# Home city management
+isobar home "New York"    # Set home city
+isobar home               # Show current home city
+isobar home --clear       # Clear home city
+isobar                    # Uses home city if set (otherwise auto-detects)
 ```
 
 ## ⌨️ Shell Completion
@@ -121,23 +133,33 @@ isobar --install-completion bash
 ```
                Chicago, Illinois Weather
  ☀️  Conditions:                        Mainly clear
- 🌡️  Temperature:                             37.1°F
- 🤔  Real Feel:                               30.4°F
- 💨  Wind Speed:                             4.3 mph
- 💧  Humidity:                                   58%
- ☔  Precip Chance:  0% (6h) | Dry conditions expected
+ 🌡️  Temperature:                             75.2°F
+ 🤔  Real Feel:                               78.5°F
+ 💨  Wind Speed:                             12.4 mph
+ 💧  Humidity:                                   65%
+ ☔  Precip Chance:  30% (6h) | Light rain likely
  🌅  Sunrise:                                6:29 AM
  🌇  Sunset:                                 5:37 PM
+ ☀️  UV Index:                              6.5 (High)
+ 💨  Wind Alert:                     ⚠️ Gusts up to 25 mph
+ 😷  Air Quality:                        45 (Good)
+
+↑ 5.2°F warmer than yesterday
+
+Preparation Guidance:
+  • 🧥 Light jacket
+  • 🧴 Sunscreen recommended
+  • 🕶️ Sunglasses recommended
 
            7-Day Forecast — Chicago, Illinois
-  Day            Conditions        High     Low   Rain%
-  Today      ☁️  Overcast         41.7°F  23.9°F    1%
-  Fri Feb 27 ⛅  Partly cloudy    66.4°F  32.4°F    2%
-  Sat Feb 28 🌨️  Moderate snow    44.0°F  26.5°F   38%
-  Sun Mar 1  ☁️  Overcast         29.0°F  26.6°F   36%
-  Mon Mar 2  ☁️  Overcast         33.6°F  27.1°F   36%
-  Tue Mar 3  🌦️  Light drizzle    36.8°F  30.9°F   27%
-  Wed Mar 4  🌦️  Moderate drizzle 41.3°F  33.5°F   46%
+  Day            Conditions        High     Low   Rain%  UV
+  Today      ☁️  Overcast         78.7°F  63.9°F    30%   7.2
+  Tue Apr 1  ⛅  Partly cloudy    82.4°F  65.4°F    20%   8.1
+  Wed Apr 2  🌦️  Light drizzle    76.8°F  60.9°F    45%   5.8
+  Thu Apr 3  ☀️  Clear sky        80.3°F  63.5°F    10%   8.5
+  Fri Apr 4  ☀️  Clear sky        83.6°F  67.1°F     5%   9.0
+  Sat Apr 5  ⛅  Partly cloudy    79.8°F  64.9°F    15%   7.8
+  Sun Apr 6  🌤️  Mainly clear     81.2°F  66.3°F    10%   8.3
 ```
 
 ## 🛠 Tech Stack
@@ -153,6 +175,10 @@ isobar --install-completion bash
 | [requests-mock](https://requests-mock.readthedocs.io/) | API testing |
 | [Ruff](https://docs.astral.sh/ruff/) | Linting and formatting |
 | [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning |
+| **Phase 7 Features** | **Intuition & Analysis** |
+| `config.py` | Persistent home city configuration |
+| Enhanced `logic.py` | Preparation guidance, UV monitoring, gust alerts |
+| Updated `ui.py` | Contextual display of insights |
 
 ## 🔒 Security
 
@@ -172,7 +198,10 @@ All security scans are integrated into the CI/CD pipeline and run on every push,
 ✅ **Phase 1 Complete** — Caching and Auto-Location  
 ✅ **Phase 2 Complete** — Precipitation, Sunrise/Sunset, and Condition Icons  
 ✅ **Phase 3 Complete** — 7-Day Forecast, Dynamic Timezone, and UI Refinements  
-✅ **CI/CD** — Linting and security auditing integrated into every push.  
+✅ **Phase 4 Complete** — Quality & Trust (Security, CI/CD)  
+✅ **Phase 5 Complete** — Testing & Reliability  
+✅ **Phase 6 Complete** — Distribution (PyPI, Homebrew)  
+✅ **Phase 7 Complete** — Intuition & Analysis (v1.1.0)  
 Refer to [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## 🤝 Contributing

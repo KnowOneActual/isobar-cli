@@ -4,7 +4,7 @@ import time
 import pytest
 from typer.testing import CliRunner
 
-from isobar_cli import api, ui
+from isobar_cli import api, logic, ui
 from isobar_cli.api import (
     get_cached_cities,
     get_city_suggestions,
@@ -595,3 +595,286 @@ def test_build_weather_table_extra():
     # ValueError case
     with pytest.raises(ValueError):
         ui.get_temp_color("invalid")
+
+
+# Phase 7 Tests
+def test_get_uv_guidance():
+    """Test UV index guidance function."""
+    assert logic.get_uv_guidance(0.5) == ("Low", "bold green")
+    assert logic.get_uv_guidance(2.0) == ("Low", "bold green")
+    assert logic.get_uv_guidance(3.0) == ("Moderate", "bold yellow")
+    assert logic.get_uv_guidance(5.0) == ("Moderate", "bold yellow")
+    assert logic.get_uv_guidance(6.0) == ("High", "bold orange1")
+    assert logic.get_uv_guidance(7.0) == ("High", "bold orange1")
+    assert logic.get_uv_guidance(8.0) == ("Very High", "bold red")
+    assert logic.get_uv_guidance(10.0) == ("Very High", "bold red")
+    assert logic.get_uv_guidance(11.0) == ("Extreme", "bold dark_red")
+    assert logic.get_uv_guidance(15.0) == ("Extreme", "bold dark_red")
+
+
+def test_get_wind_gust_alert():
+    """Test wind gust alert function."""
+    # No alert when gust is None
+    assert logic.get_wind_gust_alert(10.0, None) is None
+
+    # No alert when gust is not significantly higher
+    assert logic.get_wind_gust_alert(10.0, 14.0) is None  # 1.4x
+
+    # Alert when gust is >1.5x and >20 mph
+    assert logic.get_wind_gust_alert(10.0, 25.0) == "⚠️ Gusts up to 25 mph"
+
+    # No alert when gust is >1.5x but <20 mph
+    assert logic.get_wind_gust_alert(5.0, 10.0) is None  # 2.0x but only 10 mph
+
+    # Alert with threshold (needs > 20, not >= 20)
+    assert logic.get_wind_gust_alert(13.0, 20.1) == "⚠️ Gusts up to 20 mph"
+
+
+def test_get_preparation_guidance():
+    """Test preparation guidance function."""
+    # Cold weather suggestions (Fahrenheit)
+    suggestions = logic.get_preparation_guidance(
+        temp=30.0,
+        feels_like=25.0,
+        precip_prob=10,
+        weather_code=0,
+        uv_index=2.0,
+        unit="°F",
+    )
+    assert "🧥 Heavy winter coat" in suggestions
+    assert "🧤 Gloves and hat" in suggestions
+    assert "☂️ Umbrella or raincoat" not in suggestions  # precip_prob too low
+
+    # Warm weather suggestions (Fahrenheit) - temp 65°F is in light jacket range
+    suggestions = logic.get_preparation_guidance(
+        temp=65.0,
+        feels_like=67.0,
+        precip_prob=60,
+        weather_code=61,
+        uv_index=4.0,
+        unit="°F",
+    )
+    assert "🧥 Light jacket" in suggestions
+    assert "☂️ Umbrella or raincoat" in suggestions
+    assert "🧴 Sunscreen recommended" in suggestions
+
+    # Hot weather with high UV (Celsius)
+    suggestions = logic.get_preparation_guidance(
+        temp=35.0,
+        feels_like=38.0,
+        precip_prob=0,
+        weather_code=0,
+        uv_index=8.0,
+        unit="°C",
+    )
+    assert "👕 Light, breathable clothing" in suggestions
+    assert "🧴 Sunscreen recommended" in suggestions
+    assert "🕶️ Sunglasses recommended" in suggestions
+
+    # Snowy conditions
+    suggestions = logic.get_preparation_guidance(
+        temp=25.0,
+        feels_like=20.0,
+        precip_prob=80,
+        weather_code=73,
+        uv_index=1.0,
+        unit="°F",
+    )
+    assert "❄️ Waterproof boots" in suggestions
+
+    # Wind chill protection
+    suggestions = logic.get_preparation_guidance(
+        temp=40.0,
+        feels_like=30.0,
+        precip_prob=0,
+        weather_code=0,
+        uv_index=3.0,
+        unit="°F",
+    )
+    assert "🧣 Scarf for wind protection" in suggestions
+
+
+def test_get_temporal_context():
+    """Test temporal context function."""
+    # No context when previous temp is None
+    assert logic.get_temporal_context(70.0, None, "°F") is None
+
+    # No context when difference is small
+    assert logic.get_temporal_context(70.0, 69.8, "°F") is None
+
+    # Warmer context
+    assert (
+        logic.get_temporal_context(75.0, 70.0, "°F") == "↑ 5.0°F warmer than yesterday"
+    )
+    assert (
+        logic.get_temporal_context(20.0, 15.0, "°C") == "↑ 5.0°C warmer than yesterday"
+    )
+
+    # Cooler context
+    assert (
+        logic.get_temporal_context(65.0, 70.0, "°F") == "↓ 5.0°F cooler than yesterday"
+    )
+    assert (
+        logic.get_temporal_context(15.0, 20.0, "°C") == "↓ 5.0°C cooler than yesterday"
+    )
+
+
+def test_config_module(tmp_path, monkeypatch):
+    """Test config module functions."""
+    from isobar_cli import config
+
+    # Mock config directory
+    monkeypatch.setattr(config, "CONFIG_DIR", tmp_path / ".config" / "isobar")
+    monkeypatch.setattr(
+        config, "CONFIG_FILE", tmp_path / ".config" / "isobar" / "config.json"
+    )
+
+    # Test initial state
+    assert config.get_home_city() is None
+
+    # Test setting home city
+    config.set_home_city("New York")
+    assert config.get_home_city() == "New York"
+
+    # Test clearing home city
+    config.clear_home_city()
+    assert config.get_home_city() is None
+
+    # Test setting again
+    config.set_home_city("London")
+    assert config.get_home_city() == "London"
+
+    # Test config path
+    assert config.get_config_path() == tmp_path / ".config" / "isobar" / "config.json"
+
+
+def test_ui_with_new_features():
+    """Test UI with new Phase 7 features."""
+    units = WeatherUnits(temp="°F", wind="mph", precip="in")
+
+    # Create weather data with new fields
+    data = WeatherData(
+        city="Test City",
+        temp=75.0,
+        feels_like=78.0,
+        wind_speed=10.0,
+        humidity=50,
+        precipitation=0.0,
+        weather_code=0,
+        precip_prob=30,
+        rainfall=0.0,
+        snowfall=0.0,
+        sunrise="6:00 AM",
+        sunset="6:00 PM",
+        forecast=[],
+        hourly=[],
+        units=units,
+        aqi=45,
+        wind_gust=25.0,  # Should trigger gust alert
+        uv_index=6.5,  # Should show UV index
+        previous_day_temp=70.0,
+    )
+
+    # Build table and check for new features
+    table = ui.build_weather_table(data)
+
+    # Check for UV index - look in the label column (column 1)
+    assert any("UV Index" in str(row) for row in table.columns[1]._cells)
+
+    # Check for wind gust alert
+    assert any("Wind Alert" in str(row) for row in table.columns[1]._cells)
+
+    # Test without gust alert (gust not high enough)
+    data_no_alert = WeatherData(
+        city="Test City",
+        temp=75.0,
+        feels_like=78.0,
+        wind_speed=10.0,
+        humidity=50,
+        precipitation=0.0,
+        weather_code=0,
+        precip_prob=30,
+        rainfall=0.0,
+        snowfall=0.0,
+        sunrise="6:00 AM",
+        sunset="6:00 PM",
+        forecast=[],
+        hourly=[],
+        units=units,
+        wind_gust=12.0,  # Too low for alert
+    )
+
+    table2 = ui.build_weather_table(data_no_alert)
+    assert any("Wind Gust" in str(row) for row in table2.columns[1]._cells)
+
+
+def test_api_with_new_fields(requests_mock):
+    """Test API integration with new fields."""
+    # Mock geocoding response
+    requests_mock.get(
+        "https://geocoding-api.open-meteo.com/v1/search?name=London&count=1&format=json",
+        json={
+            "results": [
+                {
+                    "name": "London",
+                    "latitude": 51.5,
+                    "longitude": -0.1,
+                    "admin1": "England",
+                    "country": "UK",
+                }
+            ]
+        },
+    )
+
+    # Mock weather response with new fields
+    requests_mock.get(
+        "https://api.open-meteo.com/v1/forecast",
+        json={
+            "latitude": 51.5,
+            "longitude": -0.1,
+            "current": {
+                "time": "2026-03-31T12:00",
+                "temperature_2m": 60.0,
+                "apparent_temperature": 58.0,
+                "wind_speed_10m": 10.0,
+                "relative_humidity_2m": 65,
+                "precipitation": 0.0,
+                "weather_code": 1,
+                "wind_gusts_10m": 18.0,
+                "uv_index": 4.5,
+            },
+            "daily": {
+                "time": ["2026-03-31"],
+                "sunrise": ["2026-03-31T06:00:00"],
+                "sunset": ["2026-03-31T18:00:00"],
+                "temperature_2m_max": [65.0],
+                "temperature_2m_min": [55.0],
+                "weather_code": [1],
+                "precipitation_probability_max": [20],
+                "uv_index_max": [5.0],
+            },
+            "hourly": {
+                "time": ["2026-03-31T12:00", "2026-03-31T13:00"],
+                "precipitation_probability": [10, 15],
+                "rain": [0.0, 0.0],
+                "snowfall": [0.0, 0.0],
+                "temperature_2m": [60.0, 61.0],
+                "weather_code": [1, 1],
+            },
+        },
+    )
+
+    # Mock air quality response
+    requests_mock.get(
+        "https://air-quality-api.open-meteo.com/v1/air-quality?latitude=51.5&longitude=-0.1&current=us_aqi",
+        json={"current": {"us_aqi": 35}},
+    )
+
+    # Get weather data
+    weather = api.get_weather_data("London")
+
+    # Check new fields are present
+    assert weather is not None
+    assert weather.wind_gust == 18.0
+    assert weather.uv_index == 4.5
+    assert weather.forecast[0].uv_index_max == 5.0

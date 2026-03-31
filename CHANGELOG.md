@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-30
+
+### Added
+- **Phase 7: Intuition & Analysis** — Complete implementation of higher-level context and automated insights:
+  - **Preparation Guidance** — Clothing and gear suggestions based on outdoor conditions (e.g., "🧥 Light jacket", "🧴 Sunscreen recommended").
+  - **Temporal Context** — Comparative analysis with previous day conditions (e.g., "↑ 5°F warmer than yesterday").
+  - **UV Index Monitoring** — Sun protection guidance with color-coded intensity levels (Low to Extreme).
+  - **Wind Gust Alerts** — Specific highlighting of significant gust events (alerts when gusts >1.5x sustained wind and >20 mph).
+  - **Home City Persistence** — Support for a configured "Home City" to bypass IP lookups (`isobar home "Your City"`).
+- **Enhanced Weather Data** — Added UV index and wind gust data to API responses and caching.
+- **Configuration System** — New `config.py` module with persistent settings in `~/.config/isobar/`.
+- **Comprehensive Testing** — 7 new test functions covering all Phase 7 features with maintained high coverage.
+
+### Changed
+- **UI Enhancements** — Weather table now includes UV index and wind gust information.
+- **Auto-Location Logic** — Checks for home city configuration before falling back to IP detection.
+- **API Integration** — Expanded Open-Meteo API calls to include `wind_gusts_10m` and `uv_index` fields.
+
 ## [1.0.1] - 2026-03-03
 
 ### Added

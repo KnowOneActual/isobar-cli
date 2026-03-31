@@ -139,3 +139,7 @@ weights/
 # /my-secret-folder/
 /docs/temp_ts/
 GEMINI.md
+
+# Agent-specific files (keep local only)
+AGENTS.md
+.AGENTS

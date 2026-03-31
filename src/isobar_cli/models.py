@@ -29,6 +29,7 @@ class ForecastDay:
     low: float
     weather_code: int
     precip_prob: int
+    uv_index_max: Optional[float] = None
 
     @property
     def dt(self) -> datetime:
@@ -65,5 +66,8 @@ class WeatherData:
     hourly: list[HourlyForecast]
     units: WeatherUnits
     aqi: Optional[int] = None
+    wind_gust: Optional[float] = None
+    uv_index: Optional[float] = None
+    previous_day_temp: Optional[float] = None
     last_updated: float = field(default_factory=lambda: 0.0)
     timestamp: float = field(default_factory=lambda: 0.0)

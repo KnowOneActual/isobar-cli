@@ -4,6 +4,7 @@ import typer
 from rich.console import Console
 
 from isobar_cli.api import get_cached_cities, get_city_suggestions, get_weather_data
+from isobar_cli.config import clear_home_city, get_home_city, set_home_city
 from isobar_cli.location import get_auto_location
 from isobar_cli.ui import (
     display_forecast,
@@ -22,6 +23,47 @@ def city_complete(incomplete: str):
     """Callback for shell completion of city names from cache."""
     cached = get_cached_cities()
     return [c for c in cached if c.lower().startswith(incomplete.lower())]
+
+
+@app.command()
+def home(
+    city: Annotated[
+        Optional[str],
+        typer.Argument(help="Set your home city. Omit to show current home city."),
+    ] = None,
+    clear: Annotated[
+        bool,
+        typer.Option(
+            "--clear",
+            "-c",
+            help="Clear your home city setting.",
+        ),
+    ] = False,
+):
+    """
+    Manage your home city for automatic weather checks.
+
+    Examples:
+        isobar home "New York"    # Set home city to New York
+        isobar home               # Show current home city
+        isobar home --clear       # Clear home city setting
+    """
+    if clear:
+        clear_home_city()
+        console.print("[green]✓ Home city cleared.[/green]")
+        return
+
+    if city is None:
+        home_city = get_home_city()
+        if home_city:
+            console.print(f"[bold]Home city:[/bold] {home_city}")
+        else:
+            console.print("[dim]No home city set.[/dim]")
+            console.print('\nSet one with: [bold]isobar home "Your City"[/bold]')
+        return
+
+    set_home_city(city)
+    console.print(f"[green]✓ Home city set to: {city}[/green]")
 
 
 @app.command()
@@ -77,18 +119,25 @@ def main(
 
     # Auto-location if no city provided either way
     if not cities_to_fetch:
-        console.print("[dim]🌍 Detecting location...[/dim]")
-        auto_city = get_auto_location()
-
-        if auto_city is None:
-            console.print(
-                "[yellow]⚠️  Could not detect location. "
-                "Using Chicago as default.[/yellow]"
-            )
-            cities_to_fetch = ["Chicago"]
+        # Check for home city first
+        home_city = get_home_city()
+        if home_city:
+            console.print(f"[dim]📍 Using home city: {home_city}[/dim]")
+            cities_to_fetch = [home_city]
         else:
-            console.print(f"[dim]📍 Detected: {auto_city}[/dim]")
-            cities_to_fetch = [auto_city]
+            # Fall back to IP-based auto-detection
+            console.print("[dim]🌍 Detecting location...[/dim]")
+            auto_city = get_auto_location()
+
+            if auto_city is None:
+                console.print(
+                    "[yellow]⚠️  Could not detect location. "
+                    "Using Chicago as default.[/yellow]"
+                )
+                cities_to_fetch = ["Chicago"]
+            else:
+                console.print(f"[dim]📍 Detected: {auto_city}[/dim]")
+                cities_to_fetch = [auto_city]
 
     # Process each city
     results = []

@@ -9,7 +9,11 @@ from .logic import (
     get_aqi_label,
     get_feels_like_label,
     get_precip_headline,
+    get_preparation_guidance,
     get_temp_color,
+    get_temporal_context,
+    get_uv_guidance,
+    get_wind_gust_alert,
 )
 from .models import WeatherData
 
@@ -80,6 +84,22 @@ def build_weather_table(weather: WeatherData) -> Table:
     table.add_row("🌅", "Sunrise:", f"[yellow]{weather.sunrise}[/yellow]")
     table.add_row("🌇", "Sunset:", f"[orange1]{weather.sunset}[/orange1]")
 
+    # UV Index
+    if weather.uv_index is not None:
+        uv_label, uv_color = get_uv_guidance(weather.uv_index)
+        table.add_row(
+            "☀️",
+            "UV Index:",
+            f"[{uv_color}]{weather.uv_index:.1f} ({uv_label})[/{uv_color}]",
+        )
+
+    # Wind Gust Alert
+    gust_alert = get_wind_gust_alert(weather.wind_speed, weather.wind_gust)
+    if gust_alert:
+        table.add_row("💨", "Wind Alert:", f"[bold yellow]{gust_alert}[/bold yellow]")
+    elif weather.wind_gust is not None:
+        table.add_row("💨", "Wind Gust:", f"{weather.wind_gust} {weather.units.wind}")
+
     return table
 
 
@@ -95,7 +115,40 @@ def display_weather(weather: WeatherData):
             console.print(f"[dim]Updated {minutes_ago} min ago[/dim]")
 
     console.print(build_weather_table(weather))
+
+    # Show preparation guidance
+    display_preparation_guidance(weather)
+
     print()
+
+
+def display_preparation_guidance(weather: WeatherData):
+    """Displays clothing and gear suggestions based on weather conditions."""
+    suggestions = get_preparation_guidance(
+        temp=weather.temp,
+        feels_like=weather.feels_like,
+        precip_prob=weather.precip_prob,
+        weather_code=weather.weather_code,
+        uv_index=weather.uv_index,
+        unit=weather.units.temp,
+    )
+
+    if not suggestions:
+        return
+
+    # Temporal context
+    temporal_context = get_temporal_context(
+        current_temp=weather.temp,
+        previous_temp=weather.previous_day_temp,
+        unit=weather.units.temp,
+    )
+
+    if temporal_context:
+        console.print(f"[dim]{temporal_context}[/dim]")
+
+    console.print("[bold]Preparation Guidance:[/bold]")
+    for suggestion in suggestions:
+        console.print(f"  • {suggestion}")
 
 
 def display_multi_weather(weather_list: list[WeatherData]):

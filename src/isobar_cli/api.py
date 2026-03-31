@@ -48,9 +48,9 @@ class WeatherClient:
             "latitude": self.lat,
             "longitude": self.lon,
             "current": "temperature_2m,apparent_temperature,wind_speed_10m,"
-            "relative_humidity_2m,precipitation,weather_code",
+            "relative_humidity_2m,precipitation,weather_code,wind_gusts_10m,uv_index",
             "daily": "sunrise,sunset,temperature_2m_max,temperature_2m_min,"
-            "weather_code,precipitation_probability_max",
+            "weather_code,precipitation_probability_max,uv_index_max",
             "hourly": "precipitation_probability,rain,snowfall,temperature_2m,weather_code",
             "temperature_unit": temp_unit,
             "wind_speed_unit": wind_unit,
@@ -190,6 +190,7 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
             low=daily["temperature_2m_min"][i],
             weather_code=daily["weather_code"][i],
             precip_prob=daily["precipitation_probability_max"][i] or 0,
+            uv_index_max=daily.get("uv_index_max", [None] * len(daily["time"]))[i],
         )
         for i in range(len(daily["time"]))
     ]
@@ -212,6 +213,8 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
         hourly=hourly_forecast,
         units=weather_client.units,
         aqi=aqi_value,
+        wind_gust=current.get("wind_gusts_10m"),
+        uv_index=current.get("uv_index"),
         last_updated=now,
         timestamp=now,
     )
