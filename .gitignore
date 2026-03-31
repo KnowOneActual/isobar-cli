@@ -143,3 +143,10 @@ GEMINI.md
 # Agent-specific files (keep local only)
 AGENTS.md
 .AGENTS
+.agent
+.windsurf
+
+
+# Personal files
+
+start-work.sh
