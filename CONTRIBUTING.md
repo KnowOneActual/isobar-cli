@@ -88,4 +88,18 @@ Expect the following question during code review: **"How does this help someone 
 - Maintain modular separation (e.g., `api`, `ui`, CLI entrypoint).
 - Avoid introducing heavy dependencies without a strong, user-facing reason.
 
+## Known Issues & Technical Debt
+
+For contributors looking to help improve the project, here are some known issues and areas for improvement:
+
+### Current Limitations
+1. **`home` subcommand conflict**: Due to Typer's `invoke_without_command=True` behavior, `isobar home "City"` doesn't work as expected (shows weather for Home, Kansas instead of setting home city).
+2. **Flag ordering requirement**: Flags (`-H`, `-f`, `-m`) must come before city arguments.
+
+### Technical Debt
+1. **Test mock complexity**: Tests require verbose `WeatherData` constructor calls that are brittle to model changes.
+2. **API client organization**: Could benefit from better abstraction of common HTTP client logic.
+
+For detailed information on these issues, see [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
+
 Thank you for contributing to the continued development of a focused and intentional Isobar CLI.

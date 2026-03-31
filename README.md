@@ -47,7 +47,7 @@ Most weather apps overwhelm with data. Isobar strips away everything except what
   - **Temporal Context** — Comparison with previous day conditions 📈
   - **UV Index Monitoring** — Sun protection guidance with intensity levels ☀️
   - **Wind Gust Alerts** — Highlighting of significant gust events 💨⚠️
-  - **Home City Persistence** — Set a default city with `isobar home "Your City"` 🏠
+  - **Home City Persistence** — Set a default city with `isobar home "Your City"` 🏠 *(Note: Due to a Typer limitation, this currently shows weather for "Home, Kansas" instead of setting home city. Manual config editing required.)*
 
 ## 🚀 Installation
 
@@ -91,12 +91,16 @@ isobar London Tokyo Paris     # Multiple cities
 isobar "New York"             # Use quotes for multi-word cities
 
 # Hourly outlook (next 12h)
-isobar --hourly
-isobar -H
+isobar --hourly Chicago
+isobar -H Chicago
 
 # 7-day forecast
-isobar --forecast
-isobar -f
+isobar --forecast Chicago
+isobar -f Chicago
+
+# Note: Flags must come before city names
+# ✅ isobar -H Chicago
+# ❌ isobar Chicago -H  (treats "-H" as a city name)
 isobar "San Francisco" --forecast
 isobar -f Sydney
 
