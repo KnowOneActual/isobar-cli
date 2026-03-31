@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-30
+
+### Fixed
+- **PyPI Publishing** — Version bump to resolve conflict with existing 1.1.0 release on PyPI.
+- **Test Structure** — Fixed test invocations for new CLI structure with `home` command.
+- **Linting** — Removed unused imports to pass ruff checks.
+
 ## [1.1.0] - 2026-03-30
 
 ### Added
