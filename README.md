@@ -9,7 +9,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Security Scan](https://github.com/KnowOneActual/isobar-cli/actions/workflows/security.yml/badge.svg)
 
-**I'm currently working on improving the layout. Thanks so much for your patience with any little hiccups that might come up along the way! I am working on refactoring the layout. Sorry for any hiccups along the way.**
+**I'm currently working on improving the layout. Thanks so much for your patience with any little hiccups that might come up along the way!**
 
 A terminal weather tool designed to provide a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
 
