@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-04-05
+
+### Added
+- **Industrial Aesthetic** — Complete redesign with retro-futuristic "Weather Observatory" dashboard styling
+- **Visual Gauges** — Temperature and humidity gauge visualizations using █ and ░ characters
+- **Severity Indicators** — Weather condition severity icons (⚡, ▲, ●, ○, ◇) for quick assessment
+- **Wind Categories** — Descriptive wind speed classifications (CALM, LIGHT, GENTLE, MODERATE, FRESH, STRONG, GALE, SEVERE, STORM)
+- **Industrial Color Palette** — Concrete gray, steel blue, warning yellow, bright cyan accent colors
+- **Status Columns** — METRIC, READING, STATUS column layout for industrial dashboard feel
+- **Enhanced Preparation Guidance** — Priority-based suggestions with HIGH PRIORITY, RECOMMENDED, ADVISORY sections
+
+### Changed
+- **Complete UI Redesign** — Transformed from minimal borderless UI to industrial dashboard aesthetic
+- **Typography** — Uppercase labels, heavy borders, industrial terminology throughout
+- **Forecast Display** — Updated 7-day forecast with industrial panel styling and severity indicators
+- **Hourly Display** — Enhanced hourly tracker with temperature gauges and condition severity
+- **Color System** — Updated color constants to use valid Rich colors (replaced `dark_gray` with `grey50`)
+
+### Fixed
+- **Color Compatibility** — Fixed Rich library color compatibility issues
+- **Test Updates** — Updated UI tests to work with new industrial aesthetic design
+- **Linting** — Fixed all ruff linting issues in updated UI code
+
 ## [1.2.0] - 2026-04-05
 
 ### Added

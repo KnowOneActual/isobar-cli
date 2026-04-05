@@ -2,7 +2,7 @@
 
 ## Overview
 
-Isobar CLI supports advanced configuration through environment variables and optional dependencies. This guide covers all configuration options available in version 1.2.0 and later.
+Isobar CLI supports advanced configuration through environment variables and optional dependencies. This guide covers all configuration options available in version 1.3.0 and later.
 
 ## Environment Variables
 

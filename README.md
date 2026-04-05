@@ -3,7 +3,7 @@
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-98%25-green)
 [![PyPI version](https://badge.fury.io/py/isobar-cli.svg)](https://badge.fury.io/py/isobar-cli)
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.3.0-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -21,11 +21,13 @@ Most weather apps overwhelm with data. Isobar strips away everything except what
 - **Essential over comprehensive** — Show Real Feel, not 47 data points.
 - **Terminal-native** — Built for quick checks within a developer workflow.
 - **Zero friction** — No API keys or configuration files required.
-- **Information density** — Clean, borderless UI for maximum readability.
+- **Information density** — Industrial dashboard UI for maximum readability.
 - **Intentional features** — Each feature must answer: *"Does this help someone understand what it feels like outside?"*
+- **Distinctive aesthetic** — Retro-futuristic industrial styling that avoids generic "AI slop"
 
 ## ✨ Features
 
+- **Industrial Aesthetic** — Retro-futuristic weather observatory dashboard with brutalist styling 🏭
 - **Auto-Location** — `isobar` detects the city automatically 🌍
 - **Weather Condition Icons** — WMO-standard emoji + plain-English description (☀️ Clear sky, 🌨️ Moderate snow, ⛈️ Thunderstorm)
 - **Real Feel** — Apparent temperature metrics (what it *actually* feels like).
@@ -42,8 +44,12 @@ Most weather apps overwhelm with data. Isobar strips away everything except what
 - **Metric Support** — `--metric` or `-m` for Celsius, km/h, and mm.
 - **No API Keys** — Free Open-Meteo and ip-api.com.
 - **Zero Config** — Works instantly after installation.
+- **Visual Gauges** — Temperature and humidity gauge visualizations 📊
+- **Severity Indicators** — Weather condition severity icons (⚡, ▲, ●, ○, ◇)
+- **Wind Categories** — Descriptive wind speed classifications (CALM, LIGHT, GENTLE, etc.)
+- **Industrial Styling** — Heavy borders, uppercase labels, status columns
 - **Phase 7: Intuition & Analysis** — Higher-level context and automated insights:
-  - **Preparation Guidance** — Clothing and gear suggestions based on conditions 🧥☂️🧴
+  - **Preparation Guidance** — Clothing and gear suggestions with priority levels 🧥☂️🧴
   - **Temporal Context** — Comparison with previous day conditions 📈
   - **UV Index Monitoring** — Sun protection guidance with intensity levels ☀️
   - **Wind Gust Alerts** — Highlighting of significant gust events 💨⚠️
@@ -170,36 +176,53 @@ isobar --install-completion bash
 
 ## 🖥️ Example Output
 
+### Industrial Aesthetic (v1.3.0+)
+
 ```
-               Chicago, Illinois Weather
- ☀️  Conditions:                        Mainly clear
- 🌡️  Temperature:                             75.2°F
- 🤔  Real Feel:                               78.5°F
- 💨  Wind Speed:                             12.4 mph
- 💧  Humidity:                                   65%
- ☔  Precip Chance:  30% (6h) | Light rain likely
- 🌅  Sunrise:                                6:29 AM
- 🌇  Sunset:                                 5:37 PM
- ☀️  UV Index:                              6.5 (High)
- 💨  Wind Alert:                     ⚠️ Gusts up to 25 mph
- 😷  Air Quality:                        45 (Good)
+┌─ WEATHER OBSERVATORY ─┐
+CHICAGO
+┌─────┬──────────────────────┬────────────────┬────────────────┐
+│     │ METRIC               │ READING        │ STATUS         │
+├─────┼──────────────────────┼────────────────┼────────────────┤
+│ ☀️  │ CONDITIONS           │ MAINLY CLEAR   │ ◇              │
+│ 🌡️  │ TEMPERATURE          │ 75.2°F         │ [███░░░░░░░]   │
+│ 🤔  │ REAL FEEL            │ 78.5°F         │ ▲ 3.3°F        │
+│ 💨  │ WIND SPEED           │ 12.4 mph       │ GENTLE         │
+│ 💧  │ HUMIDITY             │ 65%            │ [▓▓▓░░]        │
+│ 😷  │ AIR QUALITY          │ 45             │ GOOD ◇         │
+│ ☔  │ PRECIPITATION         │ 30% (6h)       │ [▓░░]          │
+│     │ FORECAST             │ LIGHT RAIN LIKELY │               │
+│ 🌅  │ SUNRISE              │ 06:29          │ DAWN           │
+│ 🌇  │ SUNSET               │ 17:37          │ DUSK           │
+│ ☀️  │ UV INDEX             │ 6.5            │ HIGH ☀️☀️☀️     │
+│ ⚡  │ GUST ALERT           │ 25 mph         │ ⚠️ SEVERE       │
+└─────┴──────────────────────┴────────────────┴────────────────┘
 
-↑ 5.2°F warmer than yesterday
+┌─ TREND ANALYSIS ─┐
+↑ 5.2°F WARMER THAN YESTERDAY
+└──────────────────┘
 
-Preparation Guidance:
-  • 🧥 Light jacket
-  • 🧴 Sunscreen recommended
-  • 🕶️ Sunglasses recommended
+┌─ PREPARATION PROTOCOL ─┐
+  ⚠️  HIGH PRIORITY
+    ▶ Wind gusts up to 25 mph - secure loose items
+  ▲  RECOMMENDED
+    ▶ Light jacket recommended
+    ▶ Sunscreen recommended (UV: High)
+  ○  ADVISORY
+    ▶ Sunglasses recommended for glare
+└─────────────────────────┘
 
-           7-Day Forecast — Chicago, Illinois
-  Day            Conditions        High     Low   Rain%  UV
-  Today      ☁️  Overcast         78.7°F  63.9°F    30%   7.2
-  Tue Apr 1  ⛅  Partly cloudy    82.4°F  65.4°F    20%   8.1
-  Wed Apr 2  🌦️  Light drizzle    76.8°F  60.9°F    45%   5.8
-  Thu Apr 3  ☀️  Clear sky        80.3°F  63.5°F    10%   8.5
-  Fri Apr 4  ☀️  Clear sky        83.6°F  67.1°F     5%   9.0
-  Sat Apr 5  ⛅  Partly cloudy    79.8°F  64.9°F    15%   7.8
-  Sun Apr 6  🌤️  Mainly clear     81.2°F  66.3°F    10%   8.3
+┌─ FORECAST PANEL ─┐
+CHICAGO
+┌──────┬──┬────────────────────┬───────┬───────┬───────┬────────┐
+│ DAY  │  │ CONDITIONS         │ HIGH  │ LOW   │ RAIN% │ STATUS │
+├──────┼──┼────────────────────┼───────┼───────┼───────┼────────┤
+│ TODAY│☀️│ MAINLY CLEAR       │ 78.7°F│ 63.9°F│ 30%   │ ○      │
+│ TUE  │⛅│ PARTLY CLOUDY      │ 82.4°F│ 65.4°F│ 20%   │ ○      │
+│ WED  │🌦️│ LIGHT DRIZZLE      │ 76.8°F│ 60.9°F│ 45%   │ ●      │
+│ THU  │☀️│ CLEAR SKY          │ 80.3°F│ 63.5°F│ 10%   │ ○      │
+└──────┴──┴────────────────────┴───────┴───────┴───────┴────────┘
+```
 ```
 
 ## 🛠 Tech Stack
@@ -223,6 +246,11 @@ Preparation Guidance:
 | Configurable API Endpoints | Environment variable support for custom APIs |
 | Enhanced Error Handling | Specific exception catching with timeouts |
 | Timezone Support | Optional `pytz` dependency for local time display |
+| **v1.3.0 Features** | **Industrial Aesthetic** |
+| Industrial UI Design | Retro-futuristic weather observatory dashboard |
+| Visual Gauges | Temperature and humidity gauge visualizations |
+| Severity Indicators | Weather condition severity classification |
+| Enhanced Typography | Heavy borders, uppercase labels, status columns |
 
 ## 🔒 Security
 
