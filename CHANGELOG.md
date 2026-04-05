@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-04-05
+
+### Fixed
+- **Test Compatibility** — Fixed all test failures caused by industrial aesthetic redesign
+- **Uppercase City Names** — Updated tests to check for uppercase city display (TOKYO vs Tokyo)
+- **Header Terminology** — Fixed test assertions for new headers (HOURLY TRACKER, FORECAST PANEL)
+- **UI Label Updates** — Updated tests for uppercase labels (UV INDEX, GUST ALERT)
+- **Indentation Errors** — Fixed test file indentation issues
+- **Invalid Test Cases** — Removed invalid `get_temp_color("invalid")` test
+
 ## [1.3.0] - 2026-04-05
 
 ### Added
