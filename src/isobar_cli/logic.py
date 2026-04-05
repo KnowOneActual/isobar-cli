@@ -308,3 +308,127 @@ def get_temporal_context(
         return f"{direction} {abs_diff:.1f}°C {'warmer' if diff > 0 else 'cooler'} than yesterday"
     else:
         return f"{direction} {abs_diff:.1f}°F {'warmer' if diff > 0 else 'cooler'} than yesterday"
+
+
+def get_temperature_comfort(temp: float, unit: str = "°F") -> tuple[str, str]:
+    """Get temperature comfort category and color.
+
+    Args:
+        temp: Temperature value
+        unit: Temperature unit (°F or °C)
+
+    Returns:
+        Tuple of (category, color) where category is a comfort level
+    """
+    if unit == "°F":
+        if temp < 32:
+            return "FREEZING", "bright_cyan"
+        elif temp < 50:
+            return "COLD", "cyan"
+        elif temp < 75:
+            return "COMFORTABLE", "bright_green"
+        elif temp < 90:
+            return "WARM", "bright_yellow"
+        else:
+            return "HOT", "bright_red"
+    else:  # °C
+        if temp < 0:
+            return "FREEZING", "bright_cyan"
+        elif temp < 10:
+            return "COLD", "cyan"
+        elif temp < 24:
+            return "COMFORTABLE", "bright_green"
+        elif temp < 32:
+            return "WARM", "bright_yellow"
+        else:
+            return "HOT", "bright_red"
+
+
+def get_humidity_category(humidity: int) -> tuple[str, str]:
+    """Get humidity category and color.
+
+    Args:
+        humidity: Humidity percentage (0-100)
+
+    Returns:
+        Tuple of (category, color)
+    """
+    if humidity < 30:
+        return "DRY", "bright_yellow"
+    elif humidity < 60:
+        return "IDEAL", "bright_green"
+    elif humidity < 80:
+        return "HUMID", "bright_yellow"
+    else:
+        return "MUGGY", "bright_red"
+
+
+def get_wind_category_label(speed: float, unit: str) -> tuple[str, str]:
+    """Get wind category label and color.
+
+    Args:
+        speed: Wind speed
+        unit: Wind unit (mph or km/h)
+
+    Returns:
+        Tuple of (category, color)
+    """
+    if unit == "mph":
+        if speed < 1:
+            return "CALM", "bright_cyan"
+        elif speed < 7:
+            return "LIGHT", "cyan"
+        elif speed < 12:
+            return "GENTLE", "bright_green"
+        elif speed < 18:
+            return "MODERATE", "bright_yellow"
+        elif speed < 24:
+            return "FRESH", "yellow"
+        elif speed < 31:
+            return "STRONG", "bright_red"
+        elif speed < 38:
+            return "GALE", "red"
+        elif speed < 46:
+            return "SEVERE", "bright_red"
+        else:
+            return "STORM", "bright_red"
+    else:  # km/h
+        if speed < 2:
+            return "CALM", "bright_cyan"
+        elif speed < 12:
+            return "LIGHT", "cyan"
+        elif speed < 20:
+            return "GENTLE", "bright_green"
+        elif speed < 29:
+            return "MODERATE", "bright_yellow"
+        elif speed < 39:
+            return "FRESH", "yellow"
+        elif speed < 50:
+            return "STRONG", "bright_red"
+        elif speed < 62:
+            return "GALE", "red"
+        elif speed < 75:
+            return "SEVERE", "bright_red"
+        else:
+            return "STORM", "bright_red"
+
+
+def get_uv_category(uv_index: float) -> tuple[str, str]:
+    """Get UV index category and color.
+
+    Args:
+        uv_index: UV index value
+
+    Returns:
+        Tuple of (category, color)
+    """
+    if uv_index <= 2:
+        return "LOW", "bright_green"
+    elif uv_index <= 5:
+        return "MODERATE", "bright_yellow"
+    elif uv_index <= 7:
+        return "HIGH", "bright_red"
+    elif uv_index <= 10:
+        return "VERY HIGH", "red"
+    else:
+        return "EXTREME", "bright_red"

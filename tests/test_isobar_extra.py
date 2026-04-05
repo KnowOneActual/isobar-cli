@@ -380,8 +380,8 @@ def test_main_with_flags(monkeypatch):
         env={"TERM": "dumb", "NO_COLOR": "1"},
     )
     assert result.exit_code == 0
-    # In industrial aesthetic, hourly display has "HOURLY TRACKER" header
-    assert "HOURLY TRACKER" in result.output.upper()
+    # In borderless industrial aesthetic, hourly display has "HOURLY FORECAST" header
+    assert "HOURLY FORECAST" in result.output.upper()
     assert "CITYH" in result.output.upper()
 
     # Forecast
@@ -572,8 +572,8 @@ def test_display_multi_weather(mock_cache_dir):
 
 
 def test_get_precip_headline_extra():
-    assert ui.get_precip_headline(80, 0.5, 0, "in") == "Moderate rain likely"
-    assert ui.get_precip_headline(80, 0.1, 0, "in") == "Light rain likely"
+    assert logic.get_precip_headline(80, 0.5, 0, "in") == "Moderate rain likely"
+    assert logic.get_precip_headline(80, 0.1, 0, "in") == "Light rain likely"
 
 
 def test_build_weather_table_extra():
