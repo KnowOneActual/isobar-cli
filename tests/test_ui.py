@@ -1,4 +1,3 @@
-
 from isobar_cli.models import WeatherData, WeatherUnits
 from isobar_cli.ui import (
     build_weather_table,
