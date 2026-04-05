@@ -18,6 +18,11 @@ yarn-error.log*
 *.err
 *.diff
 *.rej
+
+# Database files
+*.db
+*.db-*
+database.*
 *.orig
 *.swo
 *.swp

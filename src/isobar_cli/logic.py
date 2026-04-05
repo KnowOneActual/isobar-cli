@@ -31,15 +31,85 @@ WMO_CODES: dict[int, tuple[str, str]] = {
 }
 
 
-def format_time(iso_string: str) -> str:
-    """Convert ISO 8601 datetime to 12-hour format (e.g., '6:42 AM')."""
+def format_time(iso_string: str, timezone: str = "UTC") -> str:
+    """Convert ISO 8601 datetime to 12-hour format in specified timezone.
+
+    Args:
+        iso_string: ISO 8601 datetime string
+        timezone: Timezone name (e.g., 'America/New_York'), defaults to UTC
+
+    Returns:
+        Formatted time string (e.g., '6:42 AM') or '--' on error
+    """
     if not iso_string:
         return "--"
+
     try:
+        # Parse the datetime
         dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
+
+        # Convert to local timezone if not UTC
+        if timezone != "UTC":
+            try:
+                import pytz
+
+                utc_dt = dt.replace(tzinfo=pytz.UTC)
+                local_tz = pytz.timezone(timezone)
+                local_dt = utc_dt.astimezone(local_tz)
+                return local_dt.strftime("%-I:%M %p")
+            except ImportError:
+                # pytz not installed, fall back to UTC
+                pass
+
         return dt.strftime("%-I:%M %p")
     except (ValueError, AttributeError):
         return "--"
+
+    # Try to import pytz for timezone conversion
+    pytz_available = False
+    if timezone != "UTC":
+        try:
+            import pytz
+
+            pytz_available = True
+        except ImportError:
+            pytz_available = False
+
+    try:
+        # Parse the datetime
+        dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
+
+        # Convert to local timezone if not UTC and pytz is available
+        if timezone != "UTC" and pytz_available:
+            utc_dt = dt.replace(tzinfo=pytz.UTC)
+            local_tz = pytz.timezone(timezone)
+            local_dt = utc_dt.astimezone(local_tz)
+            return local_dt.strftime("%-I:%M %p")
+
+        return dt.strftime("%-I:%M %p")
+    except (ValueError, AttributeError):
+        return "--"
+    try:
+        # Parse the datetime
+        dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
+
+        # Convert to local timezone if not UTC
+        if timezone != "UTC":
+            import pytz
+
+            utc_dt = dt.replace(tzinfo=pytz.UTC)
+            local_tz = pytz.timezone(timezone)
+            local_dt = utc_dt.astimezone(local_tz)
+            return local_dt.strftime("%-I:%M %p")
+
+        return dt.strftime("%-I:%M %p")
+    except (ValueError, AttributeError, ImportError):
+        # Fallback to UTC if pytz not available or other error
+        try:
+            dt = datetime.fromisoformat(iso_string.replace("Z", "+00:00"))
+            return dt.strftime("%-I:%M %p")
+        except (ValueError, AttributeError):
+            return "--"
 
 
 def get_temp_color(temp_val: float, unit="°F") -> str:

@@ -7,6 +7,7 @@ from typing import Optional
 import requests
 from timezonefinder import TimezoneFinder
 
+from .config import get_aqi_url, get_geocoding_url, get_weather_url
 from .logic import format_time
 from .models import ForecastDay, HourlyForecast, UnitSystem, WeatherData, WeatherUnits
 
@@ -15,22 +16,39 @@ CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class GeocodingClient:
-    BASE_URL = "https://geocoding-api.open-meteo.com/v1/search"
+    @classmethod
+    def get_base_url(cls) -> str:
+        """Get geocoding API URL from configuration."""
+        return get_geocoding_url()
 
     @classmethod
     def search(cls, city: str, count: int = 1) -> list[dict]:
         try:
             response = requests.get(
-                f"{cls.BASE_URL}?name={city}&count={count}&format=json"
+                f"{cls.get_base_url()}?name={city}&count={count}&format=json",
+                timeout=10,
             )
             response.raise_for_status()
             return response.json().get("results", [])
-        except Exception:
+        except requests.exceptions.RequestException as e:
+            # Log error for debugging but don't crash
+            import sys
+
+            print(f"Geocoding error for '{city}': {e}", file=sys.stderr)
+            return []
+        except Exception as e:
+            # Catch-all for unexpected errors
+            import sys
+
+            print(f"Unexpected geocoding error for '{city}': {e}", file=sys.stderr)
             return []
 
 
 class WeatherClient:
-    BASE_URL = "https://api.open-meteo.com/v1/forecast"
+    @classmethod
+    def get_base_url(cls) -> str:
+        """Get weather API URL from configuration."""
+        return get_weather_url()
 
     def __init__(self, lat: float, lon: float, timezone: str, metric: bool = False):
         self.lat = lat
@@ -59,23 +77,37 @@ class WeatherClient:
             "forecast_days": 7,
         }
 
-        response = requests.get(self.BASE_URL, params=params)
+        response = requests.get(self.get_base_url(), params=params, timeout=15)
         response.raise_for_status()
         return response.json()
 
 
 class AirQualityClient:
-    BASE_URL = "https://air-quality-api.open-meteo.com/v1/air-quality"
+    @classmethod
+    def get_base_url(cls) -> str:
+        """Get air quality API URL from configuration."""
+        return get_aqi_url()
 
     @classmethod
     def get_aqi(cls, lat: float, lon: float) -> Optional[int]:
         try:
             response = requests.get(
-                f"{cls.BASE_URL}?latitude={lat}&longitude={lon}&current=us_aqi"
+                f"{cls.get_base_url()}?latitude={lat}&longitude={lon}&current=us_aqi",
+                timeout=10,
             )
             response.raise_for_status()
             return response.json().get("current", {}).get("us_aqi")
-        except Exception:
+        except requests.exceptions.RequestException as e:
+            # Log error for debugging but don't crash
+            import sys
+
+            print(f"AQI error for ({lat},{lon}): {e}", file=sys.stderr)
+            return None
+        except Exception as e:
+            # Catch-all for unexpected errors
+            import sys
+
+            print(f"Unexpected AQI error for ({lat},{lon}): {e}", file=sys.stderr)
             return None
 
 
@@ -207,8 +239,8 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
         precip_prob=round(avg_precip_prob),
         rainfall=next_6h_rain,
         snowfall=next_6h_snow,
-        sunrise=format_time(daily["sunrise"][0]),
-        sunset=format_time(daily["sunset"][0]),
+        sunrise=format_time(daily["sunrise"][0], timezone),
+        sunset=format_time(daily["sunset"][0], timezone),
         forecast=forecast,
         hourly=hourly_forecast,
         units=weather_client.units,

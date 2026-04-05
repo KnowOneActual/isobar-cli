@@ -93,6 +93,18 @@ Features are evaluated based on their ability to improve the clarity and speed o
 
 ---
 
+## Phase 8: Security & Configuration ✅ COMPLETE (v1.2.0)
+
+**Goal:** Enhance security, reliability, and configurability for advanced use cases.
+
+- [x] **Configurable API Endpoints** — Environment variable support for custom weather providers.
+- [x] **Enhanced Error Handling** — Specific exception catching with timeout protection.
+- [x] **Timezone Support** — Optional `pytz` dependency for accurate local time display.
+- [x] **Improved Logging** — Debug information to stderr while maintaining clean UI.
+- [x] **Security Hardening** — Replace hardcoded endpoints with configurable alternatives.
+
+---
+
 ## Future Considerations
 
 Proposed features are evaluated against the core project philosophy. Complexity is added only when it provides significant value for situational awareness.

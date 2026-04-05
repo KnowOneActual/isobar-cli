@@ -3,7 +3,7 @@
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-98%25-green)
 [![PyPI version](https://badge.fury.io/py/isobar-cli.svg)](https://badge.fury.io/py/isobar-cli)
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -116,6 +116,42 @@ isobar home --clear       # Clear home city
 isobar                    # Uses home city if set (otherwise auto-detects)
 ```
 
+## ⚙️ Configuration
+
+Isobar supports configuration via environment variables for advanced use cases:
+
+### API Endpoint Configuration
+Customize API endpoints for different weather providers or testing:
+
+```bash
+# Use custom weather APIs
+export ISOBAR_GEOCODING_URL="https://custom-geocoding-api.example.com/v1/search"
+export ISOBAR_WEATHER_URL="https://custom-weather-api.example.com/v1/forecast"
+export ISOBAR_AQI_URL="https://custom-aqi-api.example.com/v1/air-quality"
+
+# Run with custom endpoints
+isobar "New York"
+```
+
+### Timezone Support
+For enhanced timezone accuracy (optional):
+
+```bash
+# Install optional timezone support
+pip install isobar-cli[timezone]
+
+# Sunrise/sunset will now display in local timezone
+isobar London
+```
+
+### Debug Mode
+Enable debug logging to stderr:
+
+```bash
+# View API errors and debugging information
+isobar "Test City" 2> debug.log
+```
+
 ## ⌨️ Shell Completion
 
 Isobar supports tab-completion for city names. To enable it for a shell:
@@ -183,6 +219,10 @@ Preparation Guidance:
 | `config.py` | Persistent home city configuration |
 | Enhanced `logic.py` | Preparation guidance, UV monitoring, gust alerts |
 | Updated `ui.py` | Contextual display of insights |
+| **v1.2.0 Features** | **Security & Configuration** |
+| Configurable API Endpoints | Environment variable support for custom APIs |
+| Enhanced Error Handling | Specific exception catching with timeouts |
+| Timezone Support | Optional `pytz` dependency for local time display |
 
 ## 🔒 Security
 
@@ -206,6 +246,7 @@ All security scans are integrated into the CI/CD pipeline and run on every push,
 ✅ **Phase 5 Complete** — Testing & Reliability  
 ✅ **Phase 6 Complete** — Distribution (PyPI, Homebrew)  
 ✅ **Phase 7 Complete** — Intuition & Analysis (v1.1.0)  
+✅ **v1.2.0 Complete** — Security & Configuration Enhancements  
 Refer to [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## 🤝 Contributing

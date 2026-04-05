@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-04-05
+
+### Added
+- **Configurable API Endpoints** — All API endpoints (geocoding, weather, air quality) can now be configured via environment variables:
+  - `ISOBAR_GEOCODING_URL` — Override geocoding API endpoint
+  - `ISOBAR_WEATHER_URL` — Override weather API endpoint  
+  - `ISOBAR_AQI_URL` — Override air quality API endpoint
+- **Timezone Support** — Sunrise/sunset times now display in local timezone when `pytz` is installed (optional dependency)
+- **Optional Timezone Dependency** — Added `pytz` as optional dependency for enhanced timezone support
+- **Improved Error Logging** — API errors now log to stderr for better debugging while maintaining user-friendly experience
+
+### Changed
+- **Enhanced Error Handling** — Replaced bare `except Exception` with specific exception handling for better reliability
+- **Request Timeouts** — Added timeout parameters (10-15 seconds) to all HTTP requests to prevent hanging
+- **API Client Architecture** — Refactored API clients to use configurable endpoints from `config.py`
+- **Time Formatting** — Updated `format_time()` function to accept optional timezone parameter
+
+### Fixed
+- **Security Hardening** — Fixed potential security issues with hardcoded API endpoints
+- **Error Resilience** — Improved graceful degradation when APIs are unavailable
+- **Project Configuration** — Fixed formatting in `pyproject.toml` and dependency structure
+
 ## [1.1.2] - 2026-03-30
 
 ### Fixed
