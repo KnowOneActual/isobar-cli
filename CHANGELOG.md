@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.3] - 2026-04-05
+
+### Added
+- **Borderless Industrial Design** — Removed heavy borders for cleaner, more readable interface
+- **Meaningful Weather Categories** — Replaced confusing gauges with intuitive labels:
+  - Temperature: FREEZING, COLD, COMFORTABLE, WARM, HOT
+  - Humidity: DRY, IDEAL, HUMID, MUGGY
+  - Wind: CALM, LIGHT, GENTLE, MODERATE, etc. (Beaufort scale)
+  - Air Quality: GOOD, MODERATE, UNHEALTHY, etc.
+  - UV Index: LOW, MODERATE, HIGH, VERY HIGH, EXTREME
+- **Improved Readability** — Single-column layout for better scanning
+- **Color-Coded Categories** — Strategic use of industrial color palette
+
+### Changed
+- **Simplified UI Components** — Removed ambiguous symbols (◇, ○, !!!) and bar graphs
+- **Hourly Forecast** — Cleaner borderless table with better spacing
+- **Preparation Protocol** — Removed borders, kept priority indicators (▲ RECOMMENDED, ○ ADVISORY)
+- **Forecast Panel** — Borderless design with improved typography
+
+### Fixed
+- **Import Ordering** — Fixed ruff linting issues in test files
+
 ## [1.3.2] - 2026-04-05
 
 ### Fixed
