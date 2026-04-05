@@ -9,13 +9,15 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Security Scan](https://github.com/KnowOneActual/isobar-cli/actions/workflows/security.yml/badge.svg)
 
+**I'm currently working on improving the layout. Thanks so much for your patience with any little hiccups that might come up along the way! I am working on refactoring the layout. Sorry for any hiccups along the way.**
+
 A terminal weather tool designed to provide a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
 
 ## Philosophy
 
 Isobar CLI answers a simple question: **"What does it feel like outside right now, and do I need a jacket?"**
 
-Most weather apps overwhelm with data. Isobar strips away everything except what matters when deciding how to prepare for the day.
+Most weather apps are overwhelmed with data. Isobar strips away everything except what matters when deciding how to prepare for the day.
 
 ### Design Principles
 - **Essential over comprehensive** — Show Real Feel, not 47 data points.
