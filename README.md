@@ -196,7 +196,7 @@ Coming soon..
 | [requests-mock](https://requests-mock.readthedocs.io/) | API testing |
 | [Ruff](https://docs.astral.sh/ruff/) | Linting and formatting |
 | [pip-audit](https://github.com/pypa/pip-audit) | Dependency security scanning |
-| **Phase 7 Features** | **Intuition & Analysis** |
+| New improvemets | **Intuition & Analysis** |
 | `config.py` | Persistent home city configuration |
 | Enhanced `logic.py` | Preparation guidance, UV monitoring, gust alerts |
 | Updated `ui.py` | Contextual display of insights |
@@ -204,7 +204,6 @@ Coming soon..
 | Configurable API Endpoints | Environment variable support for custom APIs |
 | Enhanced Error Handling | Specific exception catching with timeouts |
 | Timezone Support | Optional `pytz` dependency for local time display |
-| **v1.3.0 Features** | **Industrial Aesthetic** |
 | Industrial UI Design | Retro-futuristic weather observatory dashboard |
 | Visual Gauges | Temperature and humidity gauge visualizations |
 | Severity Indicators | Weather condition severity classification |
