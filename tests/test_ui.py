@@ -1,3 +1,4 @@
+from isobar_cli.logic import get_precip_headline
 from isobar_cli.models import WeatherData, WeatherUnits
 from isobar_cli.ui import (
     build_weather_table,
@@ -5,7 +6,6 @@ from isobar_cli.ui import (
     get_temp_color,
     get_weather_icon,
 )
-from isobar_cli.logic import get_precip_headline
 
 
 def test_get_weather_icon():
