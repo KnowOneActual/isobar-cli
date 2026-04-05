@@ -181,52 +181,8 @@ isobar --install-completion bash
 ### Industrial Aesthetic (v1.3.0+)
 
 ```
-┌─ WEATHER OBSERVATORY ─┐
-CHICAGO
-┌─────┬──────────────────────┬────────────────┬────────────────┐
-│     │ METRIC               │ READING        │ STATUS         │
-├─────┼──────────────────────┼────────────────┼────────────────┤
-│ ☀️  │ CONDITIONS           │ MAINLY CLEAR   │ ◇              │
-│ 🌡️  │ TEMPERATURE          │ 75.2°F         │ [███░░░░░░░]   │
-│ 🤔  │ REAL FEEL            │ 78.5°F         │ ▲ 3.3°F        │
-│ 💨  │ WIND SPEED           │ 12.4 mph       │ GENTLE         │
-│ 💧  │ HUMIDITY             │ 65%            │ [▓▓▓░░]        │
-│ 😷  │ AIR QUALITY          │ 45             │ GOOD ◇         │
-│ ☔  │ PRECIPITATION         │ 30% (6h)       │ [▓░░]          │
-│     │ FORECAST             │ LIGHT RAIN LIKELY │               │
-│ 🌅  │ SUNRISE              │ 06:29          │ DAWN           │
-│ 🌇  │ SUNSET               │ 17:37          │ DUSK           │
-│ ☀️  │ UV INDEX             │ 6.5            │ HIGH ☀️☀️☀️     │
-│ ⚡  │ GUST ALERT           │ 25 mph         │ ⚠️ SEVERE       │
-└─────┴──────────────────────┴────────────────┴────────────────┘
-
-┌─ TREND ANALYSIS ─┐
-↑ 5.2°F WARMER THAN YESTERDAY
-└──────────────────┘
-
-┌─ PREPARATION PROTOCOL ─┐
-  ⚠️  HIGH PRIORITY
-    ▶ Wind gusts up to 25 mph - secure loose items
-  ▲  RECOMMENDED
-    ▶ Light jacket recommended
-    ▶ Sunscreen recommended (UV: High)
-  ○  ADVISORY
-    ▶ Sunglasses recommended for glare
-└─────────────────────────┘
-
-┌─ FORECAST PANEL ─┐
-CHICAGO
-┌──────┬──┬────────────────────┬───────┬───────┬───────┬────────┐
-│ DAY  │  │ CONDITIONS         │ HIGH  │ LOW   │ RAIN% │ STATUS │
-├──────┼──┼────────────────────┼───────┼───────┼───────┼────────┤
-│ TODAY│☀️│ MAINLY CLEAR       │ 78.7°F│ 63.9°F│ 30%   │ ○      │
-│ TUE  │⛅│ PARTLY CLOUDY      │ 82.4°F│ 65.4°F│ 20%   │ ○      │
-│ WED  │🌦️│ LIGHT DRIZZLE      │ 76.8°F│ 60.9°F│ 45%   │ ●      │
-│ THU  │☀️│ CLEAR SKY          │ 80.3°F│ 63.5°F│ 10%   │ ○      │
-└──────┴──┴────────────────────┴───────┴───────┴───────┴────────┘
+Coming soon..
 ```
-```
-
 ## 🛠 Tech Stack
 
 | Tool | Purpose |
