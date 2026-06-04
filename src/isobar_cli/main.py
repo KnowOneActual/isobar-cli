@@ -3,7 +3,12 @@ from typing import Annotated, Optional
 import typer
 from rich.console import Console
 
-from isobar_cli.api import get_cached_cities, get_city_suggestions, get_weather_data
+from isobar_cli.api import (
+    WeatherAPIError,
+    get_cached_cities,
+    get_city_suggestions,
+    get_weather_data,
+)
 from isobar_cli.config import clear_home_city, get_home_city, set_home_city
 from isobar_cli.location import get_auto_location
 from isobar_cli.ui import (
@@ -161,15 +166,18 @@ def _run_weather_logic(
     results = []
     for city_name in cities_to_fetch:
         full_city = city_name.replace("_", " ")
-        weather = get_weather_data(full_city, metric=metric)
-        if weather:
-            results.append(weather)
-        else:
-            console.print(f"[bold red]❌ '{full_city}' not found.[/bold red]")
-            suggestions = get_city_suggestions(full_city)
-            if suggestions:
-                suggest_str = ", ".join(suggestions[:3])
-                console.print(f"[dim]Did you mean: {suggest_str}?[/dim]")
+        try:
+            weather = get_weather_data(full_city, metric=metric)
+            if weather:
+                results.append(weather)
+            else:
+                console.print(f"[bold red]❌ '{full_city}' not found.[/bold red]")
+                suggestions = get_city_suggestions(full_city)
+                if suggestions:
+                    suggest_str = ", ".join(suggestions[:3])
+                    console.print(f"[dim]Did you mean: {suggest_str}?[/dim]")
+        except WeatherAPIError as e:
+            console.print(f"[bold red]❌ {e}[/bold red]")
 
     if not results:
         raise typer.Exit(code=1)

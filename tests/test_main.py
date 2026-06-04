@@ -109,3 +109,19 @@ def test_main_not_found_with_suggestions(mock_api):
     assert result.exit_code == 1
     assert "'Unknown' not found" in result.output
     assert "Did you mean: Suggested City?" in result.output
+
+
+def test_main_weather_api_error(monkeypatch):
+    from isobar_cli.api import WeatherAPIError
+
+    def mock_get_weather_data(city, metric=False):
+        raise WeatherAPIError("Mocked API connection timeout")
+
+    monkeypatch.setattr("isobar_cli.main.get_weather_data", mock_get_weather_data)
+
+    result = runner.invoke(
+        app, ["Chicago"], color=False, env={"TERM": "dumb", "NO_COLOR": "1"}
+    )
+    assert result.exit_code == 1
+    assert "Mocked API connection timeout" in result.output
+    assert "not found" not in result.output

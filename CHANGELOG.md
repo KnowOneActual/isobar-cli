@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2026-06-04
+
+### Fixed
+- **API Error Handling** — Fixed an issue where network/API errors incorrectly reported that the city was not found. Now they are correctly propagated and printed to the user, and the CLI exits with code 1.
+
 ## [1.3.3] - 2026-04-05
 
 ### Added

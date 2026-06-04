@@ -15,6 +15,12 @@ CACHE_DIR = Path.home() / ".cache" / "isobar"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
+class WeatherAPIError(Exception):
+    """Raised when the weather or geocoding API request fails."""
+    pass
+
+
+
 class GeocodingClient:
     @classmethod
     def get_base_url(cls) -> str:
@@ -31,17 +37,9 @@ class GeocodingClient:
             response.raise_for_status()
             return response.json().get("results", [])
         except requests.exceptions.RequestException as e:
-            # Log error for debugging but don't crash
-            import sys
-
-            print(f"Geocoding error for '{city}': {e}", file=sys.stderr)
-            return []
+            raise WeatherAPIError(f"Geocoding error for '{city}': {e}") from e
         except Exception as e:
-            # Catch-all for unexpected errors
-            import sys
-
-            print(f"Unexpected geocoding error for '{city}': {e}", file=sys.stderr)
-            return []
+            raise WeatherAPIError(f"Unexpected geocoding error for '{city}': {e}") from e
 
 
 class WeatherClient:
@@ -128,7 +126,10 @@ def get_cached_cities() -> list[str]:
 
 def get_city_suggestions(city: str) -> list[str]:
     """Fetches a list of likely city name matches for a given input string."""
-    results = GeocodingClient.search(city, count=5)
+    try:
+        results = GeocodingClient.search(city, count=5)
+    except WeatherAPIError:
+        return []
     suggestions = []
     for loc in results:
         region = loc.get("admin1", loc.get("country", ""))
@@ -175,8 +176,7 @@ def get_weather_data(city: str, metric: bool = False) -> Optional[WeatherData]:
         api_data = weather_client.fetch()
         aqi_value = AirQualityClient.get_aqi(lat, lon)
     except requests.RequestException as e:
-        print(f"Error fetching weather: {e}")
-        return None
+        raise WeatherAPIError(f"Error fetching weather: {e}") from e
 
     current = api_data["current"]
     hourly = api_data["hourly"]

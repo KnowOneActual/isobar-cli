@@ -198,14 +198,46 @@ def test_get_weather_data_hourly_index_error(requests_mock):
 
 
 def test_get_weather_data_request_exception(requests_mock):
+    import pytest
     import requests
+
+    from isobar_cli.api import WeatherAPIError
 
     requests_mock.get(
         "https://geocoding-api.open-meteo.com/v1/search",
         exc=requests.exceptions.RequestException("Connection error"),
     )
-    result = get_weather_data("FailCity")
-    assert result is None
+    with pytest.raises(WeatherAPIError):
+        get_weather_data("FailCity")
+
+
+def test_get_weather_data_forecast_request_exception(requests_mock):
+    import pytest
+    import requests
+
+    from isobar_cli.api import WeatherAPIError
+
+    geo_data = {
+        "results": [
+            {
+                "name": "Chicago",
+                "latitude": 41.85,
+                "longitude": -87.65,
+                "admin1": "Illinois",
+                "country": "United States",
+            }
+        ]
+    }
+    requests_mock.get(
+        "https://geocoding-api.open-meteo.com/v1/search",
+        json=geo_data,
+    )
+    requests_mock.get(
+        "https://api.open-meteo.com/v1/forecast",
+        exc=requests.exceptions.RequestException("Weather connection error"),
+    )
+    with pytest.raises(WeatherAPIError):
+        get_weather_data("Chicago")
 
 
 # --- Main Tests ---
