@@ -49,7 +49,7 @@ Features are evaluated based on their ability to improve the clarity and speed o
 
 **Goal:** Ensure security, reliability, and maintainability.
 
-- [x] **GitHub Actions CI** — Automated linting and security scanning on all pushes.
+- [x] **GitHub Actions CI** — Automated linting and security scanning on all pushes, including `pip-audit` to detect vulnerable package dependencies.
 - [x] **Comprehensive Security Scans** — Integration of Trivy, Bandit, Semgrep, and ShellCheck.
 - [x] **Dependabot** — Automated dependency management for security and stability.
 - [x] **Release Drafter** — Categorized release notes automated from PR metadata.
