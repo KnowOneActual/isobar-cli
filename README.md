@@ -20,7 +20,7 @@ Isobar CLI answers a simple question: **"What does it feel like outside right no
 Most weather apps are overwhelmed with data. Isobar strips away everything except what matters when deciding how to prepare for the day.
 
 ### Design Principles
-- **Essential over comprehensive** — Show Real Feel, not 47 data points.
+- **Essential over broad** — Show Real Feel, not 47 data points.
 - **Terminal-native** — Built for quick checks within a developer workflow.
 - **Zero friction** — No API keys or configuration files required.
 - **Information density** — Industrial dashboard UI for maximum readability.
@@ -37,7 +37,7 @@ Most weather apps are overwhelmed with data. Isobar strips away everything excep
 - **7-Day Forecast** — Full week outlook with color-coded highs/lows and daily rain %
 - **Hourly Outlook** — Next 12 hours of temperature and rain chance (`--hourly`)
 - **Multiple Cities** — Compare weather across several cities side-by-side.
-- **Smart Suggestions** — Fuzzy city name matching if there is a typo.
+- **Smart Suggestions** — Fuzzy city name matching if there's a typo.
 - **Shell Completion** — Tab-complete city names based on search history.
 - **Dynamic Timezone** — Sunrise/sunset shown in the city's local time, not yours.
 - **Precipitation Forecast** — Next 6h rain/snow chance and totals.
@@ -224,14 +224,14 @@ All security scans are integrated into the CI/CD pipeline and run on every push,
 
 ## 📈 Project Status
 
-✅ **Phase 1 Complete** — Caching and Auto-Location  
-✅ **Phase 2 Complete** — Precipitation, Sunrise/Sunset, and Condition Icons  
-✅ **Phase 3 Complete** — 7-Day Forecast, Dynamic Timezone, and UI Refinements  
-✅ **Phase 4 Complete** — Quality & Trust (Security, CI/CD)  
-✅ **Phase 5 Complete** — Testing & Reliability  
-✅ **Phase 6 Complete** — Distribution (PyPI, Homebrew)  
-✅ **Phase 7 Complete** — Intuition & Analysis (v1.1.0)  
-✅ **v1.2.0 Complete** — Security & Configuration Enhancements  
+✅ **Phase 1 Complete** — Caching and Auto-Location
+✅ **Phase 2 Complete** — Precipitation, Sunrise/Sunset, and Condition Icons
+✅ **Phase 3 Complete**, 7-Day Forecast, Dynamic Timezone, and UI Refinements
+✅ **Phase 4 Complete**, Quality & Trust (Security, CI/CD)
+✅ **Phase 5 Complete**, Testing & Reliability
+✅ **Phase 6 Complete**, Distribution (PyPI, Homebrew)
+✅ **Phase 7 Complete**, Intuition & Analysis (v1.1.0)
+✅ **v1.2.0 Complete**, Security & Configuration Enhancements
 Refer to [ROADMAP.md](ROADMAP.md) and [CHANGELOG.md](CHANGELOG.md) for details.
 
 ## 🤝 Contributing
