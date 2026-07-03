@@ -3,13 +3,11 @@
 ![CI](https://github.com/KnowOneActual/isobar-cli/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-98%25-green)
 [![PyPI version](https://badge.fury.io/py/isobar-cli.svg)](https://badge.fury.io/py/isobar-cli)
-![Version](https://img.shields.io/badge/version-1.3.0-blue)
+![Version](https://img.shields.io/badge/version-1.3.7-blue)
 ![Ruff](https://img.shields.io/badge/linting-ruff-purple)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Security Scan](https://github.com/KnowOneActual/isobar-cli/actions/workflows/security.yml/badge.svg)
-
-**I'm currently working on improving the layout. Thanks so much for your patience with any little hiccups that might come up along the way!**
 
 A terminal weather tool designed to provide a fast, clean sense of what the weather **feels like** outside; right now and for the week ahead. Built with Python and Rich.
 
@@ -178,11 +176,44 @@ isobar --install-completion bash
 
 ## 🖥️ Example Output
 
-### Industrial Aesthetic (v1.3.0+)
+### Current Conditions & Preparation Protocol (Default)
+```
+🌍 Detecting location...
+📍 Detected: Chicago
+          WEATHER OBSERVATORY · CHICAGO, ILLINOIS           
+ ☁️   CONDITIONS              OVERCAST                      
+ 🌡️   TEMPERATURE               77.3°F                 WARM 
+ 🤔   REAL FEEL:                87.2°F          WARM ▲9.9°F 
+ 💨   WIND SPEED               3.8 mph                LIGHT 
+ 💧   HUMIDITY                     96%                MUGGY 
+ 😷   AIR QUALITY                   52             MODERATE 
+ ☔   PRECIPITATION           33% (6h)                LIGHT 
+ 🌅   SUNRISE                  5:20 AM                      
+ 🌇   SUNSET                   8:29 PM                      
+ ☀️   UV INDEX                     3.2             MODERATE 
+ 💨   WIND GUST               11.6 mph               GENTLE 
+────────────────────────────────────────
+PREPARATION PROTOCOL
+────────────────────────────────────────
+▲  RECOMMENDED
+  ▶ 🧴 Sunscreen recommended
 
+────────────────────────────────────────
 ```
-Coming soon..
+
+### 7-Day Forecast (with `-f` / `--forecast`)
 ```
+                  FORECAST PANEL · CHICAGO, ILLINOIS                  
+ DAY               CONDITIONS                HIGH       LOW     RAIN% 
+ TODAY        🌧️   HEAVY RAIN              87.7°F    71.3°F       56% 
+ SAT          🌧️   HEAVY RAIN              79.0°F    68.5°F       37% 
+ SUN          🌧️   DENSE DRIZZLE           78.4°F    67.4°F       38% 
+ MON          ☁️   OVERCAST                75.0°F    67.2°F       12% 
+ TUE          ☀️   CLEAR SKY               77.1°F    65.4°F       11% 
+ WED          ☁️   OVERCAST                85.2°F    66.9°F        8% 
+ THU          🌦️   LIGHT DRIZZLE           77.7°F    70.1°F       25% 
+```
+
 ## 🛠 Tech Stack
 
 | Tool | Purpose |
