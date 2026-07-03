@@ -124,6 +124,8 @@ Features are evaluated based on their ability to improve the clarity and speed o
 
 Proposed features are evaluated against the core project philosophy. Complexity is added only when it provides significant value for situational awareness.
 
+- **Secondary/Fallback Weather API** — Implement a fallback provider (e.g., `weather.gov` for US coordinates or a key-based API like OpenWeatherMap) to query when the primary Open-Meteo endpoint is completely unreachable or times out, supplementing the current retry-only setup.
+
 ---
 
 ## Contribution Guidelines
