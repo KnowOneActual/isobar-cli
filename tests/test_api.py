@@ -185,3 +185,65 @@ def test_get_cached_cities(tmp_path, monkeypatch):
     assert "London" in cached
     assert "New York" in cached
     assert len(cached) == 3
+
+
+def test_requests_retry_get_success(requests_mock):
+    requests_mock.get("https://test.com/api", json={"status": "ok"})
+    from isobar_cli.api import requests_retry_get
+
+    response = requests_retry_get("https://test.com/api")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_requests_retry_get_retry_then_success(requests_mock, monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda x: None)
+    import requests
+
+    requests_mock.get(
+        "https://test.com/api",
+        [
+            {"exc": requests.exceptions.Timeout("Read timed out")},
+            {"json": {"status": "ok"}},
+        ],
+    )
+
+    from isobar_cli.api import requests_retry_get
+
+    response = requests_retry_get("https://test.com/api", retries=3)
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_requests_retry_get_exhausts_retries(requests_mock, monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda x: None)
+    import requests
+
+    requests_mock.get(
+        "https://test.com/api",
+        exc=requests.exceptions.Timeout("Read timed out"),
+    )
+
+    from isobar_cli.api import requests_retry_get
+
+    with pytest.raises(requests.exceptions.Timeout):
+        requests_retry_get("https://test.com/api", retries=3)
+
+
+def test_requests_retry_get_transient_status_codes(requests_mock, monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda x: None)
+
+    requests_mock.get(
+        "https://test.com/api",
+        [
+            {"status_code": 502, "text": "Bad Gateway"},
+            {"status_code": 200, "json": {"status": "ok"}},
+        ],
+    )
+
+    from isobar_cli.api import requests_retry_get
+
+    response = requests_retry_get("https://test.com/api", retries=3)
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+

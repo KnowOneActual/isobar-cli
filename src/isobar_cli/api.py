@@ -20,6 +20,30 @@ class WeatherAPIError(Exception):
     pass
 
 
+def requests_retry_get(
+    url: str,
+    params: Optional[dict] = None,
+    timeout: float = 10.0,
+    retries: int = 3,
+    backoff_factor: float = 0.5,
+    **kwargs,
+) -> requests.Response:
+    """Wrapper for requests.get that retries on ConnectionError, Timeout, and transient 5xx status codes."""
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, params=params, timeout=timeout, **kwargs)
+            # Retry on transient server errors (500, 502, 503, 504)
+            if response.status_code in (500, 502, 503, 504) and attempt < retries - 1:
+                time.sleep(backoff_factor * (2**attempt))
+                continue
+            return response
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            if attempt < retries - 1:
+                time.sleep(backoff_factor * (2**attempt))
+                continue
+            raise
+    return requests.get(url, params=params, timeout=timeout, **kwargs)
+
 
 class GeocodingClient:
     @classmethod
@@ -30,9 +54,9 @@ class GeocodingClient:
     @classmethod
     def search(cls, city: str, count: int = 1) -> list[dict]:
         try:
-            response = requests.get(
+            response = requests_retry_get(
                 f"{cls.get_base_url()}?name={city}&count={count}&format=json",
-                timeout=10,
+                timeout=5.0,
             )
             response.raise_for_status()
             return response.json().get("results", [])
@@ -75,7 +99,7 @@ class WeatherClient:
             "forecast_days": 7,
         }
 
-        response = requests.get(self.get_base_url(), params=params, timeout=15)
+        response = requests_retry_get(self.get_base_url(), params=params, timeout=8.0)
         response.raise_for_status()
         return response.json()
 
@@ -89,9 +113,9 @@ class AirQualityClient:
     @classmethod
     def get_aqi(cls, lat: float, lon: float) -> Optional[int]:
         try:
-            response = requests.get(
+            response = requests_retry_get(
                 f"{cls.get_base_url()}?latitude={lat}&longitude={lon}&current=us_aqi",
-                timeout=10,
+                timeout=5.0,
             )
             response.raise_for_status()
             return response.json().get("current", {}).get("us_aqi")
